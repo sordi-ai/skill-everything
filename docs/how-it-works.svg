@@ -225,8 +225,11 @@
   <path d="M 1040 268 V 305" class="arrow" marker-end="url(#a-rule)"/>
   <text class="annot" x="1045" y="275">gates green</text>
 
-  <!-- Branch protection frame, height reduced to 70 (H3 fix) -->
-  <rect class="human-gate" x="940" y="298" width="200" height="70" rx="8"/>
+  <!-- Branch protection frame: top y=300, bottom y=378 (height 78). The
+       previous height=70 frame ended at y=368, but Step 6 (transform y=305
+       + box height 68 = bottom y=373) protruded 5 px below it. The new
+       frame fully encloses Step 6 with 5 px of margin top and bottom. -->
+  <rect class="human-gate" x="940" y="300" width="200" height="78" rx="8"/>
   <text class="human-gate-label" x="944" y="296">BRANCH PROTECTION  ·  required reviewer</text>
 
   <!-- ============== ARTEFACT ANNOTATIONS ============== -->
@@ -268,11 +271,11 @@
     <text class="chip-text" x="8" y="12">pytest --tb=line FAILED</text>
   </g>
 
-  <!-- Next-session label — moved to translate(80 60) (C3 fix) -->
-  <g transform="translate(80 60)">
-    <text class="annot" x="0" y="-12">on next session start</text>
-    <text class="loop-label" x="0" y="0">@references/errors/*.md  →  loaded into agent context</text>
-  </g>
+  <!-- The "on next session" annotation that previously sat at translate(80 60)
+       is removed here: it overlapped the h-sub line at y=46 and read like a
+       strikethrough on "Every commit means the next session inherits the fix".
+       The same idea is carried by the loop label above the substrate at y=375
+       ("next session inherits the fix · rule loaded before code is written"). -->
 
   <!-- ============== FEEDBACK LOOP — arc on y=410 corridor (C2 fix) ============== -->
   <path d="M 1040 373 C 1040 392, 1040 410, 600 410 C 220 410, 60 410, 60 200 C 60 130, 90 110, 110 110"

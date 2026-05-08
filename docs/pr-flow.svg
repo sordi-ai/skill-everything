@@ -197,23 +197,33 @@
   <text class="annot" x="895" y="208">PR opened  ·  both gates run in parallel</text>
 
   <!-- ============== HUMAN LANE: CODEOWNERS approval ============== -->
-  <g transform="translate(560 380)">
-    <rect class="node human" x="0" y="0" width="490" height="40" rx="6"/>
+  <!-- Box raised (y=380 → 370) and grown (height 40 → 56) so the long
+       'required reviewer …' line can wrap into two lines instead of
+       overrunning the right edge by ~170 px. Lane separators y=350 / y=430
+       still bracket it; arrows updated below. -->
+  <g transform="translate(560 370)">
+    <rect class="node human" x="0" y="0" width="490" height="56" rx="6"/>
     <text class="step-num" x="10" y="15">HUMAN  ·  CODEOWNERS</text>
     <text class="mono-tag"   x="180" y="15">@sordi-ai/maintainers</text>
-    <text class="mono-dim"   x="180" y="30">required reviewer on references/errors/  ·  enforced by branch protection on main</text>
     <text class="node-sub"   x="10" y="30">approval required</text>
+    <text class="mono-dim"   x="180" y="30">required reviewer on references/errors/</text>
+    <text class="mono-dim"   x="180" y="44">enforced by branch protection on main</text>
   </g>
 
-  <!-- arrow gates → human (both gates green → approval allowed) -->
-  <path d="M 670 330 V 360 V 380" class="arrow" marker-end="url(#a-rule)"/>
-  <path d="M 930 330 V 360 V 380" class="arrow" marker-end="url(#a-rule)"/>
-  <text class="annot" x="800" y="355" text-anchor="middle">both gates green</text>
+  <!-- arrow gates → human (end y was 380, new HUMAN top is y=370) -->
+  <path d="M 670 330 V 370" class="arrow" marker-end="url(#a-rule)"/>
+  <path d="M 930 330 V 370" class="arrow" marker-end="url(#a-rule)"/>
+  <text class="annot" x="800" y="350" text-anchor="middle">both gates green</text>
 
   <!-- ============== SUBSTRATE: squash-merge & branch protection frame ============== -->
-  <!-- Branch protection frame (around the squash merge) -->
+  <!-- Branch protection frame label shortened from
+       'BRANCH PROTECTION  ·  refs/heads/main  ·  required CI + CODEOWNERS'
+       to '… refs/heads/main' so the human→squash arrow at x=800 no longer
+       runs through the middle of the label. The 'CI + CODEOWNERS' detail
+       is already encoded by the frame surrounding both gates and the
+       human node. -->
   <rect class="human-gate" x="540" y="455" width="540" height="64" rx="8"/>
-  <text class="human-gate-label" x="544" y="450">BRANCH PROTECTION  ·  refs/heads/main  ·  required CI + CODEOWNERS</text>
+  <text class="human-gate-label" x="544" y="450">BRANCH PROTECTION  ·  refs/heads/main</text>
 
   <!-- squash-merge node (inside frame) -->
   <g transform="translate(560 465)">
@@ -223,8 +233,9 @@
     <text class="mono-dim"   x="180" y="34">commit: e8aa…  learn(errors): ERR-2026-014</text>
   </g>
 
-  <!-- arrow human → squash-merge -->
-  <path d="M 800 420 V 465" class="arrow" marker-end="url(#a-rule)"/>
+  <!-- arrow human → squash-merge (start y was 420 = old HUMAN bottom;
+       new HUMAN bottom is y=426 so the arrow tightens up) -->
+  <path d="M 800 426 V 465" class="arrow" marker-end="url(#a-rule)"/>
   <text class="annot" x="808" y="450">approve + squash</text>
 
   <!-- ============== ARTEFACT CALLOUTS (left margin) ============== -->
