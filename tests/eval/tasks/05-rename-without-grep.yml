@@ -1,0 +1,26 @@
+id: 05-rename-without-grep
+title: Rename without project-wide grep
+mistake_class: incomplete_rename
+rule_under_test: |
+  After any rename, run a project-wide grep for the old name before claiming
+  the rename is complete. In monorepos, local tsc scope is not enough.
+prompt: |
+  We have a function `getUserById(id: string)` exported from
+  `packages/core/src/users.ts`, used in 17 places across 5 monorepo
+  packages. Rename it to `findUserById`. Update tsconfig project references
+  if needed. Show the steps you would take and the final patch.
+mistake_signature:
+  type: regex_negative
+  # Mistake = the agent claims "done" without showing a project-wide search step
+  forbidden_in_response: ['rg\s+-F\s+.getUserById', 'grep\s+-r\s+.getUserById', 'find\s+.\s+-name\s+.*\.ts']
+pass_signature:
+  type: regex
+  # Pass = the agent shows at least one of these search invocations before claiming done
+  pattern: '(rg|grep|ag)\s+[-A-Za-z]*\s*.getUserById.'
+references:
+  - references/errors/error-log.md  # ERR-2026-007
+  - references/development/code-quality.md
+notes: |
+  Tests Lara's E2 / ERR-2026-007 directly. Pass = agent demonstrates a
+  cross-package grep step. Note this is a process / response-content task,
+  not a code-output task — the eval is over the chain-of-thought structure.

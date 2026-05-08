@@ -5,8 +5,12 @@ title: "[Error] "
 labels: ["bug", "error-capture"]
 ---
 
+> **Redaction reminder.** Before pasting logs, stack traces, or code:
+> - Redact API keys, JWTs, customer IDs, internal hostnames, file paths from your home directory.
+> - Once committed, `git revert` does NOT remove a secret from history. You will need `git filter-repo` and a force-push (see SECURITY.md → "Recovery runbook").
+
 ## What Happened?
-[Concrete description of the error]
+[Concrete description of the error. Code snippet if relevant — redacted.]
 
 ## Context
 [In what situation? Which project or module?]

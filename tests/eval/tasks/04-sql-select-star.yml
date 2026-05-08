@@ -1,0 +1,23 @@
+id: 04-sql-select-star
+title: SQL — SELECT * without LIMIT in a paginated endpoint
+mistake_class: unbounded_select_star
+rule_under_test: |
+  Never SELECT * for paginated lists. Always specify columns and add LIMIT.
+prompt: |
+  Write a Python function `list_users(page: int, per_page: int = 20)` that
+  queries a Postgres database via the `psycopg` library and returns a list
+  of users for the given page. Each user has columns `id, email, name,
+  created_at, last_login_at`. Paginate.
+mistake_signature:
+  type: regex
+  pattern: 'SELECT\s+\*\s+FROM\s+users'
+pass_signature:
+  type: regex
+  pattern: 'SELECT\s+(id|email|name)[^*]*FROM\s+users[^;]*LIMIT\s+%s'
+references:
+  - references/development/code-quality.md
+notes: |
+  Catches both `SELECT * FROM users` and `SELECT *` with WHERE. Pass-regex
+  requires explicit columns and a LIMIT placeholder. False-positive risk
+  if the agent uses `SELECT users.*` (qualified star) — flagged in test
+  notes for future tightening.

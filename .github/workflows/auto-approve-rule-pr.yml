@@ -1,0 +1,45 @@
+name: auto-approve-rule-pr
+
+# Solo-maintainer self-approve mitigation.
+# When an agent opens a PR labelled `needs-rule-review`, this workflow
+# verifies that:
+#   1. the diff is scoped to references/errors/**
+#   2. the head commit carries a Co-Authored-By: trailer (the maintainer
+#      explicitly co-author-acknowledges the agent's work)
+# The workflow does NOT auto-approve — it only gates merge eligibility by
+# being a required status check. Human approval remains required.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  gate:
+    if: contains(github.event.pull_request.labels.*.name, 'needs-rule-review')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify diff scope (only references/errors/** allowed)
+        run: |
+          set -e
+          BAD=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD" \
+                | grep -vE '^references/errors/' || true)
+          if [ -n "$BAD" ]; then
+            echo "::error::This PR touches files outside references/errors/. Rule-PRs must be scoped:"
+            echo "$BAD"
+            exit 1
+          fi
+          echo "Diff scope OK."
+
+      - name: Verify Co-Authored-By trailer
+        run: |
+          if ! git log -1 --pretty=%B | grep -qiE '^Co-[Aa]uthored-[Bb]y:'; then
+            echo "::error::Missing Co-Authored-By: trailer in head commit."
+            echo "Self-extension PRs require the maintainer to explicitly co-author the rule:"
+            echo "  Co-Authored-By: Real Name <real@email>"
+            exit 1
+          fi
+          echo "Co-Authored-By present."
