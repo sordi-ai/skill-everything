@@ -37,6 +37,8 @@
 
 - 🧩 **Your conventions live in your head, not in your agent.** Deployment order, naming rules, that one API quirk that cost you 3 hours — it all goes into structured sub-skills the agent loads automatically.
 
+- 📉 **Monolithic instruction files burn tokens every message.** 10,000+ tokens loaded whether you need them or not. Skill-Everythink's router pattern loads only what's relevant — **84% fewer tokens, 84% lower cost.**
+
 ---
 
 ## ⚙️ How It Works
@@ -68,37 +70,26 @@ graph LR
 
 Every token your agent reads costs money. Monolithic instruction files burn thousands of tokens **every single message**. Skill-Everythink uses a **router pattern** — the agent loads only what it needs.
 
-```
-┌─────────────────────────────────────────────────────┐
-│  Monolithic .cursorrules / system prompt             │
-│  ████████████████████████████████████  10,000+ tok  │
-│  Loaded EVERY message. Always. All of it.           │
-└─────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────┐
-│  Skill-Everythink (router pattern)                   │
-│  ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░    ~800 tok   │
-│  SKILL.md router (always loaded)                     │
-│  ████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  + ~800 tok   │
-│  One sub-skill loaded on demand                      │
-│  = ~1,600 tokens per message (84% less)             │
-└─────────────────────────────────────────────────────┘
-```
+> **Monolithic approach:** `10,000+` tokens loaded every message. Always. All of it.
+>
+> **Skill-Everythink:** `~800` tok router + `~800` tok one sub-skill = **~1,600 tokens per message (84% less)**
 
 **Real cost comparison** (at $3 / 1M input tokens):
 
-| Setup | Tokens per msg | 1,000 messages | 10,000 messages |
+| | Tokens / msg | 1,000 msgs | 10,000 msgs |
 |---|---:|---:|---:|
-| Monolithic rules | 10,000 | $30.00 | $300.00 |
-| **Skill-Everythink** | **~1,600** | **$4.80** | **$48.00** |
-| **Savings** | **84%** | **$25.20** | **$252.00** |
+| 📄 Monolithic `.cursorrules` | 10,000 | $30.00 | $300.00 |
+| 🧠 **Skill-Everythink** | **~1,600** | **$4.80** | **$48.00** |
+| 💰 **You save** | **84%** | **$25.20** | **$252.00** |
 
 <details>
-<summary><strong>Token budget per sub-skill</strong></summary>
+<summary><strong>📋 Token budget per sub-skill</strong></summary>
+
+<br>
 
 | Sub-Skill | Tokens | Rules |
 |---|---:|---:|
-| SKILL.md (router, always loaded) | ~800 | — |
+| `SKILL.md` (router, always loaded) | ~800 | — |
 | Code Quality | ~800 | 23 |
 | Python | ~1,600 | 20 |
 | TypeScript | ~1,800 | 17 |
@@ -108,10 +99,11 @@ Every token your agent reads costs money. Monolithic instruction files burn thou
 | Review & Deployment | ~650 | — |
 | Error Log | ~900 | grows |
 | Self-Extension Workflow | ~1,000 | — |
+| | | |
 | **Total if ALL loaded** | **~10,750** | **92 rules** |
 | **Typical per message** | **~1,600** | **router + 1 skill** |
 
-Each sub-skill stays under 3,000 tokens. When it grows beyond that — split, don't bloat.
+> Each sub-skill stays under **3,000 tokens**. When it grows beyond that — split, don't bloat.
 
 </details>
 
@@ -401,6 +393,13 @@ No. Plain Markdown. Git. That's it. No vector DB, no embeddings, no running proc
 <summary><strong>Can I share skills across projects?</strong></summary>
 
 Yes. Clone it as a submodule, symlink it, or just copy the `references/` folder. Skills are portable by design.
+
+</details>
+
+<details>
+<summary><strong>How does this save tokens / money?</strong></summary>
+
+Monolithic instruction files load 10,000+ tokens every message. Skill-Everythink loads ~800 tokens (router) + one sub-skill on demand (~800). That's **84% fewer tokens per message**. At $3/1M tokens, you save ~$250 per 10,000 messages. See the [Token Efficiency](#-token-efficiency--why-this-saves-you-money) section for the full breakdown.
 
 </details>
 
