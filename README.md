@@ -32,7 +32,7 @@ Skill-Everythink is a Git-versioned memory system built entirely from plain Mark
 - **Git-versioned** — every change is traceable, revertable, and reviewable
 - **Error memory** — mistakes are analyzed, turned into rules, and stored permanently
 - **Domain knowledge** — company processes, conventions, and partner quirks flow in structurally
-- **Agent-agnostic** — works with OpenCode, Claude Code, Cursor, GPT-4, any LLM-based agent
+- **Agent-agnostic** — works with OpenCode, Claude Code, Gemini CLI, Cursor, and any LLM-based agent
 - **Modular** — sub-skills are independent, composable, and individually loadable
 - **Zero setup** — `git clone` and you're done, no infrastructure required
 - **Transparent** — anyone can read exactly what the agent knows and why
@@ -77,6 +77,26 @@ Or reference sub-skills directly in your prompts:
 @references/errors/error-log.md
 @references/development/code-quality.md
 ```
+
+</details>
+
+<details>
+<summary><strong>Gemini CLI</strong> — via <code>GEMINI.md</code> and <code>@file</code> imports</summary>
+
+Copy or symlink the provided `GEMINI.md` into your project root:
+
+```bash
+cp skill-everythink/GEMINI.md ./GEMINI.md
+```
+
+Or import sub-skills directly using `@file.md` syntax:
+
+```markdown
+@references/development/code-quality.md
+@references/errors/error-log.md
+```
+
+Use `/memory show` to verify loaded context, `/memory refresh` after edits.
 
 </details>
 
@@ -145,8 +165,9 @@ Every time the agent learns something important, it lands in the skill — struc
 
 ```
 skill-everythink/
-├── SKILL.md                    # Router — entry point, always loaded
+├── SKILL.md                    # Router — entry point (OpenCode)
 ├── CLAUDE.md                   # Claude Code integration entry point
+├── GEMINI.md                   # Gemini CLI integration entry point
 ├── references/
 │   ├── development/            # Code quality rules (15 rules)
 │   ├── git/                    # Commit conventions (15 rules)
