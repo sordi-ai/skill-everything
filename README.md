@@ -19,7 +19,7 @@
 
 <br>
 
-*Built and battle-tested by AI engineers from <b>BMW</b> and <b>Google</b>.*
+*Built and battle-tested by AI engineers working at <b>BMW</b> and <b>Google</b>.*
 
 </div>
 
