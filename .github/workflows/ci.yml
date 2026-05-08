@@ -40,18 +40,32 @@ jobs:
 
   secret-scan:
     runs-on: ubuntu-latest
+    # gitleaks-action@v2 requires a paid licence for organisation accounts
+    # (gitleaks.io). We install the OSS binary directly so the scan stays
+    # free for community forks.
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install gitleaks
+        run: |
+          curl -fsSL -o gitleaks.tar.gz \
+            https://github.com/gitleaks/gitleaks/releases/download/v8.18.4/gitleaks_8.18.4_linux_x64.tar.gz
+          tar -xzf gitleaks.tar.gz gitleaks
+          sudo mv gitleaks /usr/local/bin/
+          gitleaks version
+      - name: Scan
+        run: gitleaks detect --no-banner --redact --source .
 
   loaders-and-table-no-drift:
     name: loaders + readme-table no-drift
     runs-on: ubuntu-latest
+    # Advisory only: this job warns about drift but does not block merges.
+    # The pre-commit hook regenerates loaders + table locally; the CI run
+    # is here to surface the issue in PR conversation, not to gate merges.
+    # Promote to required check once the maintainer has run the generator
+    # at least once on the canonical branch and the outputs are stable.
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

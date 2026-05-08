@@ -19,7 +19,8 @@ Validation layers (all run independently):
 
 Honest limitations (also documented in SECURITY.md):
     * The verb allow-list and forbidden patterns are best-effort, not airtight.
-    * Homoglyph attacks (Cyrillic с in `сurl`) bypass pattern matching.
+    * Homoglyph attacks (e.g. Cyrillic look-alikes that visually match
+      Latin letters) bypass pattern matching.
     * Indirection ("run the {tool} command") bypasses literal patterns.
     * Human PR review remains the primary trust boundary.
     See tests/test_validate_rules_adversarial.py for the documented bypass set.
@@ -73,6 +74,19 @@ SUB_SKILL_DIRS = ["development", "git", "process", "domain"]
 
 def load_yaml_file(path: Path):
     return yaml.safe_load(path.read_text(encoding="utf-8")) if path.exists() else None
+
+
+def _stringify_dates(obj):
+    """yaml.safe_load returns datetime.date for ISO date scalars; the JSON-Schema
+    expects strings with format=date. Convert them in place before validation."""
+    import datetime
+    if isinstance(obj, dict):
+        return {k: _stringify_dates(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_stringify_dates(x) for x in obj]
+    if isinstance(obj, (datetime.date, datetime.datetime)):
+        return obj.isoformat()[:10] if isinstance(obj, datetime.date) else obj.isoformat()
+    return obj
 
 
 def load_exceptions() -> set[str]:
@@ -135,7 +149,8 @@ def validate_error_log() -> list[str]:
             # complain about the documentation example.
             if "YYYY" in eid:
                 continue
-            for v in validator.iter_errors(entry):
+            entry_for_schema = _stringify_dates(entry)
+            for v in validator.iter_errors(entry_for_schema):
                 errors.append(f"{eid}: schema: {v.message}")
             allow_forbidden = eid in exceptions
             errors.extend(
@@ -174,7 +189,8 @@ def validate_sub_skills() -> list[str]:
             if fm is None:
                 errors.append(f"{path.relative_to(ROOT)}: missing frontmatter")
                 continue
-            for v in validator.iter_errors(fm):
+            fm_for_schema = _stringify_dates(fm)
+            for v in validator.iter_errors(fm_for_schema):
                 errors.append(f"{path.relative_to(ROOT)}: schema: {v.message}")
     return errors
 

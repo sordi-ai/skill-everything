@@ -63,7 +63,10 @@ def build_table() -> str:
     rows.append("| **Typical (router + 1-2 skills)** | **~1,800-3,500** | depends on task |")
     fallback_note = ""
     if _ENC is None:
-        fallback_note = "\n\n> _Counts above use a chars/3 fallback because tiktoken is not installed. Install `tiktoken>=0.7` for accurate numbers._"
+        fallback_note = (
+            "\n\n> _Counts above use a chars/3 fallback because tiktoken is "
+            "not installed. Install `tiktoken>=0.7` for accurate numbers._"
+        )
     return "\n".join(rows) + fallback_note
 
 
