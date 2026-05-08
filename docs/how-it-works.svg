@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
   <title id="title">How skill-everything self-extends — pipeline diagram</title>
-  <desc id="desc">A six-step pipeline showing how an agent error becomes a merged rule via PR-flow with lint-rules and auto-approve-rule-pr CI gates and CODEOWNERS approval. Every commit means the next session inherits the fix.</desc>
+  <desc id="desc">A six-step self-extension pipeline: an agent error becomes a merged rule via three serial CI gates (lint-rules, auto-approve-rule-pr, auto-merge). Every commit means the next session inherits the fix. Human review is detailed in pr-flow.svg.</desc>
 
   <style>
     /* Semantic palette — three roles, one substrate */
@@ -16,9 +16,6 @@
 
       --ci:        #1f7a4a;
       --ci-fill:   #e6f3ec;
-
-      --human:     #b46a00;
-      --human-fill:#fbeed1;
 
       --git:       #2b2f33;
       --git-fill:  #eef0f2;
@@ -39,9 +36,6 @@
         --ci:        #6fc093;
         --ci-fill:   #14241c;
 
-        --human:     #e3a154;
-        --human-fill:#2a2014;
-
         --git:       #c8cdd4;
         --git-fill:  #181c22;
 
@@ -58,7 +52,6 @@
 
     .node       { fill: var(--agent-fill); stroke: var(--agent); stroke-width: 1.5; }
     .node.ci    { fill: var(--ci-fill);    stroke: var(--ci); }
-    .node.human { fill: var(--human-fill); stroke: var(--human); }
 
     .step-num   { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--muted); letter-spacing: 0.5px; }
     .node-title { font: 600 12px -apple-system, system-ui, sans-serif; fill: var(--ink); }
@@ -73,10 +66,6 @@
     .gate       { fill: none; stroke: var(--ci); stroke-width: 1.2; stroke-dasharray: 4 3; }
     .gate-label { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.5px; }
     .gate-fill  { fill: var(--ci-fill); opacity: 0.55; }
-
-    .human-gate       { fill: none; stroke: var(--human); stroke-width: 1.2; stroke-dasharray: 4 3; }
-    .human-gate-label { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--human); letter-spacing: 0.5px; }
-    .human-gate-fill  { fill: var(--human-fill); opacity: 0.55; }
 
     .chip       { fill: var(--bg); stroke: var(--hairline); }
     .chip-text  { font: 500 10px ui-monospace, Consolas, monospace; fill: var(--ink); }
@@ -109,30 +98,26 @@
 
   <!-- ============== HEADER ============== -->
   <text class="h-title" x="24" y="30">HOW IT WORKS  /  SELF-EXTENSION PIPELINE</text>
-  <text class="h-sub"   x="24" y="46">Every commit means the next session inherits the fix.</text>
+  <text class="h-sub"   x="24" y="46">Five agent steps, three CI gates, zero manual hops. Every commit means the next session inherits the fix.</text>
 
   <!-- legend -->
-  <g transform="translate(740 22)">
+  <g transform="translate(820 22)">
     <rect class="node"       x="0"   y="0" width="14" height="10" rx="2"/>
     <text class="legend-t"   x="20"  y="9">agent action</text>
     <rect class="node ci"    x="100" y="0" width="14" height="10" rx="2"/>
     <text class="legend-t"   x="120" y="9">CI / automated</text>
-    <rect class="node human" x="220" y="0" width="14" height="10" rx="2"/>
-    <text class="legend-t"   x="240" y="9">human-in-the-loop</text>
-    <line x1="350" y1="5" x2="370" y2="5" class="arrow loop" marker-end="url(#a-loop)"/>
-    <text class="legend-t"   x="376" y="9">feedback loop</text>
+    <line x1="220" y1="5" x2="240" y2="5" class="arrow loop" marker-end="url(#a-loop)"/>
+    <text class="legend-t"   x="246" y="9">feedback loop</text>
   </g>
 
-  <!-- ============== SWIMLANES ============== -->
+  <!-- ============== SWIMLANES (3 lanes; HUMAN lane removed) -->
   <line x1="24"   y1="70"  x2="1176" y2="70"  class="lane"/>
-  <line x1="24"   y1="180" x2="1176" y2="180" class="lane"/>
-  <line x1="24"   y1="280" x2="1176" y2="280" class="lane"/>
-  <line x1="24"   y1="380" x2="1176" y2="380" class="lane"/>
+  <line x1="24"   y1="200" x2="1176" y2="200" class="lane"/>
+  <line x1="24"   y1="320" x2="1176" y2="320" class="lane"/>
 
   <text class="lane-label" x="30"  y="85">AGENT</text>
-  <text class="lane-label" x="30"  y="195">CI&#8201;/&#8201;AUTOMATED CHECKS</text>
-  <text class="lane-label" x="30"  y="295">HUMAN-IN-THE-LOOP</text>
-  <text class="lane-label" x="30"  y="395">REPO SUBSTRATE&#8201;·&#8201;refs/heads/main</text>
+  <text class="lane-label" x="30"  y="215">CI&#8201;/&#8201;AUTOMATED CHECKS</text>
+  <text class="lane-label" x="30"  y="335">REPO SUBSTRATE&#8201;·&#8201;refs/heads/main</text>
 
   <!-- ============== STEP 1 — TRIGGER ============== -->
   <g transform="translate(110 100)">
@@ -185,107 +170,80 @@
   <line x1="710" y1="134" x2="740" y2="134" class="arrow" marker-end="url(#a-rule)"/>
   <line x1="920" y1="134" x2="950" y2="134" class="arrow" marker-end="url(#a-rule)"/>
 
-  <!-- ============== CI GATES ============== -->
+  <!-- ============== STEP 1 chip — concrete example artefact below trigger box.
+       Italic 'example trigger' label dropped: the chip content is self-explanatory.
+       Chip top y=176 (8 px gap below box bottom y=168);
+       chip bottom y=194 (6 px above lane separator y=200). Clear of all elements.   -->
+  <g transform="translate(110 176)">
+    <rect class="chip" x="0" y="0"  width="180" height="18" rx="3"/>
+    <text class="chip-text" x="8" y="13">pytest --tb=line FAILED</text>
+  </g>
+
+  <!-- ============== CI GATES (three serial gates: lint, auto-approve, auto-merge) -->
 
   <!-- Gate A: lint-rules workflow -->
-  <g transform="translate(740 210)">
-    <rect class="gate-fill" x="0" y="0" width="180" height="58" rx="6"/>
-    <rect class="gate"      x="0" y="0" width="180" height="58" rx="6"/>
-    <text class="gate-label" x="8" y="15">CI GATE  ·  lint-rules</text>
-    <text class="mono-tag"   x="8" y="32">schemas/error-entry.json</text>
-    <text class="mono-dim"   x="8" y="46">verb allow-list  ·  forbidden-set</text>
+  <g transform="translate(320 240)">
+    <rect class="gate-fill" x="0" y="0" width="220" height="70" rx="6"/>
+    <rect class="gate"      x="0" y="0" width="220" height="70" rx="6"/>
+    <text class="gate-label" x="10" y="16">CI GATE  ·  lint-rules</text>
+    <text class="mono-tag"   x="10" y="34">schemas/error-entry.json</text>
+    <text class="mono-dim"   x="10" y="50">verb allow-list · forbidden-set</text>
+    <text class="mono-dim"   x="10" y="62">fails build on schema drift</text>
   </g>
 
   <!-- Gate B: auto-approve-rule-pr -->
-  <g transform="translate(950 210)">
-    <rect class="gate-fill" x="0" y="0" width="180" height="58" rx="6"/>
-    <rect class="gate"      x="0" y="0" width="180" height="58" rx="6"/>
-    <text class="gate-label" x="8" y="15">CI GATE  ·  auto-approve-rule-pr</text>
-    <text class="mono-tag"   x="8" y="32">scope: references/errors/**</text>
-    <text class="mono-dim"   x="8" y="46">requires Co-Authored-By</text>
+  <g transform="translate(580 240)">
+    <rect class="gate-fill" x="0" y="0" width="220" height="70" rx="6"/>
+    <rect class="gate"      x="0" y="0" width="220" height="70" rx="6"/>
+    <text class="gate-label" x="10" y="16">CI GATE  ·  auto-approve-rule-pr</text>
+    <text class="mono-tag"   x="10" y="34">scope: references/errors/**</text>
+    <text class="mono-dim"   x="10" y="50">requires Co-Authored-By trailer</text>
+    <text class="mono-dim"   x="10" y="62">non-errors diff → no approve</text>
   </g>
 
-  <!-- arrow Step5 → Gate A -->
-  <path d="M 1040 168 V 210" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
-  <text class="annot" x="1045" y="176">PR #142 opened</text>
+  <!-- Gate C: auto-merge (replaces former Step 6 human review) -->
+  <g transform="translate(840 240)">
+    <rect class="gate-fill" x="0" y="0" width="220" height="70" rx="6"/>
+    <rect class="gate"      x="0" y="0" width="220" height="70" rx="6"/>
+    <text class="gate-label" x="10" y="16">CI GATE  ·  auto-merge</text>
+    <text class="mono-tag"   x="10" y="34">squash → refs/heads/main</text>
+    <text class="mono-dim"   x="10" y="50">when both gates green</text>
+    <text class="mono-dim"   x="10" y="62">human review: see pr-flow.svg</text>
+  </g>
+
+  <!-- arrow Step5 → Gate A: 1040,168 → 1040,222 → 430,222 → 430,240
+       Annotation `PR opened · gates run in series` placed at y=192 (above lane separator
+       at y=200, in agent lane bottom strip — keeps annot in agent lane semantics where
+       PR-creation event lives, and clear of CI lane label at y=215).                 -->
+  <path d="M 1040 168 V 222 H 430 V 240" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
+  <text class="annot" x="730" y="192" text-anchor="middle">PR opened  ·  gates run in series</text>
 
   <!-- arrow Gate A → Gate B -->
-  <line x1="920" y1="239" x2="950" y2="239" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
+  <line x1="540" y1="275" x2="580" y2="275" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
 
-  <!-- ============== STEP 6 — HUMAN REVIEW ============== -->
-  <g transform="translate(950 305)">
-    <rect class="node human" x="0" y="0" width="180" height="68" rx="6"/>
-    <text class="step-num" x="8" y="14">STEP&#8201;6</text>
-    <text class="node-title" x="8" y="32">Reviewer merges</text>
-    <text class="mono-tag"   x="8" y="48">CODEOWNERS approval</text>
-    <text class="mono-dim"   x="8" y="60">@sordi-ai/maintainers</text>
-  </g>
+  <!-- arrow Gate B → Gate C -->
+  <line x1="800" y1="275" x2="840" y2="275" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
 
-  <!-- arrow Gate B → Step 6 -->
-  <path d="M 1040 268 V 305" class="arrow" marker-end="url(#a-rule)"/>
-  <text class="annot" x="1045" y="275">gates green</text>
-
-  <!-- Branch protection frame: top y=300, bottom y=378 (height 78). The
-       previous height=70 frame ended at y=368, but Step 6 (transform y=305
-       + box height 68 = bottom y=373) protruded 5 px below it. The new
-       frame fully encloses Step 6 with 5 px of margin top and bottom. -->
-  <rect class="human-gate" x="940" y="300" width="200" height="78" rx="8"/>
-  <text class="human-gate-label" x="944" y="296">BRANCH PROTECTION  ·  required reviewer</text>
-
-  <!-- ============== ARTEFACT ANNOTATIONS ============== -->
-
-  <!-- Step 2 callout -->
-  <g transform="translate(320 200)">
-    <line x1="60" y1="-32" x2="60" y2="0" class="arrow" stroke="var(--hairline)" stroke-dasharray="2 2"/>
-    <rect class="chip" x="0"  y="0" width="180" height="22" rx="3"/>
-    <text class="chip-text" x="8" y="14">references/errors/error-log.md</text>
-    <text class="annot"     x="0" y="38">single source of truth</text>
-  </g>
-
-  <!-- Step 3 callout: severity tags -->
-  <g transform="translate(530 200)">
-    <line x1="60" y1="-32" x2="60" y2="0" class="arrow" stroke="var(--hairline)" stroke-dasharray="2 2"/>
-    <rect class="chip" x="0"  y="0"  width="56" height="20" rx="10"/>
-    <text class="chip-text" x="8" y="13">critical</text>
-    <rect class="chip" x="60" y="0"  width="42" height="20" rx="10"/>
-    <text class="chip-text" x="68" y="13">high</text>
-    <rect class="chip" x="106" y="0" width="56" height="20" rx="10"/>
-    <text class="chip-text" x="114" y="13">medium</text>
-    <text class="annot"     x="0"  y="38">severity field — schema enforced</text>
-  </g>
-
-  <!-- Step 4 callout: routing table — moved to translate(490 270) (C1 fix) -->
-  <g transform="translate(490 270)">
-    <line x1="350" y1="-100" x2="90" y2="0" class="arrow" stroke="var(--hairline)" stroke-dasharray="2 2"/>
-    <rect class="chip" x="0"   y="0"  width="180" height="58" rx="3"/>
-    <text class="mono-dim"  x="8" y="14">development → code-quality.md</text>
-    <text class="mono-dim"  x="8" y="28">git         → conventions.md</text>
-    <text class="mono-dim"  x="8" y="42">security    → code-quality.md</text>
-    <text class="annot"     x="0"  y="74">target file by category</text>
-  </g>
-
-  <!-- Step 1 left annotation — moved to translate(110 175) (H4 fix: agent lane) -->
-  <g transform="translate(110 175)">
-    <text class="annot" x="0" y="-8">example trigger</text>
-    <rect class="chip" x="0" y="-2"  width="180" height="22" rx="3"/>
-    <text class="chip-text" x="8" y="12">pytest --tb=line FAILED</text>
-  </g>
-
-  <!-- The "on next session" annotation that previously sat at translate(80 60)
-       is removed here: it overlapped the h-sub line at y=46 and read like a
-       strikethrough on "Every commit means the next session inherits the fix".
-       The same idea is carried by the loop label above the substrate at y=375
-       ("next session inherits the fix · rule loaded before code is written"). -->
-
-  <!-- ============== FEEDBACK LOOP — arc on y=410 corridor (C2 fix) ============== -->
-  <path d="M 1040 373 C 1040 392, 1040 410, 600 410 C 220 410, 60 410, 60 200 C 60 130, 90 110, 110 110"
+  <!-- ============== FEEDBACK LOOP — arc from Gate C bottom around to Step 1 trigger.
+       Loop label at y=358 (substrate band, below substrate lane label at y=335 by 23 px,
+       above arrow corridor at y=372 by 14 px). Arrow corridor at y=372 stays above
+       branch label at y=393 (timeline pushed to translate(0,395) for clearance).
+       Vertical riser moved from x=60 to x=12 so it sits in the left gutter outside
+       the lane-separator x-range (24..1176) and never crosses any lane label
+       (AGENT, CI / AUTOMATED CHECKS, REPO SUBSTRATE … all start at x=30 and run
+       right). At x=12 the riser is 12 px from frame edge and 18 px from labels.   -->
+  <path d="M 950 310 V 372 H 12 V 134 L 110 134"
         class="arrow loop" marker-end="url(#a-loop)" fill="none"/>
-  <text class="loop-label" x="600" y="375" text-anchor="middle">
+  <text class="loop-label" x="600" y="358" text-anchor="middle">
     next session inherits the fix  ·  rule loaded before code is written
   </text>
 
-  <!-- ============== REPO SUBSTRATE: git timeline ============== -->
-  <g transform="translate(0 425)">
+  <!-- ============== REPO SUBSTRATE: git timeline (line at y=415, meta at y=437)
+       Bug fix: removed the redundant `refs/heads/main` git-label at x=80 which
+       was overlapping the first commit meta (`a13c…  feat: lint-rules`) at x=160.
+       The lane label `REPO SUBSTRATE · refs/heads/main` at y=335 already names
+       the ref; printing it again next to the timeline was duplicative noise.        -->
+  <g transform="translate(0 395)">
     <line x1="80" y1="20" x2="1120" y2="20" class="git-line"/>
     <circle class="git-dot" cx="180"  cy="20" r="5"/>
     <circle class="git-dot" cx="360"  cy="20" r="5"/>
@@ -294,16 +252,15 @@
     <circle class="git-dot" cx="980"  cy="20" r="5"/>
     <path d="M 760 20 C 760 8, 780 4, 800 4 L 940 4 C 960 4, 980 8, 980 20"
           class="git-line" stroke-dasharray="3 2"/>
-    <text class="git-label"  x="80"  y="42">refs/heads/main</text>
     <text class="git-meta"   x="160" y="42">a13c…  feat: lint-rules</text>
     <text class="git-meta"   x="335" y="42">b27d…  fix(api): query</text>
     <text class="git-meta"   x="535" y="42">c44e…  docs: rationale</text>
-    <text class="git-meta"   x="730" y="42">PR #142 → merge</text>
+    <text class="git-meta"   x="730" y="42">PR #142 → squash</text>
     <text class="git-meta"   x="945" y="42">e8aa…  learn(errors): ERR-2026-014</text>
     <text class="git-label"  x="800" y="-2">branch: learn/ERR-2026-014</text>
   </g>
 
   <!-- ============== TAGLINE ============== -->
-  <text class="tagline" x="1176" y="488" text-anchor="end">plain Markdown  ·  versioned in Git  ·  reviewed by humans</text>
+  <text class="tagline" x="1176" y="488" text-anchor="end">plain Markdown  ·  versioned in Git  ·  auto-merged when gates pass</text>
   <text class="mono-dim" x="24"   y="488">skill-everything  /  docs/how-it-works.svg</text>
 </svg>
