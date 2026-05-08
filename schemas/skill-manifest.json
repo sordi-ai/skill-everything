@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/sordi-ai/skill-everything/schemas/skill-manifest.json",
+  "title": "Sub-skill manifest (Markdown frontmatter)",
+  "description": "Frontmatter schema for every sub-skill file under references/. Validated in CI.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "version", "tokens_target", "triggers"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,30}$",
+      "description": "Stable identifier, kebab-case."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of this skill file."
+    },
+    "tokens_target": {
+      "type": "integer",
+      "minimum": 100,
+      "maximum": 3000,
+      "description": "Target tiktoken count. Hard cap: 3000."
+    },
+    "triggers": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10,
+      "items": { "type": "string", "minLength": 3, "maxLength": 80 },
+      "description": "Short trigger phrases the router matches against to decide when to load this skill."
+    },
+    "loads_after": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,30}$" },
+      "default": [],
+      "description": "Sub-skills that should be loaded BEFORE this one when both apply."
+    },
+    "supersedes": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,30}$" },
+      "default": [],
+      "description": "Sub-skills this one replaces. Used by migration tooling."
+    }
+  }
+}
