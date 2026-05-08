@@ -1,7 +1,10 @@
-# ruff: noqa: RUF001
+# ruff: noqa: RUF001, RUF003, I001
 # This file deliberately uses Cyrillic homoglyphs and zero-width unicode
-# characters in string literals to test the validator's bypass behaviour.
-# Do not "fix" them.
+# characters in string literals AND in explanatory comments — that is the
+# whole point of the adversarial test suite. Do not "fix" them.
+# I001 is also disabled because the validate_rules import depends on a
+# sys.path.insert that has to run between the standard imports and the
+# test-target import.
 """
 Adversarial test suite for tools/validate_rules.py.
 
