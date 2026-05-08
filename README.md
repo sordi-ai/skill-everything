@@ -2,25 +2,18 @@
 
 # 🧠 Skill-Every<i>think</i>
 
-### Every mistake your agent makes becomes a Git commit.<br>Every commit means the next session inherits the fix.
+Every mistake your agent makes becomes a Git commit. Every commit means the next session inherits the fix.
 
 **Plain Markdown. Plain Git. No vector DB. No black box.**
-
-<br>
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
-[![GitHub Stars](https://img.shields.io/github/stars/sordi-ai/skill-everything?style=social)](https://github.com/sordi-ai/skill-everything)
 
 [![Works with Claude Code](https://img.shields.io/badge/Works%20with-Claude%20Code-orange?logo=anthropic&logoColor=white)](https://docs.anthropic.com/en/docs/claude-code)
 [![Works with Cursor](https://img.shields.io/badge/Works%20with-Cursor-000?logo=cursor&logoColor=white)](https://cursor.sh)
 [![Works with Gemini CLI](https://img.shields.io/badge/Works%20with-Gemini%20CLI-4285F4?logo=google&logoColor=white)](https://github.com/google-gemini/gemini-cli)
 [![Works with OpenCode](https://img.shields.io/badge/Works%20with-OpenCode-blue)](https://github.com/nicepkg/opencode)
 
-<br>
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-*Side project. Two engineers. Built on weekends.*<br>
-*Dogfooded daily — the [error log](./references/errors/error-log.md) is public. [Not endorsed by any employer.](./DISCLAIMER.md)*
+*Side project. Two engineers. Built on weekends. Dogfooded daily — the [error log](./references/errors/error-log.md) is public. [Not endorsed by any employer.](./DISCLAIMER.md)*
 
 </div>
 
@@ -49,29 +42,49 @@ That's the entire setup.
 
 ---
 
-## ⚙️ How it works
+## How it works
 
-<p align="center">
-  <img src="./docs/how-it-works.svg" alt="How it works — the self-extension loop" width="100%"/>
-</p>
+<picture>
+  <source media="(max-width: 600px)" srcset="./docs/how-it-works-mobile.svg">
+  <img src="./docs/how-it-works.svg" alt="The self-extension loop — six steps from trigger to merged rule">
+</picture>
 
-> **Not just errors.** The same loop captures new insights, better patterns, deployment gotchas, naming conventions, API quirks — anything worth remembering. Every lesson is a Git commit you can `diff`, `blame`, `revert`, or `cherry-pick` into another project.
+*Six steps from trigger to merged rule. The same loop captures errors, new insights, deployment gotchas, naming conventions — anything worth remembering.*
+
+> [!NOTE]
+> The CI gates `lint-rules` and `auto-approve-rule-pr` enforce the trust boundary. See [SECURITY.md](./SECURITY.md) for the threat model.
 
 ---
 
-## 💰 Token math (the part nobody else shows)
+## Architecture — single source of truth
+
+`references/_index.yml` is the master register. Every sub-skill is declared once with its `id`, `tokens_target`, `triggers`, and load order. From that one file, `tools/render_loaders.py` regenerates four loader files: `SKILL.md` (OpenCode), `CLAUDE.md` (Claude Code), `GEMINI.md` (Gemini CLI), and `.cursorrules` (Cursor). All four loaders render the same sub-skill directory.
+
+A CI no-drift job runs `git diff --exit-code` against the regenerated loaders on every PR. If you edit a loader file by hand, CI fails. The fix is to edit `_index.yml` and run the generator.
+
+![Architecture — _index.yml as master, render_loaders.py as generator, four loaders rendering the same sub-skill directory](./docs/architecture.svg)
+
+*One register, four loaders, identical sub-skill set. CI fails on drift.*
+
+---
+
+## Token math
+
+![Token-math bar chart — five setups stacked by input + output, cache-savings ghost where applicable](./docs/token-math.svg)
+
+*20–34% cheaper than uncached monolithic, roughly break-even with cached.*
 
 We don't claim "84% savings" anymore. The honest comparison is more interesting:
 
 | Setup | Input tokens / message | Cache-friendly? | Cost / 1k messages | vs. uncached monolith |
 |---|---:|:---:|---:|---:|
 | Monolithic `.cursorrules`, no caching | 10,000 | — | $75.00 | baseline |
-| Monolithic + Anthropic prompt caching | 10,000 (~1k effective) | ✓ ideal | $48.00 | **−36%** |
+| Monolithic + Anthropic prompt caching | 10,000 (~1k effective) | ideal | $48.00 | **−36%** |
 | Skill-everything, single sub-skill | 1,600 | partial | $50.00 | **−33%** |
 | Skill-everything, 2–3 sub-skills | 3,300 | partial | $55.00 | **−27%** |
 | Skill-everything **with caching** | 1,600 (~800 effective) | partial | **$47.00** | **−1%** vs. cached monolith |
 
-> Math: Sonnet-class pricing $3 / 1M input, $15 / 1M output, ~3,000 output tokens / message.
+*Math: Sonnet-class pricing $3 / 1M input, $15 / 1M output, ~3,000 output tokens / message.*
 
 **The honest take:**
 
@@ -86,58 +99,54 @@ We don't claim "84% savings" anymore. The honest comparison is more interesting:
 
 <!-- token-table:start -->
 
-| Sub-skill | Tokens (real, tiktoken cl100k) | Path |
-|---|---:|---|
-| Code Quality | ~1,000 | `references/development/code-quality.md` |
-| Python | ~2,000 | `references/development/python.md` |
-| TypeScript | ~2,300 | `references/development/typescript.md` |
-| React | ~2,400 | `references/development/react.md` |
-| Git Conventions | ~650 | `references/git/conventions.md` |
-| Review & Deployment | ~800 | `references/process/review-deployment.md` |
-| Domain Knowledge (template) | ~850 | `references/domain/template.md` |
-| Error Log (grows with entries) | ~1,200 | `references/errors/error-log.md` |
-| Self-Extension Workflow | ~1,100 | `references/errors/self-extension-workflow.md` |
-| **Total if all loaded** | **~12,300** | — |
-| **Typical (router + 1–2 skills)** | **~1,800–3,500** | depends on task |
+| Sub-skill | Path | Tokens (real, tiktoken cl100k) |
+|---|---|---:|
+| `code-quality` | `references/development/code-quality.md` | ~1,000 |
+| `python` | `references/development/python.md` | ~2,000 |
+| `typescript` | `references/development/typescript.md` | ~2,300 |
+| `react` | `references/development/react.md` | ~2,400 |
+| `git-conventions` | `references/git/conventions.md` | ~650 |
+| `review-deployment` | `references/process/review-deployment.md` | ~800 |
+| `domain-template` | `references/domain/template.md` | ~850 |
+| `error-log` | `references/errors/error-log.md` | ~1,200 |
+| `self-extension-workflow` | `references/errors/self-extension-workflow.md` | ~1,100 |
+| **Total if all loaded** | — | **~12,300** |
+| **Typical (router + 1–2 skills)** | depends on task | **~1,800–3,500** |
 
 <!-- token-table:end -->
 
-> Numbers are auto-updated by `python tools/render_readme_table.py`. CI fails on drift.
+*Numbers auto-updated by `python tools/render_readme_table.py`. CI fails on drift.*
 
 </details>
 
 ---
 
-## 🔄 Self-extension: the agent teaches itself
+## Self-extension
 
-This is where it gets interesting. The agent doesn't just *use* the skill — it *grows* the skill:
+The agent doesn't just *use* the skill — it *grows* the skill. Trigger, search, analyse, formulate, PR, human merge. Six steps. Every rule that goes live has been seen by a human.
 
-1. **Trigger** — a test fails, the user corrects you, your first approach was wrong.
-2. **Search** — check if a similar error already exists (no duplicates).
-3. **Analyse** — root cause, false assumption, impact.
-4. **Formulate** — action directive: *"Always X before Y"* or *"Never Z without W"*.
-5. **Open a PR** labelled `needs-rule-review`. Never push to `main`.
-6. **Human reviews + merges.**
+The full procedure with troubleshooting lives in [`references/errors/self-extension-workflow.md`](./references/errors/self-extension-workflow.md). The CI lint validates the proposed rule against [`schemas/error-entry.json`](./schemas/error-entry.json) plus a [verb allow-list and forbidden-pattern set](./tools/validate_rules.py).
 
-> Every mistake makes the system permanently better. The improvement is a Git commit you can review, revert, or share.
-
-The CI lint validates the proposed rule against [`schemas/error-entry.json`](./schemas/error-entry.json) plus a [verb allow-list and forbidden-pattern set](./tools/validate_rules.py). The validator is **best-effort, not airtight** — see [SECURITY.md](./SECURITY.md) for the threat model and the [adversarial test suite](./tests/test_validate_rules_adversarial.py) for the documented bypasses.
+> [!WARNING]
+> The validator is best-effort, not airtight. Human PR review is the primary trust boundary. See [SECURITY.md](./SECURITY.md) and the [adversarial test suite](./tests/test_validate_rules_adversarial.py).
 
 ---
 
-## 🎯 Concrete examples (real, from the public error log)
+## Concrete examples
 
 The first three entries committed during dogfooding — see [`references/errors/error-log.md`](./references/errors/error-log.md):
 
-- **`ERR-2026-001` — TS strict-null disabled for convenience.** Agent disabled `strictNullChecks` to make a demo green. Local pass, CI failure. Rule: *"Never disable strict checks for convenience."*
-- **`ERR-2026-007` — Rename without import sweep.** Refactor missed 4 imports. Rule: *"After any rename, run a project-wide grep before claiming done."* `count` jumped from 1 to 2 on the second occurrence — that's repeat prevention in action.
-- **`ERR-2026-012` — Wrong deployment order.** A migration had to run before the backend deploy; the agent picked the wrong sequence. Domain knowledge moved to `references/domain/`, not global code-quality.
+| Error ID | Mistake | Derived rule |
+|---|---|---|
+| `ERR-2026-001` | TS `strictNullChecks` disabled to make a demo green | Never disable strict checks for convenience |
+| `ERR-2026-007` | Refactor missed 4 imports after rename | After any rename, run a project-wide grep before claiming done |
+| `ERR-2026-012` | Migration ran after backend deploy, broke prod | Always order migrations before backend deploy in domain runbooks |
 
-Each entry links a real commit SHA. None of these are hypothetical.
+*Each entry links a real commit SHA. None of these are hypothetical. `ERR-2026-007` `count` jumped from 1 to 2 on the second occurrence — that's repeat prevention in action.*
 
 ---
 
-## 🚀 Quick start
+## Quick start
 
 ```bash
 git clone https://github.com/sordi-ai/skill-everything.git
@@ -184,28 +193,28 @@ The `skill_resource` tool lets the agent load individual sub-skills on demand wi
 
 ---
 
-## 📊 Honest comparison
+## Honest comparison
 
 How does this compare to the things it's actually competing with? We've seen too many tables where the new tool wins every column. This one doesn't:
 
-| Capability | Skill-everything | AGENTS.md | aider conv. | Cursor Rules | mem0 / MemGPT | LangGraph |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|
-| Plain Markdown, no DB | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ |
-| Git-versioned out of the box | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ |
-| Cross-tool portable | ✓ | partial | aider-only | Cursor-only | ✓ | ✓ |
-| Structured error schema (JSON-Schema validated) | ✓ | ✗ | ✗ | ✗ | ✗ | partial |
-| `learn(errors): …` PR workflow | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| Per-skill token-budget router | ✓ | ✗ | ✗ | ✗ | n/a | n/a |
-| Skill-manifest frontmatter (versioned) | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| Embedding-based recall | ✗ | ✗ | ✗ | ✗ | ✓ | ✓ |
-| Scales to 1,000+ rules | partial | partial | partial | partial | ✓ | ✓ |
-| Setup cost | `git clone` | none | none | none | API key + SaaS | code + infra |
+| Capability | Skill-everything | AGENTS.md | Cursor Rules | mem0 / MemGPT |
+|---|:---:|:---:|:---:|:---:|
+| Plain Markdown, no DB | yes | yes | yes | no |
+| Git-versioned out of the box | yes | yes | yes | no |
+| Cross-tool portable | yes | partial | Cursor-only | yes |
+| Structured error schema (JSON-Schema) | yes | no | no | no |
+| `learn(errors): …` PR workflow | yes | no | no | no |
+| Per-skill token-budget router | yes | no | no | n/a |
+| Skill-manifest frontmatter (versioned) | yes | no | no | no |
+| Embedding-based recall | no | no | no | yes |
+| Scales to 1,000+ rules | partial | partial | partial | yes |
+| Setup cost | `git clone` | none | none | API key + SaaS |
 
-**Honest reading:** we win on Markdown + Git + structured workflow. mem0 and LangGraph win on embeddings and large-scale retrieval. AGENTS.md and Cursor Rules are siblings — we sit on top of them and add the missing review and validation layers.
+*Honest reading: we win on Markdown + Git + structured workflow. mem0 wins on embeddings and large-scale retrieval. AGENTS.md and Cursor Rules are siblings — we sit on top of them and add the missing review and validation layers.*
 
 ---
 
-## 📁 What's inside
+## What's inside
 
 ```
 skill-everything/
@@ -252,7 +261,7 @@ skill-everything/
 
 ---
 
-## 🛠️ Create your own skill
+## Create your own skill
 
 ```bash
 cp references/_templates/sub-skill.template.md references/my-area/my-skill.md
@@ -263,20 +272,20 @@ Each sub-skill has a [skill-manifest frontmatter block](./schemas/skill-manifest
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
 | Phase | When | What |
 |---|---|---|
-| **Phase 1** | weeks 1–2 | Pre-launch repair: lint-rules CI, schema validator, XSS hardening, honest token table, single-source-of-truth loader sync, CODEOWNERS + branch protection. **You're looking at it.** |
-| **Phase 2** | weeks 3–6 | Self-use validation: 30 days of real errors logged from a side project, eval framework MVP for re-mistake rate, baseline methodology documented (n, model, temperature, prompt hash). |
-| **Phase 3** | weeks 7–10 | Soft launch: small Show HN posts (Eval-Tool + Skill-Repo), Twitter thread with the real numbers, first community PRs landing. |
-| **Phase 4** | weeks 11–24 | Big launch + community: Show HN proper, first external sub-skills (Go, Rust, Java) merged, sub-skill PR template institutionalised. |
+| Phase 1 | weeks 1–2 | Pre-launch repair: lint-rules CI, schema validator, XSS hardening, honest token table, single-source-of-truth loader sync, CODEOWNERS + branch protection. **You're looking at it.** |
+| Phase 2 | weeks 3–6 | Self-use validation: 30 days of real errors logged from a side project, eval framework MVP for re-mistake rate, baseline methodology documented (n, model, temperature, prompt hash). |
+| Phase 3 | weeks 7–10 | Soft launch: small Show HN posts (Eval-Tool + Skill-Repo), Twitter thread with the real numbers, first community PRs landing. |
+| Phase 4 | weeks 11–24 | Big launch + community: Show HN proper, first external sub-skills (Go, Rust, Java) merged, sub-skill PR template institutionalised. |
 
-> **Vision (not on a 2026 roadmap):** a skill marketplace with trust layer (signing + reputation), sandboxing (skills are executable instructions — prompt-injection risk), versioning, and licence management. That's a 6–12 month team-effort, not something a side project ships next year.
+*Vision (not on a 2026 roadmap): a skill marketplace with trust layer (signing + reputation), sandboxing, versioning, and licence management. That's a 6–12 month team-effort, not something a side project ships next year.*
 
 ---
 
-## ❓ FAQ
+## FAQ
 
 <details>
 <summary><strong>Does this work with my agent?</strong></summary>
@@ -330,7 +339,7 @@ That's the threat model spelled out in [SECURITY.md](./SECURITY.md). The CI vali
 <details>
 <summary><strong>How does this save tokens?</strong></summary>
 
-See the [Token math](#-token-math-the-part-nobody-else-shows) section above. Headline: 20–34% cheaper than an uncached monolithic prompt; roughly break-even with a cached one. We don't claim 84%.
+See the [Token math](#token-math) section above. Headline: 20–34% cheaper than an uncached monolithic prompt; roughly break-even with a cached one. We don't claim 84%.
 
 </details>
 
@@ -338,12 +347,10 @@ See the [Token math](#-token-math-the-part-nobody-else-shows) section above. Hea
 
 <div align="center">
 
-### Built because we got tired of watching agents make the same mistakes we already taught them not to make.
+MIT License — see [LICENSE](./LICENSE).
 
-**[⭐ Star this repo](https://github.com/sordi-ai/skill-everything)** if you think agents should learn from the work you've already done with them.
+[Disclaimer](./DISCLAIMER.md) · [Contributing](./CONTRIBUTING.md) · [Security](./SECURITY.md)
 
-<br>
-
-MIT License · [Contributing](./CONTRIBUTING.md) · [Security](./SECURITY.md) · [Disclaimer](./DISCLAIMER.md) · [Report a bug](https://github.com/sordi-ai/skill-everything/issues)
+[Star this repo](https://github.com/sordi-ai/skill-everything) · [Report an issue](https://github.com/sordi-ai/skill-everything/issues)
 
 </div>

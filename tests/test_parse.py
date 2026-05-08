@@ -44,9 +44,12 @@ def test_count_tokens_returns_positive():
 
 def test_safe_neutralises_script_breakout():
     out = gd._safe("</script><script>alert(1)</script>")
+    # Either neutralisation path is safe: HTML-escape (&lt;/script&gt;)
+    # OR backslash-escape (<\/script>). _safe applies html.escape first,
+    # which makes the replace a no-op — that's fine, the output is safe.
     assert "</script>" not in out
-    assert r"<\/script>" in out
-    assert "&lt;" in out  # also HTML-escaped
+    assert "&lt;/script&gt;" in out or r"<\/script>" in out
+    assert "&lt;" in out  # HTML entities are present
 
 
 def test_sanitize_recursive():

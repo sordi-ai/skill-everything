@@ -16,7 +16,11 @@ Expected first reply: within 7 days. We are an independent two-person side proje
 
 ## Threat model
 
-Skill-Everything is a **self-extending memory system**: an agent writes rules into `references/errors/*.md` and those rules are read by every subsequent agent session as instructions. **The rules are executable input.** This is the threat model:
+Skill-Everything is a **self-extending memory system**: an agent writes rules into `references/errors/*.md` and those rules are read by every subsequent agent session as instructions. **The rules are executable input.** This is the threat model.
+
+![PR flow — agent branch through lint-rules and auto-approve-rule-pr CI gates, CODEOWNERS human gate, squash-merge into main behind branch protection](./docs/pr-flow.svg)
+
+*Where `lint-rules` and `auto-approve-rule-pr` enforce the trust boundary before CODEOWNERS review.*
 
 ### Asset
 
@@ -30,11 +34,13 @@ Skill-Everything is a **self-extending memory system**: an agent writes rules in
 
 ### Adversaries
 
-| | Goal | Mitigations |
+| Adversary | Goal | Mitigations |
 |---|---|---|
-| External PR contributor | Insert a rule that exfiltrates credentials, runs shell, or nudges next-session agent toward bad actions | CI lint-rules · CODEOWNERS approval for `references/errors/` · branch protection · human PR review |
+| External PR contributor | Insert a rule that exfiltrates credentials, runs shell, or nudges next-session agent toward bad actions | `lint-rules` CI · CODEOWNERS approval for `references/errors/` · branch protection · human PR review |
 | Prompt-injection via task input | Trick the running agent into writing a poisoned `new_rule` that gets committed | Same as above; the lint-rules CI is best-effort, not airtight (see "Limitations" below) |
-| Honest contributor pasting prod data | Leak PII / secrets into `error-log.md` | gitleaks pre-commit · explicit redaction reminder in `.github/ISSUE_TEMPLATE/error-capture.md` |
+| Honest contributor pasting prod data | Leak PII / secrets into `error-log.md` | `gitleaks` pre-commit · explicit redaction reminder in `.github/ISSUE_TEMPLATE/error-capture.md` |
+
+*Three adversary classes, three mitigation layers. None are individually sufficient — defence-in-depth.*
 
 ### Limitations
 
@@ -50,18 +56,25 @@ We have a 20-pattern adversarial test suite at `tests/test_validate_rules_advers
 
 ## Required GitHub branch-protection on `main`
 
+> [!WARNING]
+> Branch protection is required, not optional. Without it the trust boundary collapses — anyone with write access can land an unreviewed `learn(errors)` commit.
+
 To make the threat model effective, the repository owner must enable (Settings → Branches → Branch protection rules → `main`):
 
-- **Require a pull request before merging** with at least 1 approving review.
-- **Require status checks to pass before merging:** `lint-rules`, `ci / test (3.12, ubuntu)`.
-- **Require branches to be up to date before merging.**
-- **Require linear history** (squash-merge default).
-- **Restrict who can push to matching branches** — including admins (this prevents accidental admin override).
-- **Do not allow force pushes.**
-- **Do not allow deletions.**
-- **Require review from Code Owners** (uses `.github/CODEOWNERS`).
+| Setting | Value | Why |
+|---|---|---|
+| `Require a pull request before merging` | at least 1 approving review | Forces every change through review |
+| `Require status checks to pass` | `lint-rules`, `ci / test (3.12, ubuntu)` | Validator + test suite must pass |
+| `Require branches up to date` | enabled | No stale-branch merges |
+| `Require linear history` | squash-merge default | Clean blame, reverts work |
+| `Restrict who can push` | including admins | Prevents accidental admin override |
+| `Allow force pushes` | disabled | History is forensic evidence |
+| `Allow deletions` | disabled | No silent branch removal |
+| `Require review from Code Owners` | enabled (uses `.github/CODEOWNERS`) | Maintainer must see rule changes |
 
-Required signed commits (`Require signed commits`) are **Phase 2** — they raise the barrier for external contributors and are deferred until the project has co-maintainers.
+*Eight settings. All required for the threat model to hold.*
+
+`Require signed commits` is **Phase 2** — it raises the barrier for external contributors and is deferred until the project has co-maintainers.
 
 ---
 
@@ -71,8 +84,17 @@ If a secret (API key, JWT, customer ID, internal hostname, etc.) is committed to
 
 1. **`git revert` is not enough** — the secret remains in git history.
 2. Rotate the leaked secret at its source immediately. This is the only fully effective mitigation.
-3. Use `git filter-repo --invert-paths --path <file>` (or `--replace-text`) to rewrite history.
-4. Force-push the rewritten branch and notify all forks / clones to re-clone (`git pull` will fail and show the divergence).
+3. Use `git filter-repo` to rewrite history:
+   ```bash
+   pip install git-filter-repo
+   git filter-repo --invert-paths --path <file>
+   # or replace the secret in place:
+   git filter-repo --replace-text replacements.txt
+   ```
+4. Force-push the rewritten branch and notify all forks / clones to re-clone (`git pull` will fail and show the divergence):
+   ```bash
+   git push --force-with-lease origin main
+   ```
 5. Open a [GitHub Security Advisory](https://github.com/sordi-ai/skill-everything/security/advisories/new) so downstream users get notified.
 
 `git filter-repo` is not bundled with git — install via `pip install git-filter-repo`.
