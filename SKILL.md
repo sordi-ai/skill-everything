@@ -18,16 +18,16 @@ You are using the **Skill-Everythink** knowledge system. It contains accumulated
 
 Load the matching sub-skill when the context applies:
 
-| Context | Sub-Skill | Load via |
-|---------|-----------|----------|
-| Writing, refactoring, or reviewing code | Code Quality | `skill_resource(skill_name="skill-everythink", relative_path="references/development/code-quality.md")` |
-| Git operations, commits, branches, PRs | Git Conventions | `skill_resource(skill_name="skill-everythink", relative_path="references/git/conventions.md")` |
-| Project-specific knowledge needed | Domain Knowledge | `skill_resource(skill_name="skill-everythink", relative_path="references/domain/template.md")` |
-| Creating PRs, deployment, review | Review & Deployment | `skill_resource(skill_name="skill-everythink", relative_path="references/process/review-deployment.md")` |
-| Python code (types, packaging, pitfalls) | Python | `skill_resource(skill_name="skill-everythink", relative_path="references/development/python.md")` |
-| TypeScript code (types, async, config) | TypeScript | `skill_resource(skill_name="skill-everythink", relative_path="references/development/typescript.md")` |
-| React components (hooks, state, perf) | React | `skill_resource(skill_name="skill-everythink", relative_path="references/development/react.md")` |
-| Made or corrected a mistake | Error Log | `skill_resource(skill_name="skill-everythink", relative_path="references/errors/error-log.md")` |
+| Context | Sub-Skill | ~Tokens | Load via |
+|---------|-----------|------:|----------|
+| Writing, refactoring, or reviewing code | Code Quality | 800 | `skill_resource(skill_name="skill-everythink", relative_path="references/development/code-quality.md")` |
+| Git operations, commits, branches, PRs | Git Conventions | 500 | `skill_resource(skill_name="skill-everythink", relative_path="references/git/conventions.md")` |
+| Project-specific knowledge needed | Domain Knowledge | 850 | `skill_resource(skill_name="skill-everythink", relative_path="references/domain/template.md")` |
+| Creating PRs, deployment, review | Review & Deployment | 650 | `skill_resource(skill_name="skill-everythink", relative_path="references/process/review-deployment.md")` |
+| Python code (types, packaging, pitfalls) | Python | 1,600 | `skill_resource(skill_name="skill-everythink", relative_path="references/development/python.md")` |
+| TypeScript code (types, async, config) | TypeScript | 1,800 | `skill_resource(skill_name="skill-everythink", relative_path="references/development/typescript.md")` |
+| React components (hooks, state, perf) | React | 1,850 | `skill_resource(skill_name="skill-everythink", relative_path="references/development/react.md")` |
+| Made or corrected a mistake | Error Log | 900 | `skill_resource(skill_name="skill-everythink", relative_path="references/errors/error-log.md")` |
 
 ## Error Capture Triggers
 

@@ -64,6 +64,59 @@ graph LR
 
 ---
 
+## 💰 Token Efficiency — Why This Saves You Money
+
+Every token your agent reads costs money. Monolithic instruction files burn thousands of tokens **every single message**. Skill-Everythink uses a **router pattern** — the agent loads only what it needs.
+
+```
+┌─────────────────────────────────────────────────────┐
+│  Monolithic .cursorrules / system prompt             │
+│  ████████████████████████████████████  10,000+ tok  │
+│  Loaded EVERY message. Always. All of it.           │
+└─────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────┐
+│  Skill-Everythink (router pattern)                   │
+│  ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░    ~800 tok   │
+│  SKILL.md router (always loaded)                     │
+│  ████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  + ~800 tok   │
+│  One sub-skill loaded on demand                      │
+│  = ~1,600 tokens per message (84% less)             │
+└─────────────────────────────────────────────────────┘
+```
+
+**Real cost comparison** (at $3 / 1M input tokens):
+
+| Setup | Tokens per msg | 1,000 messages | 10,000 messages |
+|---|---:|---:|---:|
+| Monolithic rules | 10,000 | $30.00 | $300.00 |
+| **Skill-Everythink** | **~1,600** | **$4.80** | **$48.00** |
+| **Savings** | **84%** | **$25.20** | **$252.00** |
+
+<details>
+<summary><strong>Token budget per sub-skill</strong></summary>
+
+| Sub-Skill | Tokens | Rules |
+|---|---:|---:|
+| SKILL.md (router, always loaded) | ~800 | — |
+| Code Quality | ~800 | 23 |
+| Python | ~1,600 | 20 |
+| TypeScript | ~1,800 | 17 |
+| React | ~1,850 | 17 |
+| Git Conventions | ~500 | 15 |
+| Domain Knowledge | ~850 | template |
+| Review & Deployment | ~650 | — |
+| Error Log | ~900 | grows |
+| Self-Extension Workflow | ~1,000 | — |
+| **Total if ALL loaded** | **~10,750** | **92 rules** |
+| **Typical per message** | **~1,600** | **router + 1 skill** |
+
+Each sub-skill stays under 3,000 tokens. When it grows beyond that — split, don't bloat.
+
+</details>
+
+---
+
 ## 📊 The Evolution of Agent Intelligence
 
 <div align="center">

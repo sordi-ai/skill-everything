@@ -1,4 +1,5 @@
 # Sub-Skill: Code Quality & Common Mistakes
+<!-- ~800 tokens | 23 rules -->
 
 **Purpose:** Prevents the 20% of mistakes that cause 80% of review comments.
 Concrete rules from real projects — no boilerplate.

@@ -1,4 +1,5 @@
 # Sub-Skill: React Best Practices
+<!-- ~1,850 tokens | 17 rules -->
 
 **Purpose:** Prevents the React-specific mistakes LLMs make repeatedly — wrong state placement, stale closures, unnecessary re-renders, and broken async patterns. Concrete rules with code examples.
 

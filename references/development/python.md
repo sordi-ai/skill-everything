@@ -1,4 +1,5 @@
 # Sub-Skill: Python Best Practices
+<!-- ~1,600 tokens | 20 rules -->
 
 **Purpose:** Prevents the Python-specific mistakes LLMs make on autopilot — mutable defaults,
 bare excepts, missing guards, and subtle performance traps that pass review but break in production.

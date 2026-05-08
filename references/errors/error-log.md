@@ -1,4 +1,5 @@
 # Sub-Skill: Error Log
+<!-- ~900 tokens (grows with entries) -->
 
 **Purpose:** Central memory for all mistakes the agent has made or observed.
 Each entry prevents the same mistake from happening twice.

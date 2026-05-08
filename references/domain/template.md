@@ -1,4 +1,5 @@
 # Sub-Skill: Domain Knowledge Template
+<!-- ~850 tokens (empty template) -->
 
 **Purpose:** Structured template for capturing company- or project-specific knowledge
 that no public model can know — architecture decisions, naming conventions, business rules.

@@ -1,4 +1,5 @@
 # Self-Extension Workflow
+<!-- ~1,000 tokens -->
 
 **Purpose:** Exact prompt and procedure the agent executes after every mistake
 to automatically update the skill system.

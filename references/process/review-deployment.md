@@ -1,4 +1,5 @@
 # Sub-Skill: Review & Deployment Process
+<!-- ~650 tokens -->
 
 **Purpose:** Prevents deployment accidents and ensures reviews are more than rubber-stamping.
 Concrete checklists the agent runs through before every PR and deployment.

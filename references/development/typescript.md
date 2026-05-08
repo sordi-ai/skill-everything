@@ -1,4 +1,5 @@
 # Sub-Skill: TypeScript Best Practices
+<!-- ~1,800 tokens | 17 rules -->
 
 **Purpose:** Prevents the TypeScript-specific mistakes LLMs make repeatedly — weak types, unsafe assertions, and patterns that compile but fail at runtime.
 

@@ -1,4 +1,5 @@
 # Sub-Skill: Git & Workflow Conventions
+<!-- ~500 tokens | 15 rules -->
 
 **Purpose:** Consistent commit history, clean branches, no merge conflicts through discipline.
 Rules that work in teams of 2–20 developers.
