@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Skill-Everythink — Präsentation</title>
+<title>Skill-Everythink — Presentation</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
 
@@ -388,127 +388,130 @@
 
 <div class="progress-bar" id="progress"></div>
 <div class="slide-counter" id="counter"></div>
-<div class="nav-hint">← → Pfeiltasten oder Klick</div>
+<div class="nav-hint">← → Arrow keys or click</div>
 
 <!-- SLIDE 1: Titel -->
 <div class="slide active" id="s0">
   <div class="logo">🧠</div>
   <h1>Skill-Everythink</h1>
   <p class="tagline">"Agents that never make the same mistake twice"</p>
-  <p class="subtitle">Git-Versioned Agent Memory — Der intelligente Feintuning-Ersatz</p>
-  <p class="muted" style="margin-top: 32px; font-size: 0.9em;">Open Source &bull; MIT Lizenz &bull; Agent-agnostisch</p>
+  <p class="subtitle">Git-Versioned Agent Memory — The intelligent fine-tuning replacement</p>
+  <p class="muted" style="margin-top: 32px; font-size: 0.9em;">Open Source &bull; MIT License &bull; Agent-agnostic</p>
 </div>
 
 <!-- SLIDE 2: Das Problem -->
 <div class="slide" id="s1">
-  <h2>Das Problem</h2>
-  <p class="muted" style="margin-bottom: 20px; max-width: 700px; text-align: center;">AI-Agenten vergessen alles. Jede Session startet bei Null. Existierende Lösungen haben fundamentale Schwächen:</p>
+  <h2>The Problem</h2>
+  <p class="muted" style="margin-bottom: 20px; max-width: 700px; text-align: center;">AI agents forget everything. Every session starts from zero. Existing solutions have fundamental weaknesses:</p>
   <ul class="problem-list">
-    <li><span class="emoji">💸</span> <strong>Fine-Tuning</strong> — Teuer ($$$), starr, veraltet schnell, Vendor Lock-in</li>
-    <li><span class="emoji">🏗️</span> <strong>RAG</strong> — Braucht Infrastruktur: Vektordatenbanken, Embedding-APIs, Maintenance</li>
-    <li><span class="emoji">📄</span> <strong>Custom Instructions</strong> — Statisch, nicht versioniert, keine Struktur</li>
-    <li><span class="emoji">🔒</span> <strong>Cursor Rules</strong> — Cursor-only, kein Gedächtnis, keine Fehler-Lernkurve</li>
-    <li><span class="emoji">🧊</span> <strong>mem0 / MemGPT</strong> — Opaque (du siehst nicht was gespeichert wird), API-abhängig</li>
+    <li><span class="emoji">💸</span> <strong>Fine-Tuning</strong> — Expensive ($$$), rigid, outdates quickly, vendor lock-in</li>
+    <li><span class="emoji">🏗️</span> <strong>RAG</strong> — Requires infrastructure: vector databases, embedding APIs, maintenance</li>
+    <li><span class="emoji">📄</span> <strong>Custom Instructions</strong> — Static, unversioned, no structure</li>
+    <li><span class="emoji">🔒</span> <strong>Cursor Rules</strong> — Cursor-only, no memory, no learning curve from errors</li>
+    <li><span class="emoji">🧊</span> <strong>mem0 / MemGPT</strong> — Opaque (you can't see what's stored), API-dependent</li>
   </ul>
-  <p style="margin-top: 24px; font-size: 1.3em; font-weight: 700; color: var(--accent3);">→ Keiner dieser Ansätze LERNT aus Fehlern.</p>
+  <p style="margin-top: 24px; font-size: 1.3em; font-weight: 700; color: var(--accent3);">→ None of these approaches LEARN from mistakes.</p>
 </div>
 
 <!-- SLIDE 3: Die Lösung -->
 <div class="slide" id="s2">
-  <h2>Die Lösung: Skill-Everythink</h2>
+  <h2>The Solution: Skill-Everythink</h2>
   <ul class="solution-list">
-    <li><strong class="green">✅ Lebendes Skill-System</strong> aus Plain Markdown — kein Setup, kein API-Key</li>
-    <li><strong class="green">✅ Fehler-Gedächtnis</strong> — Jeder Fehler wird festgehalten, analysiert, zur Regel</li>
-    <li><strong class="green">✅ Domänenwissen</strong> — Prozesse, Regeln, interne Begriffe, Partner, Architektur</li>
-    <li><strong class="green">✅ Git-versioniert</strong> — Jede Änderung nachvollziehbar, reviewbar, rollback-fähig</li>
-    <li><strong class="green">✅ Agent-agnostisch</strong> — OpenCode, Claude, Cursor, jeder Agent der Kontext liest</li>
-    <li><strong class="green">✅ Modular</strong> — Sub-Skills für verschiedene Domänen, wächst mit dem Team</li>
+    <li><strong class="green">✅ Living skill system</strong> from plain Markdown — no setup, no API key</li>
+    <li><strong class="green">✅ Error memory</strong> — Every mistake is captured, analyzed, turned into a rule</li>
+    <li><strong class="green">✅ Domain knowledge</strong> — Processes, rules, internal terms, partners, architecture</li>
+    <li><strong class="green">✅ Git-versioned</strong> — Every change traceable, reviewable, rollback-capable</li>
+    <li><strong class="green">✅ Agent-agnostic</strong> — OpenCode, Claude Code, Gemini CLI, Cursor, any agent that reads context</li>
+    <li><strong class="green">✅ Modular</strong> — Sub-skills for different domains, grows with the team</li>
   </ul>
-  <p style="margin-top: 24px; font-size: 1.1em; color: var(--text-muted);">→ Wie Fine-Tuning, aber kostenlos, flexibel und transparent.</p>
+  <p style="margin-top: 24px; font-size: 1.1em; color: var(--text-muted);">→ Like fine-tuning, but free, flexible, and transparent.</p>
 </div>
 
 <!-- SLIDE 4: Wie es funktioniert -->
 <div class="slide" id="s3">
-  <h2>Wie es funktioniert</h2>
-  <p class="muted" style="margin-bottom: 8px;">Der selbst-lernende Kreislauf:</p>
+  <h2>How It Works</h2>
+  <p class="muted" style="margin-bottom: 8px;">The self-learning loop:</p>
   <div class="flow">
-    <div class="flow-step" style="border-color: var(--accent3);">🐛 Agent<br>macht Fehler</div>
+    <div class="flow-step" style="border-color: var(--accent3);">🐛 Agent<br>makes a mistake</div>
     <div class="flow-arrow">→</div>
-    <div class="flow-step">🔍 Fehler wird<br>analysiert</div>
+    <div class="flow-step">🔍 Mistake is<br>analyzed</div>
     <div class="flow-arrow">→</div>
-    <div class="flow-step">📝 Regel wird<br>formuliert</div>
+    <div class="flow-step">📝 Rule is<br>formulated</div>
     <div class="flow-arrow">→</div>
-    <div class="flow-step highlight">💾 Skill wird<br>aktualisiert</div>
+    <div class="flow-step highlight">💾 Skill is<br>updated</div>
     <div class="flow-arrow">→</div>
-    <div class="flow-step" style="border-color: var(--accent2);">✅ Nie wieder<br>dieser Fehler</div>
+    <div class="flow-step" style="border-color: var(--accent2);">✅ Never again<br>this mistake</div>
   </div>
   <div style="margin-top: 24px; background: var(--bg-card); border-radius: 12px; padding: 20px 28px; max-width: 700px; border-left: 4px solid var(--accent4);">
-    <p style="font-size: 1em;"><strong class="purple">Und nicht nur Fehler:</strong> Neues Domänenwissen, Prozesse, Konventionen, Partner-Infos — alles was der Agent wissen sollte, fließt in das Skill-System ein.</p>
+    <p style="font-size: 1em;"><strong class="purple">And not just errors:</strong> New domain knowledge, processes, conventions, partner info — everything the agent should know flows into the skill system.</p>
   </div>
 </div>
 
 <!-- SLIDE 5: Architektur -->
 <div class="slide" id="s4">
-  <h2>Architektur</h2>
+  <h2>Architecture</h2>
   <div class="tree"><span class="folder">skill-everythink/</span>
-├── <span class="file">SKILL.md</span>              <span class="comment">← Router / Einstiegspunkt</span>
+├── <span class="file">SKILL.md</span>              <span class="comment">← Router / entry point</span>
 ├── <span class="folder">references/</span>
-│   ├── <span class="folder">development/</span>      <span class="comment">← Code-Qualität, 15 Regeln</span>
-│   │   └── <span class="file">code-quality.md</span>
-│   ├── <span class="folder">git/</span>              <span class="comment">← Commit-Konventionen</span>
+│   ├── <span class="folder">development/</span>      <span class="comment">← 77 rules across 4 files</span>
+│   │   ├── <span class="file">code-quality.md</span>  <span class="comment">  23 rules</span>
+│   │   ├── <span class="file">python.md</span>        <span class="comment">  20 rules</span>
+│   │   ├── <span class="file">typescript.md</span>    <span class="comment">  17 rules</span>
+│   │   └── <span class="file">react.md</span>         <span class="comment">  17 rules</span>
+│   ├── <span class="folder">git/</span>              <span class="comment">← Commit conventions</span>
 │   │   └── <span class="file">conventions.md</span>
-│   ├── <span class="folder">domain/</span>           <span class="comment">← Firmenwissen (Template)</span>
+│   ├── <span class="folder">domain/</span>           <span class="comment">← Domain knowledge (template)</span>
 │   │   └── <span class="file">template.md</span>
-│   ├── <span class="folder">process/</span>          <span class="comment">← Reviews, Deployment</span>
+│   ├── <span class="folder">process/</span>          <span class="comment">← Reviews, deployment</span>
 │   │   └── <span class="file">review-deployment.md</span>
-│   └── <span class="folder">errors/</span>           <span class="comment">← Fehler-Log + Workflow</span>
+│   └── <span class="folder">errors/</span>           <span class="comment">← Error log + workflow</span>
 │       ├── <span class="file">error-log.md</span>
 │       └── <span class="file">self-extension-workflow.md</span>
-└── <span class="folder">_templates/</span>           <span class="comment">← Vorlagen für neue Skills</span></div>
-  <p class="muted" style="margin-top: 16px; font-size: 0.95em;">SKILL.md agiert als Router — der Agent lädt nur die Sub-Skills, die er gerade braucht.</p>
+└── <span class="folder">_templates/</span>           <span class="comment">← Templates for new skills</span></div>
+  <p class="muted" style="margin-top: 16px; font-size: 0.95em;">SKILL.md acts as a router — the agent loads only the sub-skills it needs.</p>
 </div>
 
 <!-- SLIDE 6: Fehler-Einfang -->
 <div class="slide" id="s5">
-  <h2>Fehler-Einfang-System</h2>
+  <h2>Error Capture System</h2>
   <div class="error-card">
     <div class="field">
       <span class="label">ID:</span>
       <span class="value" style="font-family: 'JetBrains Mono', monospace; color: var(--accent3);">ERR-2025-001</span>
-      <span class="value muted" style="margin-left: auto;">kritisch</span>
+      <span class="value muted" style="margin-left: auto;">critical</span>
     </div>
     <div class="field">
-      <span class="label">Kontext:</span>
-      <span class="value">Deployment einer neuen API-Version mit DB-Migration</span>
+      <span class="label">Context:</span>
+      <span class="value">Deploying a new API version with DB migration</span>
     </div>
     <div class="field">
-      <span class="label">Was passierte:</span>
-      <span class="value">Agent deployed neues Backend VOR der Migration → 45s Produktionsausfall</span>
+      <span class="label">What happened:</span>
+      <span class="value">Agent deployed new backend BEFORE migration → 45s production outage</span>
     </div>
     <div class="field">
       <span class="label">Root Cause:</span>
-      <span class="value">Falsche Annahme: "Migration kann nach Deployment laufen"</span>
+      <span class="value">False assumption: "Migration can run after deployment"</span>
     </div>
     <div class="field" style="padding-top: 8px; border-top: 1px solid var(--border);">
-      <span class="label" style="color: var(--accent2);">Neue Regel:</span>
-      <span class="value" style="font-weight: 600;">"Immer additive DB-Migrationen VOR dem Deployment ausführen."</span>
+      <span class="label" style="color: var(--accent2);">New Rule:</span>
+      <span class="value" style="font-weight: 600;">"Always run additive DB migrations BEFORE deployment."</span>
     </div>
   </div>
   <div class="before-after">
     <div class="ba-box before">
-      <h3 style="color: var(--accent3);">❌ Vorher</h3>
-      <p style="font-size: 0.9em;">Agent deployed blind, wiederholt denselben Fehler in jedem Projekt</p>
+      <h3 style="color: var(--accent3);">❌ Before</h3>
+      <p style="font-size: 0.9em;">Agent deploys blindly, repeats the same mistake in every project</p>
     </div>
     <div class="ba-box after">
-      <h3 style="color: var(--accent2);">✅ Nachher</h3>
-      <p style="font-size: 0.9em;">Agent liest Regel, führt Migration zuerst aus — automatisch, immer</p>
+      <h3 style="color: var(--accent2);">✅ After</h3>
+      <p style="font-size: 0.9em;">Agent reads rule, runs migration first — automatically, always</p>
     </div>
   </div>
 </div>
 
 <!-- SLIDE 7: Vergleichstabelle -->
 <div class="slide" id="s6">
-  <h2>Vergleich</h2>
+  <h2>Comparison</h2>
   <table class="cmp-table">
     <tr>
       <th>Feature</th>
@@ -518,56 +521,56 @@
       <th style="color: var(--accent2);">Skill-Everythink</th>
     </tr>
     <tr>
-      <td>Kosten</td>
+      <td>Cost</td>
       <td class="orange">$$$$</td>
       <td class="orange">$$</td>
-      <td class="green">Frei</td>
-      <td class="green"><strong>Frei</strong></td>
+      <td class="green">Free</td>
+      <td class="green"><strong>Free</strong></td>
     </tr>
     <tr>
-      <td>Lernt aus Fehlern</td>
+      <td>Learns from mistakes</td>
       <td>❌</td>
       <td>❌</td>
       <td>❌</td>
       <td class="green"><strong>✅</strong></td>
     </tr>
     <tr>
-      <td>Git-versioniert</td>
+      <td>Git-versioned</td>
       <td>❌</td>
       <td>❌</td>
       <td>✅</td>
       <td class="green"><strong>✅</strong></td>
     </tr>
     <tr>
-      <td>Agent-agnostisch</td>
+      <td>Agent-agnostic</td>
       <td>❌</td>
       <td>✅</td>
       <td>❌</td>
       <td class="green"><strong>✅</strong></td>
     </tr>
     <tr>
-      <td>Kein Setup nötig</td>
+      <td>No setup needed</td>
       <td>❌</td>
       <td>❌</td>
       <td>✅</td>
       <td class="green"><strong>✅</strong></td>
     </tr>
     <tr>
-      <td>Domänenwissen</td>
+      <td>Domain knowledge</td>
       <td>✅</td>
       <td>✅</td>
       <td>❌</td>
       <td class="green"><strong>✅</strong></td>
     </tr>
     <tr>
-      <td>Modular erweiterbar</td>
+      <td>Modularly extensible</td>
       <td>❌</td>
       <td>❌</td>
       <td>❌</td>
       <td class="green"><strong>✅</strong></td>
     </tr>
     <tr>
-      <td>Transparent / inspizierbar</td>
+      <td>Transparent / inspectable</td>
       <td>❌</td>
       <td>❌</td>
       <td>✅</td>
@@ -578,64 +581,79 @@
 
 <!-- SLIDE 8: Starter-Skills -->
 <div class="slide" id="s7">
-  <h2>5 Starter-Skills inklusive</h2>
+  <h2>8 Starter Skills Included</h2>
   <div class="card-grid">
     <div class="card">
       <div class="icon">💻</div>
-      <h3>Code-Qualität</h3>
-      <p>15 Regeln aus echten Projekten: Funktionslänge, Benennung, Fehlerbehandlung, Imports, Tests</p>
+      <h3>Code Quality</h3>
+      <p>23 rules from real projects: function length, naming, error handling, imports, security</p>
+    </div>
+    <div class="card">
+      <div class="icon">🐍</div>
+      <h3>Python</h3>
+      <p>20 rules: type hints, error handling, common pitfalls, packaging</p>
+    </div>
+    <div class="card">
+      <div class="icon">📘</div>
+      <h3>TypeScript</h3>
+      <p>17 rules: strict types, async patterns, config, best practices</p>
+    </div>
+    <div class="card">
+      <div class="icon">⚛️</div>
+      <h3>React</h3>
+      <p>17 rules: hooks, state management, components, performance</p>
     </div>
     <div class="card">
       <div class="icon">🔀</div>
-      <h3>Git-Konventionen</h3>
-      <p>15 Regeln: Conventional Commits, Branching-Strategie, PR-Größe, Merge-Strategie</p>
+      <h3>Git Conventions</h3>
+      <p>15 rules: conventional commits, branching strategy, PR size, merge strategy</p>
     </div>
     <div class="card">
       <div class="icon">🏢</div>
-      <h3>Domänenwissen</h3>
-      <p>Template für Firmenwissen: ADRs, Naming, Business-Regeln, Integrationen, Glossar</p>
+      <h3>Domain Knowledge</h3>
+      <p>Template for company knowledge: ADRs, naming, business rules, integrations, glossary</p>
     </div>
     <div class="card">
       <div class="icon">🚀</div>
       <h3>Review & Deployment</h3>
-      <p>PR-Checkliste, Deployment-Reihenfolge, Rollback-Plan, Eskalations-Regeln</p>
+      <p>PR checklist, deployment order, rollback plan, escalation rules</p>
     </div>
     <div class="card">
       <div class="icon">🐛</div>
-      <h3>Fehler-Log</h3>
-      <p>Strukturiertes YAML-Format für eingefangene Fehler mit automatischem Regel-Update</p>
+      <h3>Error Log</h3>
+      <p>Structured YAML format for captured errors with automatic rule updates</p>
     </div>
   </div>
 </div>
 
 <!-- SLIDE 9: Selbst-Erweiterung -->
 <div class="slide" id="s8">
-  <h2>Selbst-Erweiterung</h2>
-  <p class="muted" style="margin-bottom: 20px;">Der Agent erweitert den Skill automatisch:</p>
+  <h2>Self-Extension</h2>
+  <p class="muted" style="margin-bottom: 20px;">The agent extends the skill automatically:</p>
   <div class="steps">
     <div class="step">
       <div class="step-num">1</div>
-      <div class="step-text"><strong>Fehler erkennen</strong> — Test schlägt fehl, Review-Kommentar, falscher Ansatz</div>
+      <div class="step-text"><strong>Detect mistake</strong> — Test fails, review comment, wrong approach</div>
     </div>
     <div class="step">
       <div class="step-num">2</div>
-      <div class="step-text"><strong>Kategorie bestimmen</strong> — Development, Git, Deployment, Security, Domain?</div>
+      <div class="step-text"><strong>Determine category</strong> — Development, Git, Deployment, Security, Domain?</div>
     </div>
     <div class="step">
       <div class="step-num" style="background: var(--accent3);">3</div>
-      <div class="step-text"><strong>"Search before Write"</strong> — Gibt es schon eine ähnliche Regel? Update statt Duplikat.</div>
+      <div class="step-text"><strong>"Search before Write"</strong> — Does a similar rule already exist? Update instead of duplicate.</div>
     </div>
     <div class="step">
       <div class="step-num">4</div>
-      <div class="step-text"><strong>Regel formulieren</strong> — Handlungsanweisung, nicht Beschreibung</div>
+      <div class="step-text"><strong>Formulate rule</strong> — Action directive, not description</div>
     </div>
     <div class="step">
       <div class="step-num">5</div>
-      <div class="step-text"><strong>In Ziel-Datei einfügen</strong> — Am Ende des passenden Abschnitts</div>
+      <div class="step-text"><strong>Insert into target file</strong> — At the end of the matching section</div>
     </div>
     <div class="step">
       <div class="step-num" style="background: var(--accent2);">6</div>
-      <div class="step-text"><strong>Error-Log aktualisieren</strong> — Vollständiger YAML-Eintrag mit Kontext</div>
+      <div class="step-text"><strong>Update error log</strong> — Complete YAML entry with context</div>
     </div>
   </div>
 </div>
@@ -648,34 +666,34 @@
       <h3 style="margin-bottom: 16px;">🗺️ Roadmap</h3>
       <div class="roadmap">
         <div class="rm-item">
-          <span class="rm-version">v1.0</span>
-          <span>Core System + 5 Starter-Skills</span>
-          <span class="rm-status done">aktuell</span>
-        </div>
-        <div class="rm-item">
           <span class="rm-version">v1.1</span>
-          <span>CLI-Tool: <code>npx skill-everythink init</code></span>
-          <span class="rm-status next">nächstes</span>
+          <span>Core System + 8 Starter Skills</span>
+          <span class="rm-status done">current</span>
         </div>
         <div class="rm-item">
           <span class="rm-version">v1.2</span>
-          <span>Consolidation-Loop (Auto-Aufräumen)</span>
-          <span class="rm-status planned">geplant</span>
+          <span>CLI Tool: <code>npx skill-everythink init</code></span>
+          <span class="rm-status next">next</span>
+        </div>
+        <div class="rm-item">
+          <span class="rm-version">v1.3</span>
+          <span>Consolidation Loop + GitHub Actions Linter</span>
+          <span class="rm-status planned">planned</span>
         </div>
         <div class="rm-item">
           <span class="rm-version">v2.0</span>
-          <span>Skill-Marketplace & Registry</span>
-          <span class="rm-status planned">geplant</span>
+          <span>Skill Marketplace & Registry</span>
+          <span class="rm-status planned">planned</span>
         </div>
       </div>
     </div>
     <div>
       <h3 style="margin-bottom: 16px;">🤝 Community</h3>
       <ul class="solution-list" style="margin: 0;">
-        <li><strong>Open Source</strong> — MIT Lizenz, jeder kann beitragen</li>
-        <li><strong>Sub-Skills teilen</strong> — Eigene Regeln als PR einreichen</li>
-        <li><strong>Templates</strong> — Vorlagen für jede Branche & Stack</li>
-        <li><strong>Issue-Templates</strong> — Fehler melden = Skill verbessern</li>
+        <li><strong>Open Source</strong> — MIT License, everyone can contribute</li>
+        <li><strong>Share sub-skills</strong> — Submit your own rules as PRs</li>
+        <li><strong>Templates</strong> — Templates for every industry & stack</li>
+        <li><strong>Issue templates</strong> — Reporting errors = improving the skill</li>
       </ul>
     </div>
   </div>
@@ -685,13 +703,13 @@
 <div class="slide" id="s10">
   <div class="cta-box">
     <div style="font-size: 3em; margin-bottom: 12px;">🧠⭐</div>
-    <h2 style="color: var(--text);">Starte jetzt</h2>
-    <p style="margin-bottom: 24px; color: var(--text-muted);">Baue deinen ersten Skill in 5 Minuten.<br>Dein Agent wird es dir danken.</p>
-    <a class="cta-btn">⭐ Star auf GitHub</a>
-    <a class="cta-btn secondary">📖 Dokumentation</a>
+    <h2 style="color: var(--text);">Get Started</h2>
+    <p style="margin-bottom: 24px; color: var(--text-muted);">Build your first skill in 5 minutes.<br>Your agent will thank you.</p>
+    <a class="cta-btn">⭐ Star on GitHub</a>
+    <a class="cta-btn secondary">📖 Documentation</a>
     <p style="margin-top: 24px; font-size: 0.9em; color: var(--text-muted);">
       <code style="background: var(--bg-code); padding: 6px 12px; border-radius: 6px; font-size: 1em;">
-        git clone https://github.com/your-org/skill-everythink.git
+        git clone https://github.com/sordi-ai/skill-everything.git
       </code>
     </p>
   </div>
