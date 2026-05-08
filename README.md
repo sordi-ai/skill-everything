@@ -70,9 +70,22 @@ graph LR
 
 Every token your agent reads costs money. Monolithic instruction files burn thousands of tokens **every single message**. Skill-Everythink uses a **router pattern** — the agent loads only what it needs.
 
-> **Monolithic approach:** `10,000+` tokens loaded every message. Always. All of it.
->
-> **Skill-Everythink:** `~800` tok router + `~800` tok one sub-skill = **~1,600 tokens per message (84% less)**
+```
+┌─────────────────────────────────────────────────────┐
+│  Monolithic .cursorrules / system prompt             │
+│  ████████████████████████████████████  10,000+ tok  │
+│  Loaded EVERY message. Always. All of it.           │
+└─────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────┐
+│  Skill-Everythink (router pattern)                   │
+│  ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░    ~800 tok   │
+│  SKILL.md router (always loaded)                     │
+│  ████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  + ~800 tok   │
+│  One sub-skill loaded on demand                      │
+│  = ~1,600 tokens per message (84% less)             │
+└─────────────────────────────────────────────────────┘
+```
 
 **Real cost comparison** (at $3 / 1M input tokens):
 
