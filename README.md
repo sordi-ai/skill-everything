@@ -4,7 +4,7 @@
 Git-Versioned Agent Memory — Der intelligente Feintuning-Ersatz.
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![GitHub Stars](https://img.shields.io/github/stars/sordi-ai/skill-everythink?style=social)
+![GitHub Stars](https://img.shields.io/github/stars/sordi-ai/skill-everything?style=social)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 
 ---
@@ -37,7 +37,7 @@ Skill-Everythink ist ein Git-versioniertes Gedächtnissystem aus Plain-Markdown-
 **Schritt 1: Repository klonen**
 
 ```bash
-git clone https://github.com/sordi-ai/skill-everythink.git
+git clone https://github.com/sordi-ai/skill-everything.git
 ```
 
 **Schritt 2: Skill in deinen Agent laden**
