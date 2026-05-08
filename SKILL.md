@@ -24,6 +24,9 @@ Load the matching sub-skill when the context applies:
 | Git operations, commits, branches, PRs | Git Conventions | `skill_resource(skill_name="skill-everythink", relative_path="references/git/conventions.md")` |
 | Project-specific knowledge needed | Domain Knowledge | `skill_resource(skill_name="skill-everythink", relative_path="references/domain/template.md")` |
 | Creating PRs, deployment, review | Review & Deployment | `skill_resource(skill_name="skill-everythink", relative_path="references/process/review-deployment.md")` |
+| Python code (types, packaging, pitfalls) | Python | `skill_resource(skill_name="skill-everythink", relative_path="references/development/python.md")` |
+| TypeScript code (types, async, config) | TypeScript | `skill_resource(skill_name="skill-everythink", relative_path="references/development/typescript.md")` |
+| React components (hooks, state, perf) | React | `skill_resource(skill_name="skill-everythink", relative_path="references/development/react.md")` |
 | Made or corrected a mistake | Error Log | `skill_resource(skill_name="skill-everythink", relative_path="references/errors/error-log.md")` |
 
 ## Error Capture Triggers

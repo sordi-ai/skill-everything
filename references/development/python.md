@@ -1,0 +1,198 @@
+# Sub-Skill: Python Best Practices
+
+**Purpose:** Prevents the Python-specific mistakes LLMs make on autopilot — mutable defaults,
+bare excepts, missing guards, and subtle performance traps that pass review but break in production.
+
+---
+
+## Rules
+
+### Type Hints
+
+1. **Always annotate function signatures with types.** `def process(data)` tells callers nothing.
+   Use `def process(data: list[str]) -> dict[str, int]:`. Return type `None` must be explicit too.
+
+2. **Never use `List`, `Dict`, `Tuple` from `typing` for Python 3.9+.** Use the built-in lowercase
+   forms directly: `list[str]`, `dict[str, int]`, `tuple[int, ...]`.
+
+3. **Always use `Optional[X]` or `X | None` for nullable parameters, never a bare default of `None`
+   without a type annotation.** `def find(id: int) -> User | None:` not `def find(id):`.
+
+4. **Never use `Any` as a shortcut.** If the type is genuinely unknown, document why with a comment.
+   `Any` silences the type checker and hides bugs.
+
+---
+
+### Error Handling
+
+5. **Never use bare `except:`.** It catches `SystemExit`, `KeyboardInterrupt`, and `GeneratorExit`.
+   Always catch `except Exception:` at minimum, or a specific exception class.
+
+   ```python
+   # Wrong
+   try:
+       risky()
+   except:
+       pass
+
+   # Correct
+   try:
+       risky()
+   except ValueError as e:
+       logger.warning("Invalid value: %s", e)
+   ```
+
+6. **Never silently swallow exceptions with `pass`.** At minimum log the error. Silent failures
+   produce ghost bugs that are impossible to trace.
+
+7. **Always raise with context when re-raising.** Use `raise NewError("msg") from original_error`
+   to preserve the traceback chain, not `raise NewError("msg")` alone.
+
+---
+
+### Common Pitfalls
+
+8. **Never use mutable default arguments.** Python evaluates defaults once at function definition,
+   not per call. The list or dict is shared across all calls.
+
+   ```python
+   # Wrong — items accumulates across calls
+   def append_item(val, items=[]):
+       items.append(val)
+       return items
+
+   # Correct
+   def append_item(val, items=None):
+       if items is None:
+           items = []
+       items.append(val)
+       return items
+   ```
+
+9. **Always guard script entry points with `if __name__ == "__main__":`.** Without it, importing
+   the module executes top-level code, breaking tests and imports.
+
+10. **Always use `with` for file handles, sockets, and locks.** Never open a file without a context
+    manager. `f = open(...)` without `with` leaks handles on exceptions.
+
+    ```python
+    # Wrong
+    f = open("data.txt")
+    data = f.read()
+    f.close()
+
+    # Correct
+    with open("data.txt") as f:
+        data = f.read()
+    ```
+
+11. **Never concatenate strings in loops.** Each `+=` on a string creates a new object.
+    Collect into a list and call `"".join(parts)` at the end.
+
+    ```python
+    # Wrong — O(n^2) memory
+    result = ""
+    for word in words:
+        result += word + " "
+
+    # Correct
+    result = " ".join(words)
+    ```
+
+12. **Always use f-strings for string interpolation in Python 3.6+.** Never use `%` formatting or
+    `"Hello " + name`. F-strings are faster, safer, and readable.
+
+    ```python
+    # Wrong
+    msg = "User %s has %d items" % (name, count)
+
+    # Correct
+    msg = f"User {name} has {count} items"
+    ```
+
+13. **Never use `dict()` constructor when a literal suffices.** `{}` is faster and more idiomatic.
+    `dict(key=value)` is only justified when keys are dynamic or come from variables.
+
+---
+
+### Performance
+
+14. **Always use list comprehensions or generator expressions instead of `map`/`filter` with
+    `lambda`.** Comprehensions are more readable and equally fast. Use generators when the full
+    list is not needed at once.
+
+    ```python
+    # Avoid
+    result = list(map(lambda x: x * 2, items))
+
+    # Prefer
+    result = [x * 2 for x in items]
+
+    # For large data, use a generator
+    total = sum(x * 2 for x in items)
+    ```
+
+15. **Never check membership in a list when a set suffices.** `x in list` is O(n).
+    `x in set` is O(1). Convert once, query many times.
+
+    ```python
+    # Wrong for repeated lookups
+    valid_ids = [1, 2, 3, ...]
+    if user_id in valid_ids:  # O(n) every call
+
+    # Correct
+    valid_ids = {1, 2, 3, ...}
+    if user_id in valid_ids:  # O(1)
+    ```
+
+---
+
+### Testing
+
+16. **Always name test functions to describe the scenario, not just the function under test.**
+    `test_process_returns_empty_dict_on_empty_input` not `test_process`.
+
+17. **Never use `assert` statements in production code for validation.** `assert` is stripped with
+    `python -O`. Use explicit `if` checks with `raise ValueError(...)` for runtime validation.
+
+18. **Always use `pytest.raises` as a context manager to assert exceptions, never wrap in
+    try/except inside a test.** A bare try/except can mask a missing exception.
+
+    ```python
+    # Wrong
+    def test_bad_input():
+        try:
+            process(None)
+        except ValueError:
+            pass  # test passes even if no exception is raised
+
+    # Correct
+    def test_bad_input():
+        with pytest.raises(ValueError, match="input cannot be None"):
+            process(None)
+    ```
+
+---
+
+### Packaging
+
+19. **Always include `__init__.py` in every package directory.** Without it, Python 3 treats the
+    directory as a namespace package, which breaks relative imports and tool discovery in many
+    environments.
+
+20. **Never import from `__init__.py` inside the same package's submodules.** This creates circular
+    imports. Keep `__init__.py` as a re-export surface only, not a logic file.
+
+---
+
+## Why This Sub-Skill Earns Stars
+
+These rules target the exact failure modes that appear in LLM-generated Python:
+
+- Mutable defaults and missing `__main__` guards are invisible bugs that only surface at runtime.
+- Bare `except:` and silent `pass` blocks make debugging take 10x longer.
+- String concatenation in loops and list membership checks are performance traps that scale badly.
+- Missing type annotations and `Any` shortcuts defeat the entire value of static analysis.
+- Skipping `with` for file handles causes resource leaks under load.
+
+None of these are caught by syntax checkers. All of them appear in production incidents.

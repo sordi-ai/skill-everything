@@ -152,8 +152,11 @@ skill-everything/
 ├── CLAUDE.md                   # Claude Code entry point
 ├── GEMINI.md                   # Gemini CLI entry point
 ├── references/
-│   ├── development/            # 23 code quality rules
-│   │   └── code-quality.md     #   functions, naming, errors, perf, security
+│   ├── development/            # 77 rules across 4 skill files
+│   │   ├── code-quality.md     #   23 rules — functions, naming, errors, perf, security
+│   │   ├── python.md           #   20 rules — type hints, packaging, common pitfalls
+│   │   ├── typescript.md       #   17 rules — strict types, async, config, patterns
+│   │   └── react.md            #   17 rules — hooks, state, components, performance
 │   ├── git/                    # 15 git workflow rules
 │   │   └── conventions.md      #   commits, branches, PRs, merge strategy
 │   ├── domain/                 # Domain knowledge template
@@ -201,7 +204,7 @@ Keep each sub-skill under **3,000 tokens**. Split rather than bloat. Rules are a
 
 | Version | Status | What's included |
 |---|---|---|
-| **v1.1** | ✅ current | Core system · 5 starter skills · OpenCode + Claude Code + Gemini CLI + Cursor |
+| **v1.1** | ✅ current | Core system · 8 starter skills (incl. Python, TypeScript, React) · OpenCode + Claude Code + Gemini CLI + Cursor |
 | **v1.2** | planned | CLI tool (`npx skill-everythink init`) for instant project setup |
 | **v1.3** | planned | Consolidation loop (auto-merge similar rules) · GitHub Actions linter |
 | **v2.0** | planned | Skill Marketplace — discover, rate, and embed community skills |
