@@ -1,4 +1,3 @@
-# ruff: noqa: I001
 """Tests for tools/render_loaders.py.
 
 The strict drift-check (`render --check`) is exercised in CI under the
@@ -6,10 +5,6 @@ The strict drift-check (`render --check`) is exercised in CI under the
 match. Locally we only assert that the source-of-truth file is valid and
 that all referenced paths exist, so the test suite stays green even when
 jinja2 isn't installed.
-
-I001 is disabled because the render_loaders import depends on a
-sys.path.insert that has to run between the top-level imports and
-the test-target import.
 """
 
 from __future__ import annotations

@@ -1,9 +1,7 @@
-# ruff: noqa: RUF001, RUF002, RUF003, I001
+# ruff: noqa: RUF001
 # This file deliberately uses Cyrillic homoglyphs and zero-width unicode
-# characters to test the validator's bypass behaviour. The RUF rules are
-# disabled here on purpose; do not "fix" them. I001 is disabled because
-# the validate_rules import depends on a sys.path.insert that has to run
-# between the top-level imports and the test-target import.
+# characters in string literals to test the validator's bypass behaviour.
+# Do not "fix" them.
 """
 Adversarial test suite for tools/validate_rules.py.
 
@@ -33,13 +31,13 @@ SECURITY.md links here.
 
 from __future__ import annotations
 
-import sys  # noqa: I001
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "tools"))
 
-import validate_rules as vr  # noqa: E402, I001
+import validate_rules as vr  # noqa: E402
 
 
 # ============================================================

@@ -1,10 +1,4 @@
-# ruff: noqa: I001
-"""Tests for tools/validate_rules.py.
-
-I001 is disabled because the validate_rules import depends on a
-sys.path.insert that has to run between the top-level imports and
-the test-target import.
-"""
+"""Tests for tools/validate_rules.py."""
 
 from __future__ import annotations
 

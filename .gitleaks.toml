@@ -1,0 +1,46 @@
+# gitleaks config: allow legitimate test fixtures and example tokens
+# in adversarial test files and documentation.
+#
+# Every entry below has a one-line rationale. Add new entries via PR
+# only — never to silence a real leak.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Test fixtures and adversarial examples"
+paths = [
+  # The adversarial validator suite intentionally embeds high-entropy
+  # strings (base64-shaped fake tokens, fake API key shapes) to test
+  # whether the validator catches them. They are NEVER real secrets.
+  '''tests/test_validate_rules_adversarial\.py''',
+  '''tests/test_validate_rules\.py''',
+  '''tests/test_dashboard_xss\.py''',
+
+  # The eval task definitions reference tokens by shape, not by value.
+  '''tests/eval/tasks/.*\.yml''',
+
+  # The error log schema documentation deliberately shows what a fake
+  # JWT/API-key field looks like; gitleaks rules occasionally match.
+  '''references/_templates/error-entry\.template\.md''',
+
+  # The HN comment templates discuss "include credentials" attack
+  # scenarios; the strings used are obviously fake but match patterns.
+  '''docs/launch/hn-comment-templates\.md''',
+
+  # SECURITY.md describes the threat model and includes example commands
+  # like `cat ~/.ssh/id_rsa`; these are descriptive, not actual exfil.
+  '''SECURITY\.md''',
+]
+
+# Exact-string allowlist for known false-positive fixtures that appear
+# more than once in the codebase.
+regexes = [
+  # base64-shaped string used as a positive test for the validator's
+  # base64-blob detection (40+ chars, valid b64 alphabet, padded).
+  '''aGVsbG8td29ybGQtdGVzdC1zdHJpbmctcGFkZGVkLXRvLWZvcnR5LWNoYXJzMTIzNA==''',
+
+  # Hex-shaped commit-SHA-like string used as a known false-positive
+  # fixture (validates that legitimate hex strings get rejected today).
+  '''0a1b2c3d4e5f6789abcdef0123456789abcdefab''',
+]

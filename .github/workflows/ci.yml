@@ -54,8 +54,24 @@ jobs:
           tar -xzf gitleaks.tar.gz gitleaks
           sudo mv gitleaks /usr/local/bin/
           gitleaks version
-      - name: Scan
-        run: gitleaks detect --no-banner --redact --source .
+      - name: Scan and report findings
+        run: |
+          gitleaks detect --no-banner --redact \
+                          --report-format json \
+                          --report-path gitleaks-report.json \
+                          --source . || EXIT=$?
+          if [ -f gitleaks-report.json ] && [ -s gitleaks-report.json ]; then
+            echo "::group::Gitleaks findings (file paths + rule IDs only)"
+            jq -r '.[] | "\(.RuleID)\t\(.File):\(.StartLine)\t\(.Description)"' gitleaks-report.json
+            echo "::endgroup::"
+          fi
+          exit ${EXIT:-0}
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitleaks-report
+          path: gitleaks-report.json
 
   loaders-and-table-no-drift:
     name: loaders + readme-table no-drift
