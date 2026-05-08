@@ -59,6 +59,8 @@ graph LR
 ```
 
 > **Not just errors.** The same loop captures new insights, better patterns, deployment gotchas, naming conventions, API quirks — anything worth remembering. Every lesson is a Git commit you can `diff`, `blame`, `revert`, or `cherry-pick` into another project.
+>
+> 🎬 **[Watch the animated demo →](./docs/demo.html)** — open locally to see the self-extension loop in action.
 
 ---
 

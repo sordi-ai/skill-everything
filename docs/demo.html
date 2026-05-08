@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill-Everythink — Self-Extension Demo</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#1a1b26;--panel:#24283b;--border:#3b4261;
+  --text:#c0caf5;--dim:#565f89;--red:#ff6b6b;--green:#2ecc71;
+  --blue:#4d96ff;--purple:#9b59b6;--yellow:#ffd93d;--orange:#ff9e64;
+  --step-dur:3.2s;--steps:7;--total:22.4s;
+}
+body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100vh;overflow:hidden}
+.container{width:800px;height:500px;position:relative;overflow:hidden}
+
+/* Header */
+.header{text-align:center;padding:16px 0 8px;position:relative;z-index:10}
+.header h1{font-size:22px;letter-spacing:1px}
+.header h1 span{color:var(--blue)}
+.header p{font-size:12px;color:var(--dim);margin-top:2px}
+
+/* Step indicator */
+.steps-bar{display:flex;gap:6px;justify-content:center;margin:8px 0 12px;position:relative;z-index:10}
+.step-dot{width:28px;height:4px;border-radius:2px;background:var(--border);transition:background .3s}
+
+/* Terminal window */
+.terminal{background:var(--panel);border:1px solid var(--border);border-radius:8px;
+  margin:0 16px;height:370px;position:relative;overflow:hidden}
+.terminal-bar{height:32px;background:var(--bg);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 12px;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%}
+.dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+.terminal-title{color:var(--dim);font-size:11px;margin-left:8px}
+.terminal-body{padding:16px 20px;height:338px;position:relative}
+
+/* Scene system */
+.scene{position:absolute;inset:0;padding:16px 20px;opacity:0;
+  transform:translateY(12px);transition:opacity .4s,transform .4s;pointer-events:none}
+.scene.active{opacity:1;transform:translateY(0)}
+
+/* Code styling */
+.code{font-size:13px;line-height:1.7;white-space:pre}
+.ln{color:var(--dim);user-select:none;display:inline-block;width:28px;text-align:right;margin-right:12px}
+.kw{color:#bb9af7}.fn{color:var(--blue)}.str{color:var(--green)}.cm{color:var(--dim)}
+.err{color:var(--red)}.ok{color:var(--green)}.yl{color:var(--yellow)}.pr{color:var(--purple)}
+.og{color:var(--orange)}.wh{color:var(--text)}
+
+/* Typewriter */
+.typewriter{overflow:hidden;border-right:2px solid var(--blue);white-space:nowrap;
+  animation:typing 1.2s steps(40) forwards,blink .6s step-end infinite alternate}
+@keyframes typing{from{max-width:0}to{max-width:100%}}
+@keyframes blink{50%{border-color:transparent}}
+
+/* Error flash */
+.error-flash{animation:flash .4s ease-in-out 2}
+@keyframes flash{0%,100%{background:transparent}50%{background:rgba(255,107,107,.08)}}
+
+/* YAML entry slide-in */
+.yaml-entry{animation:slideIn .5s ease-out forwards}
+@keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+
+/* Git commit animation */
+.commit-line{display:flex;align-items:center;gap:8px;margin:6px 0}
+.commit-hash{color:var(--yellow);font-size:12px}
+.commit-msg{color:var(--text);font-size:13px}
+.branch-badge{background:var(--purple);color:#fff;padding:2px 8px;border-radius:3px;font-size:11px}
+
+/* Success glow */
+.success-glow{text-align:center;padding-top:60px}
+.success-glow .checkmark{font-size:64px;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 8px rgba(46,204,113,.4))}
+  50%{transform:scale(1.1);filter:drop-shadow(0 0 20px rgba(46,204,113,.8))}}
+.success-glow h2{color:var(--green);margin-top:16px;font-size:20px}
+.success-glow p{color:var(--dim);margin-top:8px;font-size:13px}
+
+/* Progress bar at bottom */
+.progress{position:absolute;bottom:0;left:0;height:2px;background:var(--blue);
+  animation:progress var(--total) linear infinite}
+@keyframes progress{from{width:0}to{width:100%}}
+
+/* File tab */
+.file-tab{display:inline-block;background:var(--bg);border:1px solid var(--border);
+  border-bottom:none;padding:4px 12px;border-radius:6px 6px 0 0;font-size:11px;
+  color:var(--dim);margin-bottom:-1px;position:relative;z-index:1}
+.file-tab.active{color:var(--text);border-bottom-color:var(--panel)}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>&#x1F9E0; Skill-<span>Everythink</span></h1>
+    <p>Agents that learn from mistakes</p>
+  </div>
+  <div class="steps-bar" id="stepsBar">
+    <div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div>
+    <div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div>
+    <div class="step-dot"></div>
+  </div>
+  <div class="terminal">
+    <div class="terminal-bar">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <span class="terminal-title" id="termTitle">agent-workspace</span>
+    </div>
+    <div class="terminal-body">
+
+      <!-- Scene 1: Agent writes buggy code -->
+      <div class="scene" id="s1">
+        <div class="file-tab active">api/handler.ts</div>
+        <div class="code" style="margin-top:8px">
+<span class="ln">12</span><span class="kw">async function</span> <span class="fn">fetchUser</span>(<span class="og">id</span>: <span class="kw">string</span>) {
+<span class="ln">13</span>  <span class="kw">try</span> {
+<span class="ln">14</span>    <span class="kw">const</span> <span class="wh">user</span> = <span class="kw">await</span> <span class="fn">db.query</span>(<span class="str">`SELECT * FROM users`</span>);
+<span class="ln">15</span>    <span class="kw">return</span> <span class="wh">user</span>;
+<span class="ln">16</span>  } <span class="kw">catch</span>(<span class="og">e</span>) {<span class="err"> /* swallowed */ </span>}  <span class="cm">// ← BUG</span>
+<span class="ln">17</span>}
+        </div>
+        <div style="margin-top:20px;color:var(--dim);font-size:12px">&#x1F916; Agent writes code with empty catch block...</div>
+      </div>
+
+      <!-- Scene 2: Test fails -->
+      <div class="scene" id="s2">
+        <div class="file-tab active">terminal</div>
+        <div class="code error-flash" style="margin-top:8px">
+<span class="wh">$ npm test</span>
+
+<span class="dim">RUNS  api/handler.test.ts</span>
+<span class="err">FAIL  api/handler.test.ts</span>
+<span class="err">  ✗ fetchUser returns error on invalid id</span>
+<span class="err">    Expected: Error("User not found")</span>
+<span class="err">    Received: undefined</span>
+
+<span class="err">Tests:  1 failed, 4 passed, 5 total</span>
+<span class="dim">Time:   1.23s</span>
+        </div>
+        <div style="margin-top:16px;color:var(--red);font-size:12px">&#x274C; Test fails — error was silently swallowed</div>
+      </div>
+
+      <!-- Scene 3: Agent analyzes -->
+      <div class="scene" id="s3">
+        <div class="file-tab active">self-analysis</div>
+        <div class="code" style="margin-top:8px;line-height:2">
+<span class="yl">&#x1F50D; Analyzing mistake...</span>
+
+<span class="dim">1.</span> <span class="wh">What I did:</span>      <span class="err">Empty catch block — swallowed the error</span>
+<span class="dim">2.</span> <span class="wh">Should have:</span>    <span class="ok">Re-thrown or returned explicit error</span>
+<span class="dim">3.</span> <span class="wh">Root cause:</span>     <span class="og">False assumption that errors don't matter</span>
+<span class="dim">4.</span> <span class="wh">Category:</span>       <span class="pr">development</span>
+<span class="dim">5.</span> <span class="wh">Severity:</span>       <span class="err">high</span>
+        </div>
+      </div>
+
+      <!-- Scene 4: Error entry created -->
+      <div class="scene" id="s4">
+        <div class="file-tab active">references/errors/error-log.md</div>
+        <div class="code yaml-entry" style="margin-top:8px">
+<span class="pr">- id:</span> <span class="yl">ERR-2025-003</span>
+  <span class="pr">date:</span> <span class="wh">2025-05-08</span>
+  <span class="pr">category:</span> <span class="og">development</span>
+  <span class="pr">severity:</span> <span class="err">high</span>
+  <span class="pr">description:</span> <span class="str">"Empty catch block swallowed database error"</span>
+  <span class="pr">root_cause:</span> <span class="str">"Assumed errors could be safely ignored"</span>
+  <span class="pr">new_rule:</span> <span class="ok">"Never use empty catch blocks.</span>
+             <span class="ok">Always re-throw, log, or return an error."</span>
+  <span class="pr">count:</span> <span class="wh">1</span>
+        </div>
+      </div>
+
+      <!-- Scene 5: Rule added to code-quality.md -->
+      <div class="scene" id="s5">
+        <div class="file-tab active">references/development/code-quality.md</div>
+        <div class="code" style="margin-top:8px">
+<span class="dim">## Error Handling</span>
+
+<span class="dim">7. Always handle promise rejections explicitly.</span>
+<span class="dim">8. Never return null from functions that can fail.</span>
+
+<span class="ok" style="background:rgba(46,204,113,.1);display:block;padding:2px 4px;border-radius:3px">9. Never use empty catch blocks. Always re-throw,
+   log with context, or return a typed error.
+   Reference: ERR-2025-003  ← NEW</span>
+        </div>
+        <div style="margin-top:16px;color:var(--green);font-size:12px">&#x1F4DD; Rule permanently added to sub-skill</div>
+      </div>
+
+      <!-- Scene 6: Git commit -->
+      <div class="scene" id="s6">
+        <div class="file-tab active">terminal</div>
+        <div class="code" style="margin-top:8px">
+<span class="wh">$ git add references/</span>
+<span class="wh">$ git commit -m "learn(errors): ERR-2025-003"</span>
+
+<span class="branch-badge">main</span> <span class="commit-hash">a3f8c21</span>
+<span class="pr">learn(errors):</span> <span class="wh">ERR-2025-003 — never use empty catch blocks</span>
+
+<span class="dim"> 2 files changed, 8 insertions(+)</span>
+<span class="dim"> M references/errors/error-log.md</span>
+<span class="dim"> M references/development/code-quality.md</span>
+        </div>
+        <div style="margin-top:16px;color:var(--purple);font-size:12px">&#x1F512; Knowledge committed to Git — versioned, reviewable, permanent</div>
+      </div>
+
+      <!-- Scene 7: Success -->
+      <div class="scene" id="s7">
+        <div class="success-glow">
+          <div class="checkmark">&#x2705;</div>
+          <h2>Never happens again.</h2>
+          <p>The agent will load this rule in every future session.</p>
+          <p style="margin-top:24px;color:var(--dim);font-size:11px">Every mistake makes the system permanently better.</p>
+        </div>
+      </div>
+
+    </div>
+    <div class="progress"></div>
+  </div>
+</div>
+
+<script>
+const STEP_DUR = 3200;
+const scenes = document.querySelectorAll('.scene');
+const dots = document.querySelectorAll('.step-dot');
+const title = document.getElementById('termTitle');
+const titles = [
+  'api/handler.ts — writing code',
+  'npm test — running tests',
+  'self-analysis — diagnosing',
+  'error-log.md — recording',
+  'code-quality.md — learning',
+  'git commit — preserving',
+  'skill-everythink — complete'
+];
+const dotColors = ['var(--blue)','var(--red)','var(--yellow)','var(--orange)','var(--green)','var(--purple)','var(--green)'];
+
+let current = 0;
+
+function showScene(idx) {
+  scenes.forEach((s, i) => s.classList.toggle('active', i === idx));
+  dots.forEach((d, i) => {
+    d.style.background = i <= idx ? dotColors[idx] : 'var(--border)';
+  });
+  title.textContent = titles[idx];
+}
+
+function loop() {
+  showScene(current);
+  current = (current + 1) % scenes.length;
+  setTimeout(loop, STEP_DUR);
+}
+
+loop();
+</script>
+</body>
+</html>
