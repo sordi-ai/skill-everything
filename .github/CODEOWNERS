@@ -1,0 +1,17 @@
+# CODEOWNERS — required reviewers per path
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Rules and security baseline must be reviewed by maintainers
+references/errors/                          @sordi-ai/maintainers
+references/development/code-quality.md      @sordi-ai/maintainers
+
+# Tooling and automation
+tools/                                      @sordi-ai/maintainers
+schemas/                                    @sordi-ai/maintainers
+.github/workflows/                          @sordi-ai/maintainers
+
+# Project trust surface
+SECURITY.md                                 @sordi-ai/maintainers
+DISCLAIMER.md                               @sordi-ai/maintainers
+LICENSE                                     @sordi-ai/maintainers
+README.md                                   @sordi-ai/maintainers
