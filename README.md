@@ -244,6 +244,93 @@ The human reviews the PR. The agent wrote it.
 
 ---
 
+## 🎯 Concrete Example: From Bug to Permanent Rule
+
+Here's what the self-extension loop looks like in practice — start to finish.
+
+**1. Agent writes code with a bug**
+
+```typescript
+// api/users.ts — the agent wrote this
+async function getUser(id: string) {
+  const user = db.findById(id);  // ← BUG: missing await
+  return user.name;               // TypeError: Cannot read property 'name' of Promise
+}
+```
+
+**2. Test fails**
+
+```
+FAIL  api/users.test.ts
+  ✗ getUser returns name for valid id
+    TypeError: Cannot read properties of undefined (reading 'name')
+    at getUser (api/users.ts:3:15)
+
+Tests:  1 failed, 12 passed
+```
+
+**3. Agent triggers self-extension workflow**
+
+The agent recognizes it caused the failure and analyzes:
+
+```yaml
+What I did:       Called async function without await
+Should have done: const user = await db.findById(id)
+Root cause:       Assumed db.findById was synchronous
+Category:         development
+Severity:         high
+```
+
+**4. Agent writes error log entry**
+
+```yaml
+# references/errors/error-log.md
+- id: ERR-2025-001
+  date: 2025-05-08
+  category: development
+  severity: high
+  context: "Express route handler calling database"
+  description: "Missing await on async db call → returned Promise instead of data"
+  root_cause: "Assumed db.findById() was synchronous"
+  new_rule: "Never call an async function without await. If unsure whether a function is async, check its return type first."
+  count: 1
+```
+
+**5. Agent adds rule to code-quality.md**
+
+```markdown
+# references/development/code-quality.md
+
+## Error Handling
+...
+9. Never call an async function without await. If unsure whether
+   a function is async, check its return type first.
+   Reference: ERR-2025-001
+```
+
+**6. Agent commits**
+
+```bash
+$ git add references/
+$ git commit -m "learn(errors): ERR-2025-001 — never call async without await"
+
+ 2 files changed, 14 insertions(+)
+```
+
+**7. Next session — the agent reads the rule and gets it right**
+
+```typescript
+// Same task, different day. The agent now writes:
+async function getUser(id: string) {
+  const user = await db.findById(id);  // ✅ Correct
+  return user.name;
+}
+```
+
+> **The mistake happened once. The rule lives forever.** And because it's a Git commit, you can `blame`, `revert`, or `cherry-pick` it into another project.
+
+---
+
 ## 🛠️ Create Your Own Skill
 
 ```bash
