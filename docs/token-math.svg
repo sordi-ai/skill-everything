@@ -1,0 +1,224 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
+  <title id="title">Token math — five setups, honest comparison</title>
+  <desc id="desc">A bar chart comparing the per-1000-message cost of five setups: monolithic uncached, monolithic with caching, skill-everything single sub-skill, skill-everything multi sub-skill, and skill-everything with caching. Output tokens dominate every column because Sonnet pricing on output is five times input. Headline: skill-everything is twenty to thirty-four percent cheaper than uncached monolithic and roughly break-even with cached monolithic.</desc>
+
+  <style>
+    :root {
+      --bg:        #fbfbfa;
+      --ink:       #1a1d21;
+      --muted:     #5a6470;
+      --hairline:  #cfd5dc;
+      --rule:      #8b95a0;
+      --agent:     #3a5a7a;
+      --agent-fill:#eaf0f5;
+      --ci:        #1f7a4a;
+      --ci-fill:   #e6f3ec;
+      --human:     #b46a00;
+      --human-fill:#fbeed1;
+      --git:       #2b2f33;
+      --git-fill:  #eef0f2;
+      --loop:      #7c3aed;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:        #11141a;
+        --ink:       #e6e9ee;
+        --muted:     #8a93a0;
+        --hairline:  #3a424d;
+        --rule:      #5a6470;
+        --agent:     #88aed3;
+        --agent-fill:#1a2330;
+        --ci:        #6fc093;
+        --ci-fill:   #14241c;
+        --human:     #e3a154;
+        --human-fill:#2a2014;
+        --git:       #c8cdd4;
+        --git-fill:  #181c22;
+        --loop:      #b794ff;
+      }
+    }
+
+    .frame      { fill: var(--bg); stroke: var(--hairline); }
+    .lane       { fill: var(--bg); stroke: var(--hairline); stroke-dasharray: 2 3; }
+    .lane-label { font: 700 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 0.8px; fill: var(--muted); }
+
+    .h-title    { font: 700 13px -apple-system, system-ui, sans-serif; letter-spacing: 2px; fill: var(--ink); }
+    .h-sub      { font: 400 11px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+
+    .step-num   { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--muted); letter-spacing: 0.5px; }
+    .node-title { font: 600 12px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .node-sub   { font: 400 11px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+    .mono       { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; }
+    .mono-tag   { font: 500 11px ui-monospace, Consolas, monospace; fill: var(--ink); }
+    .mono-dim   { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
+
+    .arrow      { stroke: var(--rule); stroke-width: 1.5; fill: none; }
+
+    .chip       { fill: var(--bg); stroke: var(--hairline); }
+    .chip-text  { font: 500 10px ui-monospace, Consolas, monospace; fill: var(--ink); }
+
+    /* bar segments — output dominates, input thin slice */
+    .bar-input   { fill: var(--agent-fill); stroke: var(--agent); stroke-width: 1; }
+    .bar-output  { fill: var(--ci-fill);    stroke: var(--ci);    stroke-width: 1; }
+    .bar-cache   { fill: var(--human-fill); stroke: var(--human); stroke-width: 1; }
+
+    .axis       { stroke: var(--hairline); stroke-width: 1; }
+    .gridline   { stroke: var(--hairline); stroke-width: 0.5; stroke-dasharray: 2 3; }
+    .axis-tick  { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
+
+    .col-name   { font: 600 11px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .col-cost   { font: 700 13px ui-monospace, Consolas, monospace; fill: var(--ink); }
+    .col-meta   { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
+
+    .legend-t   { font: 500 10px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .tagline    { font: 600 11px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .annot      { font: 400 10px -apple-system, system-ui, sans-serif; fill: var(--muted); font-style: italic; }
+    .headline   { font: 700 12px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+  </style>
+
+  <defs>
+    <marker id="a-rule" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 z" fill="var(--rule)"/>
+    </marker>
+  </defs>
+
+  <!-- ============== FRAME ============== -->
+  <rect class="frame" x="0.5" y="0.5" width="1199" height="499" rx="6"/>
+
+  <!-- ============== HEADER ============== -->
+  <text class="h-title" x="24" y="30">TOKEN MATH  /  $ PER 1 000 MESSAGES, FIVE SETUPS</text>
+  <text class="h-sub"   x="24" y="46">Sonnet pricing — input $3 / Mtok, output $15 / Mtok. Cached input billed at 10% of base. Output dominates every setup.</text>
+
+  <!-- legend -->
+  <g transform="translate(740 22)">
+    <rect class="bar-input"  x="0"   y="0" width="14" height="10"/>
+    <text class="legend-t"   x="20"  y="9">input  ($3 / Mtok)</text>
+    <rect class="bar-output" x="120" y="0" width="14" height="10"/>
+    <text class="legend-t"   x="140" y="9">output ($15 / Mtok)</text>
+    <rect class="bar-cache"  x="260" y="0" width="14" height="10"/>
+    <text class="legend-t"   x="280" y="9">cache savings</text>
+  </g>
+
+  <!-- ============== LANES ============== -->
+  <line x1="24"   y1="70"  x2="1176" y2="70"  class="lane"/>
+  <line x1="24"   y1="380" x2="1176" y2="380" class="lane"/>
+  <line x1="24"   y1="430" x2="1176" y2="430" class="lane"/>
+
+  <text class="lane-label" x="30"  y="85">CHART  ·  cost per 1 000 messages</text>
+  <text class="lane-label" x="30"  y="395">SETUP TABLE  ·  per-message inputs</text>
+  <text class="lane-label" x="30"  y="445">HEADLINE</text>
+
+  <!-- ============== Y-AXIS (cost in $) ============== -->
+  <!-- y from 100..360, $0..$80 scale. 1$ = 3.25px. -->
+  <!-- y(price) = 360 - price * 3.25 -->
+
+  <line x1="100" y1="100" x2="100" y2="360" class="axis"/>
+  <line x1="100" y1="360" x2="1140" y2="360" class="axis"/>
+
+  <!-- gridlines + ticks ($0, $20, $40, $60, $80) -->
+  <line x1="100" y1="360" x2="1140" y2="360" class="gridline"/>
+  <text class="axis-tick" x="92" y="363" text-anchor="end">$0</text>
+
+  <line x1="100" y1="295" x2="1140" y2="295" class="gridline"/>
+  <text class="axis-tick" x="92" y="298" text-anchor="end">$20</text>
+
+  <line x1="100" y1="230" x2="1140" y2="230" class="gridline"/>
+  <text class="axis-tick" x="92" y="233" text-anchor="end">$40</text>
+
+  <line x1="100" y1="165" x2="1140" y2="165" class="gridline"/>
+  <text class="axis-tick" x="92" y="168" text-anchor="end">$60</text>
+
+  <line x1="100" y1="100" x2="1140" y2="100" class="gridline"/>
+  <text class="axis-tick" x="92" y="103" text-anchor="end">$80</text>
+
+  <!-- ============== BARS ==============
+       column pitch ~200 px starting at x=170
+       bar width 100 px
+
+       Setup A: Monolithic uncached         input 30 / output 45 → total $75
+       Setup B: Monolithic + caching        input  3 / output 45 → total $48
+       Setup C: skill-everything single     input  4.8 / output 45 → total $50
+       Setup D: skill-everything multi      input  9.9 / output 45 → total $55  (rounded ≈ $54.9 → 55)
+       Setup E: skill-everything + caching  input  2.4 / output 45 → total $47
+       y_top = 360 - total*3.25
+       output_top = 360 - 45*3.25 = 360 - 146.25 = 213.75
+  -->
+
+  <!-- A. Monolithic uncached -->
+  <g transform="translate(170 0)">
+    <!-- output stack: $45 from y=213.75 to 360 -->
+    <rect class="bar-output" x="0" y="214" width="100" height="146"/>
+    <!-- input on top: $30 from y=116.25 to 213.75 -->
+    <rect class="bar-input"  x="0" y="117" width="100" height="97"/>
+    <text class="col-cost"   x="50" y="108" text-anchor="middle">$75</text>
+    <text class="col-name"   x="50" y="378" text-anchor="middle">Monolithic</text>
+    <text class="col-meta"   x="50" y="392" text-anchor="middle">uncached</text>
+  </g>
+
+  <!-- B. Monolithic + caching -->
+  <g transform="translate(370 0)">
+    <!-- output: $45 -->
+    <rect class="bar-output" x="0" y="214" width="100" height="146"/>
+    <!-- input cached: ~$3 from y=204.25 to 213.75 -->
+    <rect class="bar-input"  x="0" y="204" width="100" height="10"/>
+    <!-- ghost cache savings: $27 from y=117 to y=204 -->
+    <rect class="bar-cache"  x="0" y="117" width="100" height="87" fill-opacity="0.35"/>
+    <text class="col-cost"   x="50" y="108" text-anchor="middle">$48</text>
+    <text class="col-name"   x="50" y="378" text-anchor="middle">Monolithic</text>
+    <text class="col-meta"   x="50" y="392" text-anchor="middle">+ caching 90%</text>
+  </g>
+
+  <!-- C. skill-everything single sub -->
+  <g transform="translate(570 0)">
+    <!-- output: $45 -->
+    <rect class="bar-output" x="0" y="214" width="100" height="146"/>
+    <!-- input: $4.8 from y=198.4 to 213.75 -->
+    <rect class="bar-input"  x="0" y="198" width="100" height="16"/>
+    <text class="col-cost"   x="50" y="190" text-anchor="middle">$50</text>
+    <text class="col-name"   x="50" y="378" text-anchor="middle">skill-everything</text>
+    <text class="col-meta"   x="50" y="392" text-anchor="middle">single sub-skill</text>
+  </g>
+
+  <!-- D. skill-everything multi sub -->
+  <g transform="translate(770 0)">
+    <!-- output: $45 -->
+    <rect class="bar-output" x="0" y="214" width="100" height="146"/>
+    <!-- input: $9.9 from y=181.8 to 213.75 -->
+    <rect class="bar-input"  x="0" y="182" width="100" height="32"/>
+    <text class="col-cost"   x="50" y="173" text-anchor="middle">$55</text>
+    <text class="col-name"   x="50" y="378" text-anchor="middle">skill-everything</text>
+    <text class="col-meta"   x="50" y="392" text-anchor="middle">2–3 sub-skills</text>
+  </g>
+
+  <!-- E. skill-everything + caching -->
+  <g transform="translate(970 0)">
+    <!-- output: $45 -->
+    <rect class="bar-output" x="0" y="214" width="100" height="146"/>
+    <!-- input cached: $2.4 from y=206 to 213.75 -->
+    <rect class="bar-input"  x="0" y="206" width="100" height="8"/>
+    <!-- ghost cache savings: $2.4 from y=198 to y=206 (small) -->
+    <rect class="bar-cache"  x="0" y="198" width="100" height="8" fill-opacity="0.35"/>
+    <text class="col-cost"   x="50" y="190" text-anchor="middle">$47</text>
+    <text class="col-name"   x="50" y="378" text-anchor="middle">skill-everything</text>
+    <text class="col-meta"   x="50" y="392" text-anchor="middle">+ caching</text>
+  </g>
+
+  <!-- annotation: output dominates -->
+  <text class="annot" x="1130" y="290" text-anchor="end">output ≈ $45 in every setup</text>
+  <text class="annot" x="1130" y="304" text-anchor="end">— input choice barely moves total</text>
+
+  <!-- ============== HEADLINE ============== -->
+  <text class="headline" x="30" y="465">20–34% cheaper than uncached monolithic.  Roughly break-even with cached monolithic.  No 84% claim.</text>
+  <text class="annot"    x="30" y="482">Output (3000 tok/msg) dominates because Sonnet output is 5× input. Caching helps both monolithic and skill-everything; skill-everything keeps room when caching is unavailable or partial.</text>
+
+  <!-- ============== TAGLINE ============== -->
+  <text class="mono-dim" x="1176" y="488" text-anchor="end">skill-everything  /  docs/token-math.svg</text>
+
+  <!-- ============== TABLE BAND between chart and headline ============== -->
+  <!-- already covered by per-bar labels; add small chip with assumptions  -->
+  <g transform="translate(900 412)">
+    <rect class="chip" x="0" y="0" width="240" height="14" rx="3"/>
+    <text class="chip-text" x="6" y="11">3 000 output tok/msg  ·  10 000 base sys-prompt</text>
+  </g>
+
+</svg>

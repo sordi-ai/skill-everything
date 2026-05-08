@@ -1,143 +1,306 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 340" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
+  <title id="title">How skill-everything self-extends — pipeline diagram</title>
+  <desc id="desc">A six-step pipeline showing how an agent error becomes a merged rule via PR-flow with lint-rules and auto-approve-rule-pr CI gates and CODEOWNERS approval. Every commit means the next session inherits the fix.</desc>
+
+  <style>
+    /* Semantic palette — three roles, one substrate */
+    :root {
+      --bg:        #fbfbfa;
+      --ink:       #1a1d21;
+      --muted:     #5a6470;
+      --hairline:  #cfd5dc;
+      --rule:      #8b95a0;
+
+      --agent:     #3a5a7a;
+      --agent-fill:#eaf0f5;
+
+      --ci:        #1f7a4a;
+      --ci-fill:   #e6f3ec;
+
+      --human:     #b46a00;
+      --human-fill:#fbeed1;
+
+      --git:       #2b2f33;
+      --git-fill:  #eef0f2;
+
+      --loop:      #7c3aed;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:        #11141a;
+        --ink:       #e6e9ee;
+        --muted:     #8a93a0;
+        --hairline:  #3a424d;
+        --rule:      #5a6470;
+
+        --agent:     #88aed3;
+        --agent-fill:#1a2330;
+
+        --ci:        #6fc093;
+        --ci-fill:   #14241c;
+
+        --human:     #e3a154;
+        --human-fill:#2a2014;
+
+        --git:       #c8cdd4;
+        --git-fill:  #181c22;
+
+        --loop:      #b794ff;
+      }
+    }
+
+    .frame      { fill: var(--bg); stroke: var(--hairline); }
+    .lane       { fill: var(--bg); stroke: var(--hairline); stroke-dasharray: 2 3; }
+    .lane-label { font: 700 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 0.8px; fill: var(--muted); }
+
+    .h-title    { font: 700 13px -apple-system, system-ui, sans-serif; letter-spacing: 2px; fill: var(--ink); }
+    .h-sub      { font: 400 11px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+
+    .node       { fill: var(--agent-fill); stroke: var(--agent); stroke-width: 1.5; }
+    .node.ci    { fill: var(--ci-fill);    stroke: var(--ci); }
+    .node.human { fill: var(--human-fill); stroke: var(--human); }
+
+    .step-num   { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--muted); letter-spacing: 0.5px; }
+    .node-title { font: 600 12px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .node-sub   { font: 400 11px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+    .mono       { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; }
+    .mono-tag   { font: 500 11px ui-monospace, Consolas, monospace; fill: var(--ink); }
+    .mono-dim   { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
+
+    .arrow      { stroke: var(--rule); stroke-width: 1.5; fill: none; }
+    .arrow.loop { stroke: var(--loop); stroke-width: 2; stroke-dasharray: 5 4; }
+
+    .gate       { fill: none; stroke: var(--ci); stroke-width: 1.2; stroke-dasharray: 4 3; }
+    .gate-label { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.5px; }
+    .gate-fill  { fill: var(--ci-fill); opacity: 0.55; }
+
+    .human-gate       { fill: none; stroke: var(--human); stroke-width: 1.2; stroke-dasharray: 4 3; }
+    .human-gate-label { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--human); letter-spacing: 0.5px; }
+    .human-gate-fill  { fill: var(--human-fill); opacity: 0.55; }
+
+    .chip       { fill: var(--bg); stroke: var(--hairline); }
+    .chip-text  { font: 500 10px ui-monospace, Consolas, monospace; fill: var(--ink); }
+
+    .git-line   { stroke: var(--git); stroke-width: 1.5; fill: none; }
+    .git-dot    { fill: var(--git); stroke: var(--bg); stroke-width: 1.5; }
+    .git-label  { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--git); }
+    .git-meta   { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
+
+    .loop-label { font: 600 11px ui-monospace, Consolas, monospace; fill: var(--loop); }
+    .legend-t   { font: 500 10px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .tagline    { font: 600 11px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .annot      { font: 400 10px -apple-system, system-ui, sans-serif; fill: var(--muted); font-style: italic; }
+  </style>
+
   <defs>
-    <!-- Background gradient -->
-    <linearGradient id="bg" x1="0" y1="0" x2="960" y2="340" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#0d1117"/>
-      <stop offset="100%" stop-color="#161b22"/>
-    </linearGradient>
-    <!-- Node gradients -->
-    <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ff6b6b"/>
-      <stop offset="100%" stop-color="#ee5a24"/>
-    </linearGradient>
-    <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffd93d"/>
-      <stop offset="100%" stop-color="#f0b429"/>
-    </linearGradient>
-    <linearGradient id="g3" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#6bcb77"/>
-      <stop offset="100%" stop-color="#38a169"/>
-    </linearGradient>
-    <linearGradient id="g4" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#4d96ff"/>
-      <stop offset="100%" stop-color="#3182ce"/>
-    </linearGradient>
-    <linearGradient id="g5" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#9b59b6"/>
-      <stop offset="100%" stop-color="#7c3aed"/>
-    </linearGradient>
-    <linearGradient id="g6" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#2ecc71"/>
-      <stop offset="100%" stop-color="#27ae60"/>
-    </linearGradient>
-    <!-- Glow filters -->
-    <filter id="glow1" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="6" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-    </filter>
-    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.4"/>
-    </filter>
-    <!-- Arrow marker -->
-    <marker id="arrow" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="10" markerHeight="7" orient="auto-start-reverse">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#8b949e"/>
+    <marker id="a-rule" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 z" fill="var(--rule)"/>
     </marker>
-    <marker id="arrow-dash" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="10" markerHeight="7" orient="auto-start-reverse">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#58a6ff"/>
+    <marker id="a-loop" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 z" fill="var(--loop)"/>
+    </marker>
+    <marker id="a-ci" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 z" fill="var(--ci)"/>
     </marker>
   </defs>
 
-  <!-- Background -->
-  <rect width="960" height="340" rx="16" fill="url(#bg)"/>
-  <rect width="960" height="340" rx="16" fill="none" stroke="#30363d" stroke-width="1"/>
+  <!-- ============== FRAME ============== -->
+  <rect class="frame" x="0.5" y="0.5" width="1199" height="499" rx="6"/>
 
-  <!-- Title -->
-  <text x="480" y="36" text-anchor="middle" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" fill="#58a6ff" letter-spacing="2">HOW IT WORKS</text>
+  <!-- ============== HEADER ============== -->
+  <text class="h-title" x="24" y="30">HOW IT WORKS  /  SELF-EXTENSION PIPELINE</text>
+  <text class="h-sub"   x="24" y="46">Every commit means the next session inherits the fix.</text>
 
-  <!-- Connection arrows (behind nodes) -->
-  <!-- 1→2 -->
-  <line x1="175" y1="150" x2="215" y2="150" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
-  <!-- 2→3 -->
-  <line x1="335" y1="150" x2="375" y2="150" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
-  <!-- 3→4 -->
-  <line x1="495" y1="150" x2="535" y2="150" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
-  <!-- 4→5 -->
-  <line x1="655" y1="150" x2="695" y2="150" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
-  <!-- 5→6 -->
-  <line x1="815" y1="150" x2="855" y2="150" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
-
-  <!-- Feedback loop (dashed curved path from node 6 back to node 1) -->
-  <path d="M 910 180 Q 910 290, 480 290 Q 50 290, 50 180" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8 4" fill="none" marker-end="url(#arrow-dash)"/>
-  <text x="480" y="310" text-anchor="middle" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-size="11" fill="#58a6ff" font-style="italic">next session — the cycle continues</text>
-
-  <!-- Node 1: Mistake -->
-  <g filter="url(#shadow)">
-    <rect x="55" y="95" width="120" height="110" rx="12" fill="url(#g1)" opacity="0.15"/>
-    <rect x="55" y="95" width="120" height="110" rx="12" fill="none" stroke="url(#g1)" stroke-width="2"/>
-    <text x="115" y="132" text-anchor="middle" font-size="28">🤖</text>
-    <text x="115" y="158" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="600" fill="#f0f6fc">Agent makes</text>
-    <text x="115" y="175" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="600" fill="#f0f6fc">a mistake</text>
-    <text x="115" y="195" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" fill="#8b949e">or learns something new</text>
+  <!-- legend -->
+  <g transform="translate(740 22)">
+    <rect class="node"       x="0"   y="0" width="14" height="10" rx="2"/>
+    <text class="legend-t"   x="20"  y="9">agent action</text>
+    <rect class="node ci"    x="100" y="0" width="14" height="10" rx="2"/>
+    <text class="legend-t"   x="120" y="9">CI / automated</text>
+    <rect class="node human" x="220" y="0" width="14" height="10" rx="2"/>
+    <text class="legend-t"   x="240" y="9">human-in-the-loop</text>
+    <line x1="350" y1="5" x2="370" y2="5" class="arrow loop" marker-end="url(#a-loop)"/>
+    <text class="legend-t"   x="376" y="9">feedback loop</text>
   </g>
 
-  <!-- Node 2: Analyze -->
-  <g filter="url(#shadow)">
-    <rect x="215" y="95" width="120" height="110" rx="12" fill="url(#g2)" opacity="0.15"/>
-    <rect x="215" y="95" width="120" height="110" rx="12" fill="none" stroke="url(#g2)" stroke-width="2"/>
-    <text x="275" y="132" text-anchor="middle" font-size="28">🔍</text>
-    <text x="275" y="158" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="600" fill="#f0f6fc">Mistake is</text>
-    <text x="275" y="175" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="600" fill="#f0f6fc">analyzed</text>
-    <text x="275" y="195" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" fill="#8b949e">root cause identified</text>
+  <!-- ============== SWIMLANES ============== -->
+  <line x1="24"   y1="70"  x2="1176" y2="70"  class="lane"/>
+  <line x1="24"   y1="180" x2="1176" y2="180" class="lane"/>
+  <line x1="24"   y1="280" x2="1176" y2="280" class="lane"/>
+  <line x1="24"   y1="380" x2="1176" y2="380" class="lane"/>
+
+  <text class="lane-label" x="30"  y="85">AGENT</text>
+  <text class="lane-label" x="30"  y="195">CI&#8201;/&#8201;AUTOMATED CHECKS</text>
+  <text class="lane-label" x="30"  y="295">HUMAN-IN-THE-LOOP</text>
+  <text class="lane-label" x="30"  y="395">REPO SUBSTRATE&#8201;·&#8201;refs/heads/main</text>
+
+  <!-- ============== STEP 1 — TRIGGER ============== -->
+  <g transform="translate(110 100)">
+    <rect class="node" x="0" y="0" width="180" height="68" rx="6"/>
+    <text class="step-num" x="8" y="14">STEP&#8201;1</text>
+    <text class="node-title" x="8" y="32">Trigger</text>
+    <text class="node-sub"   x="8" y="48">test fails  ·  user correction</text>
+    <text class="node-sub"   x="8" y="60">deploy issue  ·  realisation</text>
   </g>
 
-  <!-- Node 3: Formulate -->
-  <g filter="url(#shadow)">
-    <rect x="375" y="95" width="120" height="110" rx="12" fill="url(#g3)" opacity="0.15"/>
-    <rect x="375" y="95" width="120" height="110" rx="12" fill="none" stroke="url(#g3)" stroke-width="2"/>
-    <text x="435" y="132" text-anchor="middle" font-size="28">📝</text>
-    <text x="435" y="158" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="600" fill="#f0f6fc">Rule is</text>
-    <text x="435" y="175" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="600" fill="#f0f6fc">formulated</text>
-    <text x="435" y="195" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" fill="#8b949e">actionable directive</text>
+  <!-- ============== STEP 2 — SEARCH BEFORE WRITE ============== -->
+  <g transform="translate(320 100)">
+    <rect class="node" x="0" y="0" width="180" height="68" rx="6"/>
+    <text class="step-num" x="8" y="14">STEP&#8201;2</text>
+    <text class="node-title" x="8" y="32">Search before write</text>
+    <text class="mono-tag"  x="8" y="48">grep ERR- error-log.md</text>
+    <text class="node-sub"  x="8" y="60">duplicate? → bump count, stop</text>
   </g>
 
-  <!-- Node 4: Update -->
-  <g filter="url(#shadow)">
-    <rect x="535" y="95" width="120" height="110" rx="12" fill="url(#g4)" opacity="0.15"/>
-    <rect x="535" y="95" width="120" height="110" rx="12" fill="none" stroke="url(#g4)" stroke-width="2"/>
-    <text x="595" y="132" text-anchor="middle" font-size="28">📂</text>
-    <text x="595" y="158" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="600" fill="#f0f6fc">Skill file</text>
-    <text x="595" y="175" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="600" fill="#f0f6fc">is updated</text>
-    <text x="595" y="195" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" fill="#8b949e">right sub-skill targeted</text>
+  <!-- ============== STEP 3 — ANALYSE ============== -->
+  <g transform="translate(530 100)">
+    <rect class="node" x="0" y="0" width="180" height="68" rx="6"/>
+    <text class="step-num" x="8" y="14">STEP&#8201;3</text>
+    <text class="node-title" x="8" y="32">Analyse</text>
+    <text class="node-sub"   x="8" y="48">category · severity · cause</text>
+    <text class="mono-dim"   x="8" y="60">{development|git|security|…}</text>
   </g>
 
-  <!-- Node 5: Commit -->
-  <g filter="url(#shadow)">
-    <rect x="695" y="95" width="120" height="110" rx="12" fill="url(#g5)" opacity="0.15"/>
-    <rect x="695" y="95" width="120" height="110" rx="12" fill="none" stroke="url(#g5)" stroke-width="2"/>
-    <text x="755" y="132" text-anchor="middle" font-size="28">🔒</text>
-    <text x="755" y="158" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="600" fill="#f0f6fc">Git commit</text>
-    <text x="755" y="175" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="600" fill="#f0f6fc">preserves it</text>
-    <text x="755" y="195" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" fill="#8b949e">diff · blame · revert</text>
+  <!-- ============== STEP 4 — FORMULATE ============== -->
+  <g transform="translate(740 100)">
+    <rect class="node" x="0" y="0" width="180" height="68" rx="6"/>
+    <text class="step-num" x="8" y="14">STEP&#8201;4</text>
+    <text class="node-title" x="8" y="32">Formulate <tspan class="mono">new_rule</tspan></text>
+    <text class="mono-tag"   x="8" y="48">verb &#8712; {Always, Never, …}</text>
+    <text class="node-sub"   x="8" y="60">writes error-log.md + ref file</text>
   </g>
 
-  <!-- Node 6: Never again -->
-  <g filter="url(#shadow)">
-    <rect x="855" y="95" width="120" height="110" rx="12" fill="url(#g6)" opacity="0.15"/>
-    <rect x="855" y="95" width="120" height="110" rx="12" fill="none" stroke="url(#g6)" stroke-width="2"/>
-    <text x="915" y="132" text-anchor="middle" font-size="28">✅</text>
-    <text x="915" y="158" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="600" fill="#f0f6fc">Never happens</text>
-    <text x="915" y="175" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="600" fill="#f0f6fc">again</text>
-    <text x="915" y="195" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" fill="#8b949e">experience compounds</text>
+  <!-- ============== STEP 5 — OPEN PR ============== -->
+  <g transform="translate(950 100)">
+    <rect class="node" x="0" y="0" width="180" height="68" rx="6"/>
+    <text class="step-num" x="8" y="14">STEP&#8201;5</text>
+    <text class="node-title" x="8" y="32">Open PR</text>
+    <text class="mono-tag"   x="8" y="48">learn/ERR-2026-014</text>
+    <text class="mono-tag"   x="8" y="60">label: needs-rule-review</text>
   </g>
 
-  <!-- Step numbers (subtle) -->
-  <text x="67" y="110" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" fill="#484f58" font-weight="700">1</text>
-  <text x="227" y="110" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" fill="#484f58" font-weight="700">2</text>
-  <text x="387" y="110" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" fill="#484f58" font-weight="700">3</text>
-  <text x="547" y="110" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" fill="#484f58" font-weight="700">4</text>
-  <text x="707" y="110" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" fill="#484f58" font-weight="700">5</text>
-  <text x="867" y="110" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" fill="#484f58" font-weight="700">6</text>
+  <!-- arrows step1→2→3→4→5 -->
+  <line x1="290" y1="134" x2="320" y2="134" class="arrow" marker-end="url(#a-rule)"/>
+  <line x1="500" y1="134" x2="530" y2="134" class="arrow" marker-end="url(#a-rule)"/>
+  <line x1="710" y1="134" x2="740" y2="134" class="arrow" marker-end="url(#a-rule)"/>
+  <line x1="920" y1="134" x2="950" y2="134" class="arrow" marker-end="url(#a-rule)"/>
 
-  <!-- Watermark -->
-  <text x="940" y="332" text-anchor="end" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" fill="#30363d">skill-everythink</text>
+  <!-- ============== CI GATES ============== -->
+
+  <!-- Gate A: lint-rules workflow -->
+  <g transform="translate(740 210)">
+    <rect class="gate-fill" x="0" y="0" width="180" height="58" rx="6"/>
+    <rect class="gate"      x="0" y="0" width="180" height="58" rx="6"/>
+    <text class="gate-label" x="8" y="15">CI GATE  ·  lint-rules</text>
+    <text class="mono-tag"   x="8" y="32">schemas/error-entry.json</text>
+    <text class="mono-dim"   x="8" y="46">verb allow-list  ·  forbidden-set</text>
+  </g>
+
+  <!-- Gate B: auto-approve-rule-pr -->
+  <g transform="translate(950 210)">
+    <rect class="gate-fill" x="0" y="0" width="180" height="58" rx="6"/>
+    <rect class="gate"      x="0" y="0" width="180" height="58" rx="6"/>
+    <text class="gate-label" x="8" y="15">CI GATE  ·  auto-approve-rule-pr</text>
+    <text class="mono-tag"   x="8" y="32">scope: references/errors/**</text>
+    <text class="mono-dim"   x="8" y="46">requires Co-Authored-By</text>
+  </g>
+
+  <!-- arrow Step5 → Gate A -->
+  <path d="M 1040 168 V 210" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
+  <text class="annot" x="1045" y="176">PR #142 opened</text>
+
+  <!-- arrow Gate A → Gate B -->
+  <line x1="920" y1="239" x2="950" y2="239" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
+
+  <!-- ============== STEP 6 — HUMAN REVIEW ============== -->
+  <g transform="translate(950 305)">
+    <rect class="node human" x="0" y="0" width="180" height="68" rx="6"/>
+    <text class="step-num" x="8" y="14">STEP&#8201;6</text>
+    <text class="node-title" x="8" y="32">Reviewer merges</text>
+    <text class="mono-tag"   x="8" y="48">CODEOWNERS approval</text>
+    <text class="mono-dim"   x="8" y="60">@sordi-ai/maintainers</text>
+  </g>
+
+  <!-- arrow Gate B → Step 6 -->
+  <path d="M 1040 268 V 305" class="arrow" marker-end="url(#a-rule)"/>
+  <text class="annot" x="1045" y="275">gates green</text>
+
+  <!-- Branch protection frame, height reduced to 70 (H3 fix) -->
+  <rect class="human-gate" x="940" y="298" width="200" height="70" rx="8"/>
+  <text class="human-gate-label" x="944" y="296">BRANCH PROTECTION  ·  required reviewer</text>
+
+  <!-- ============== ARTEFACT ANNOTATIONS ============== -->
+
+  <!-- Step 2 callout -->
+  <g transform="translate(320 200)">
+    <line x1="60" y1="-32" x2="60" y2="0" class="arrow" stroke="var(--hairline)" stroke-dasharray="2 2"/>
+    <rect class="chip" x="0"  y="0" width="180" height="22" rx="3"/>
+    <text class="chip-text" x="8" y="14">references/errors/error-log.md</text>
+    <text class="annot"     x="0" y="38">single source of truth</text>
+  </g>
+
+  <!-- Step 3 callout: severity tags -->
+  <g transform="translate(530 200)">
+    <line x1="60" y1="-32" x2="60" y2="0" class="arrow" stroke="var(--hairline)" stroke-dasharray="2 2"/>
+    <rect class="chip" x="0"  y="0"  width="56" height="20" rx="10"/>
+    <text class="chip-text" x="8" y="13">critical</text>
+    <rect class="chip" x="60" y="0"  width="42" height="20" rx="10"/>
+    <text class="chip-text" x="68" y="13">high</text>
+    <rect class="chip" x="106" y="0" width="56" height="20" rx="10"/>
+    <text class="chip-text" x="114" y="13">medium</text>
+    <text class="annot"     x="0"  y="38">severity field — schema enforced</text>
+  </g>
+
+  <!-- Step 4 callout: routing table — moved to translate(490 270) (C1 fix) -->
+  <g transform="translate(490 270)">
+    <line x1="350" y1="-100" x2="90" y2="0" class="arrow" stroke="var(--hairline)" stroke-dasharray="2 2"/>
+    <rect class="chip" x="0"   y="0"  width="180" height="58" rx="3"/>
+    <text class="mono-dim"  x="8" y="14">development → code-quality.md</text>
+    <text class="mono-dim"  x="8" y="28">git         → conventions.md</text>
+    <text class="mono-dim"  x="8" y="42">security    → code-quality.md</text>
+    <text class="annot"     x="0"  y="74">target file by category</text>
+  </g>
+
+  <!-- Step 1 left annotation — moved to translate(110 175) (H4 fix: agent lane) -->
+  <g transform="translate(110 175)">
+    <text class="annot" x="0" y="-8">example trigger</text>
+    <rect class="chip" x="0" y="-2"  width="180" height="22" rx="3"/>
+    <text class="chip-text" x="8" y="12">pytest --tb=line FAILED</text>
+  </g>
+
+  <!-- Next-session label — moved to translate(80 60) (C3 fix) -->
+  <g transform="translate(80 60)">
+    <text class="annot" x="0" y="-12">on next session start</text>
+    <text class="loop-label" x="0" y="0">@references/errors/*.md  →  loaded into agent context</text>
+  </g>
+
+  <!-- ============== FEEDBACK LOOP — arc on y=410 corridor (C2 fix) ============== -->
+  <path d="M 1040 373 C 1040 392, 1040 410, 600 410 C 220 410, 60 410, 60 200 C 60 130, 90 110, 110 110"
+        class="arrow loop" marker-end="url(#a-loop)" fill="none"/>
+  <text class="loop-label" x="600" y="375" text-anchor="middle">
+    next session inherits the fix  ·  rule loaded before code is written
+  </text>
+
+  <!-- ============== REPO SUBSTRATE: git timeline ============== -->
+  <g transform="translate(0 425)">
+    <line x1="80" y1="20" x2="1120" y2="20" class="git-line"/>
+    <circle class="git-dot" cx="180"  cy="20" r="5"/>
+    <circle class="git-dot" cx="360"  cy="20" r="5"/>
+    <circle class="git-dot" cx="560"  cy="20" r="5"/>
+    <circle class="git-dot" cx="760"  cy="20" r="5"/>
+    <circle class="git-dot" cx="980"  cy="20" r="5"/>
+    <path d="M 760 20 C 760 8, 780 4, 800 4 L 940 4 C 960 4, 980 8, 980 20"
+          class="git-line" stroke-dasharray="3 2"/>
+    <text class="git-label"  x="80"  y="42">refs/heads/main</text>
+    <text class="git-meta"   x="160" y="42">a13c…  feat: lint-rules</text>
+    <text class="git-meta"   x="335" y="42">b27d…  fix(api): query</text>
+    <text class="git-meta"   x="535" y="42">c44e…  docs: rationale</text>
+    <text class="git-meta"   x="730" y="42">PR #142 → merge</text>
+    <text class="git-meta"   x="945" y="42">e8aa…  learn(errors): ERR-2026-014</text>
+    <text class="git-label"  x="800" y="-2">branch: learn/ERR-2026-014</text>
+  </g>
+
+  <!-- ============== TAGLINE ============== -->
+  <text class="tagline" x="1176" y="488" text-anchor="end">plain Markdown  ·  versioned in Git  ·  reviewed by humans</text>
+  <text class="mono-dim" x="24"   y="488">skill-everything  /  docs/how-it-works.svg</text>
 </svg>

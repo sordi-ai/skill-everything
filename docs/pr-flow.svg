@@ -1,0 +1,257 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 550" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
+  <title id="title">Self-extension PR flow — branch, two CI gates, CODEOWNERS, squash-merge</title>
+  <desc id="desc">Detail of how a self-extension reaches main: agent opens a learn/ERR-YYYY-NNN branch with a Co-Authored-By trailer, opens a PR labelled needs-rule-review, two CI gates run in parallel (lint-rules and auto-approve-rule-pr), CODEOWNERS approval is required on references/errors/, then the PR is squash-merged onto main under branch protection.</desc>
+
+  <style>
+    :root {
+      --bg:        #fbfbfa;
+      --ink:       #1a1d21;
+      --muted:     #5a6470;
+      --hairline:  #cfd5dc;
+      --rule:      #8b95a0;
+      --agent:     #3a5a7a;
+      --agent-fill:#eaf0f5;
+      --ci:        #1f7a4a;
+      --ci-fill:   #e6f3ec;
+      --human:     #b46a00;
+      --human-fill:#fbeed1;
+      --git:       #2b2f33;
+      --git-fill:  #eef0f2;
+      --loop:      #7c3aed;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:        #11141a;
+        --ink:       #e6e9ee;
+        --muted:     #8a93a0;
+        --hairline:  #3a424d;
+        --rule:      #5a6470;
+        --agent:     #88aed3;
+        --agent-fill:#1a2330;
+        --ci:        #6fc093;
+        --ci-fill:   #14241c;
+        --human:     #e3a154;
+        --human-fill:#2a2014;
+        --git:       #c8cdd4;
+        --git-fill:  #181c22;
+        --loop:      #b794ff;
+      }
+    }
+
+    .frame      { fill: var(--bg); stroke: var(--hairline); }
+    .lane       { fill: var(--bg); stroke: var(--hairline); stroke-dasharray: 2 3; }
+    .lane-label { font: 700 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 0.8px; fill: var(--muted); }
+
+    .h-title    { font: 700 13px -apple-system, system-ui, sans-serif; letter-spacing: 2px; fill: var(--ink); }
+    .h-sub      { font: 400 11px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+
+    .node       { fill: var(--agent-fill); stroke: var(--agent); stroke-width: 1.5; }
+    .node.ci    { fill: var(--ci-fill);    stroke: var(--ci); }
+    .node.human { fill: var(--human-fill); stroke: var(--human); }
+    .node.git   { fill: var(--git-fill);   stroke: var(--git); }
+
+    .step-num   { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--muted); letter-spacing: 0.5px; }
+    .node-title { font: 600 12px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .node-sub   { font: 400 11px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+    .mono       { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; }
+    .mono-tag   { font: 500 11px ui-monospace, Consolas, monospace; fill: var(--ink); }
+    .mono-dim   { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
+
+    .arrow      { stroke: var(--rule); stroke-width: 1.5; fill: none; }
+
+    .gate       { fill: none; stroke: var(--ci); stroke-width: 1.2; stroke-dasharray: 4 3; }
+    .gate-label { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.5px; }
+    .gate-fill  { fill: var(--ci-fill); opacity: 0.55; }
+
+    .human-gate       { fill: none; stroke: var(--human); stroke-width: 1.2; stroke-dasharray: 4 3; }
+    .human-gate-label { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--human); letter-spacing: 0.5px; }
+
+    .chip       { fill: var(--bg); stroke: var(--hairline); }
+    .chip-text  { font: 500 10px ui-monospace, Consolas, monospace; fill: var(--ink); }
+
+    .git-line   { stroke: var(--git); stroke-width: 1.5; fill: none; }
+    .git-dot    { fill: var(--git); stroke: var(--bg); stroke-width: 1.5; }
+    .git-label  { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--git); }
+    .git-meta   { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
+
+    .legend-t   { font: 500 10px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .tagline    { font: 600 11px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .annot      { font: 400 10px -apple-system, system-ui, sans-serif; fill: var(--muted); font-style: italic; }
+  </style>
+
+  <defs>
+    <marker id="a-rule" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 z" fill="var(--rule)"/>
+    </marker>
+    <marker id="a-ci" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 z" fill="var(--ci)"/>
+    </marker>
+  </defs>
+
+  <!-- ============== FRAME ============== -->
+  <rect class="frame" x="0.5" y="0.5" width="1199" height="549" rx="6"/>
+
+  <!-- ============== HEADER ============== -->
+  <text class="h-title" x="24" y="30">PR FLOW  /  SELF-EXTENSION DETAIL</text>
+  <text class="h-sub"   x="24" y="46">Zoom into Steps 5–6 of the self-extension pipeline. Two CI gates in parallel, then CODEOWNERS, then squash-merge.</text>
+
+  <!-- legend -->
+  <g transform="translate(740 22)">
+    <rect class="node"       x="0"   y="0" width="14" height="10" rx="2"/>
+    <text class="legend-t"   x="20"  y="9">agent action</text>
+    <rect class="node ci"    x="100" y="0" width="14" height="10" rx="2"/>
+    <text class="legend-t"   x="120" y="9">CI / automated</text>
+    <rect class="node human" x="220" y="0" width="14" height="10" rx="2"/>
+    <text class="legend-t"   x="240" y="9">human-in-the-loop</text>
+    <rect class="node git"   x="360" y="0" width="14" height="10" rx="2"/>
+    <text class="legend-t"   x="380" y="9">main / substrate</text>
+  </g>
+
+  <!-- ============== SWIMLANES ============== -->
+  <line x1="24"   y1="70"  x2="1176" y2="70"  class="lane"/>
+  <line x1="24"   y1="200" x2="1176" y2="200" class="lane"/>
+  <line x1="24"   y1="350" x2="1176" y2="350" class="lane"/>
+  <line x1="24"   y1="430" x2="1176" y2="430" class="lane"/>
+
+  <text class="lane-label" x="30"  y="85">AGENT  ·  branch + commit + push + PR</text>
+  <text class="lane-label" x="30"  y="215">CI&#8201;/&#8201;AUTOMATED CHECKS  ·  parallel</text>
+  <text class="lane-label" x="30"  y="365">HUMAN-IN-THE-LOOP  ·  CODEOWNERS approval</text>
+  <text class="lane-label" x="30"  y="445">REPO SUBSTRATE  ·  refs/heads/main</text>
+
+  <!-- ============== AGENT LANE: 4 sub-steps ============== -->
+
+  <!-- A.1 Branch -->
+  <g transform="translate(80 100)">
+    <rect class="node" x="0" y="0" width="200" height="80" rx="6"/>
+    <text class="step-num" x="10" y="15">A.1  ·  branch</text>
+    <text class="node-title" x="10" y="33">git checkout -b</text>
+    <text class="mono-tag"   x="10" y="50">learn/ERR-2026-014</text>
+    <text class="mono-dim"   x="10" y="64">prefix learn/  ·  ID from error-log</text>
+    <text class="mono-dim"   x="10" y="76">never push to main directly</text>
+  </g>
+
+  <!-- A.2 Commit -->
+  <g transform="translate(310 100)">
+    <rect class="node" x="0" y="0" width="220" height="80" rx="6"/>
+    <text class="step-num" x="10" y="15">A.2  ·  commit</text>
+    <text class="node-title" x="10" y="33">git commit -m "learn(...)"</text>
+    <text class="mono-tag"   x="10" y="50">Co-Authored-By: maintainer</text>
+    <text class="mono-dim"   x="10" y="64">type: learn  ·  scope: errors</text>
+    <text class="mono-dim"   x="10" y="76">trailer required by gate B</text>
+  </g>
+
+  <!-- A.3 Push -->
+  <g transform="translate(560 100)">
+    <rect class="node" x="0" y="0" width="180" height="80" rx="6"/>
+    <text class="step-num" x="10" y="15">A.3  ·  push</text>
+    <text class="node-title" x="10" y="33">git push -u origin</text>
+    <text class="mono-tag"   x="10" y="50">learn/ERR-2026-014</text>
+    <text class="mono-dim"   x="10" y="64">remote tracks new branch</text>
+  </g>
+
+  <!-- A.4 Open PR -->
+  <g transform="translate(770 100)">
+    <rect class="node" x="0" y="0" width="240" height="80" rx="6"/>
+    <text class="step-num" x="10" y="15">A.4  ·  open PR</text>
+    <text class="node-title" x="10" y="33">gh pr create --label …</text>
+    <text class="mono-tag"   x="10" y="50">label: needs-rule-review</text>
+    <text class="mono-dim"   x="10" y="64">title: learn(errors): ERR-2026-014</text>
+    <text class="mono-dim"   x="10" y="76">body: rule wording + reviewer note</text>
+  </g>
+
+  <!-- arrows agent A.1 → A.2 → A.3 → A.4 -->
+  <line x1="280" y1="140" x2="310" y2="140" class="arrow" marker-end="url(#a-rule)"/>
+  <line x1="530" y1="140" x2="560" y2="140" class="arrow" marker-end="url(#a-rule)"/>
+  <line x1="740" y1="140" x2="770" y2="140" class="arrow" marker-end="url(#a-rule)"/>
+
+  <!-- ============== CI LANE: two parallel gates ============== -->
+
+  <!-- Gate B.1: lint-rules -->
+  <g transform="translate(560 230)">
+    <rect class="gate-fill" x="0" y="0" width="220" height="100" rx="6"/>
+    <rect class="gate"      x="0" y="0" width="220" height="100" rx="6"/>
+    <text class="gate-label" x="10" y="15">CI GATE  ·  lint-rules</text>
+    <text class="mono-tag"   x="10" y="34">schemas/error-entry.json</text>
+    <text class="mono-dim"   x="10" y="50">verb &#8712; {Always, Never, Before,</text>
+    <text class="mono-dim"   x="10" y="64">  After, Prefer, Avoid, Use, Do, Ensure}</text>
+    <text class="mono-dim"   x="10" y="80">forbidden-pattern set  ·  pytest</text>
+    <text class="mono-dim"   x="10" y="94">exceptions.yml may bypass</text>
+  </g>
+
+  <!-- Gate B.2: auto-approve-rule-pr -->
+  <g transform="translate(810 230)">
+    <rect class="gate-fill" x="0" y="0" width="240" height="100" rx="6"/>
+    <rect class="gate"      x="0" y="0" width="240" height="100" rx="6"/>
+    <text class="gate-label" x="10" y="15">CI GATE  ·  auto-approve-rule-pr</text>
+    <text class="mono-tag"   x="10" y="34">diff scope: references/errors/**</text>
+    <text class="mono-dim"   x="10" y="50">requires Co-Authored-By trailer</text>
+    <text class="mono-dim"   x="10" y="64">checks PR commit messages</text>
+    <text class="mono-dim"   x="10" y="80">non-errors diff → no auto-approve</text>
+    <text class="mono-dim"   x="10" y="94">marker only — does not bypass humans</text>
+  </g>
+
+  <!-- arrow A.4 → both gates fan out -->
+  <path d="M 890 180 V 215 V 230" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
+  <path d="M 890 215 H 670 V 230" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
+  <path d="M 890 215 H 930 V 230" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
+  <text class="annot" x="895" y="208">PR opened  ·  both gates run in parallel</text>
+
+  <!-- ============== HUMAN LANE: CODEOWNERS approval ============== -->
+  <g transform="translate(560 380)">
+    <rect class="node human" x="0" y="0" width="490" height="40" rx="6"/>
+    <text class="step-num" x="10" y="15">HUMAN  ·  CODEOWNERS</text>
+    <text class="mono-tag"   x="180" y="15">@sordi-ai/maintainers</text>
+    <text class="mono-dim"   x="180" y="30">required reviewer on references/errors/  ·  enforced by branch protection on main</text>
+    <text class="node-sub"   x="10" y="30">approval required</text>
+  </g>
+
+  <!-- arrow gates → human (both gates green → approval allowed) -->
+  <path d="M 670 330 V 360 V 380" class="arrow" marker-end="url(#a-rule)"/>
+  <path d="M 930 330 V 360 V 380" class="arrow" marker-end="url(#a-rule)"/>
+  <text class="annot" x="800" y="355" text-anchor="middle">both gates green</text>
+
+  <!-- ============== SUBSTRATE: squash-merge & branch protection frame ============== -->
+  <!-- Branch protection frame (around the squash merge) -->
+  <rect class="human-gate" x="540" y="455" width="540" height="64" rx="8"/>
+  <text class="human-gate-label" x="544" y="450">BRANCH PROTECTION  ·  refs/heads/main  ·  required CI + CODEOWNERS</text>
+
+  <!-- squash-merge node (inside frame) -->
+  <g transform="translate(560 465)">
+    <rect class="node git" x="0" y="0" width="500" height="44" rx="6"/>
+    <text class="step-num" x="10" y="15">SUBSTRATE  ·  merge</text>
+    <text class="mono-tag"   x="180" y="18">squash-merge → refs/heads/main</text>
+    <text class="mono-dim"   x="180" y="34">commit: e8aa…  learn(errors): ERR-2026-014</text>
+  </g>
+
+  <!-- arrow human → squash-merge -->
+  <path d="M 800 420 V 465" class="arrow" marker-end="url(#a-rule)"/>
+  <text class="annot" x="808" y="450">approve + squash</text>
+
+  <!-- ============== ARTEFACT CALLOUTS (left margin) ============== -->
+
+  <!-- Commit message artefact below A.2 -->
+  <g transform="translate(310 240)">
+    <rect class="chip" x="0" y="0" width="220" height="80" rx="3"/>
+    <text class="chip-text" x="8" y="14">learn(errors): ERR-2026-014</text>
+    <text class="chip-text" x="8" y="30"></text>
+    <text class="chip-text" x="8" y="46">  &#8230; rule wording &#8230;</text>
+    <text class="chip-text" x="8" y="62"></text>
+    <text class="chip-text" x="8" y="76">Co-Authored-By: maintainer &lt;…&gt;</text>
+  </g>
+  <text class="annot" x="310" y="335">commit body  ·  trailer required</text>
+
+  <!-- gh pr create snippet artefact left side -->
+  <g transform="translate(80 240)">
+    <rect class="chip" x="0" y="0" width="220" height="80" rx="3"/>
+    <text class="chip-text" x="8" y="14">gh pr create \</text>
+    <text class="chip-text" x="8" y="30">  --label needs-rule-review \</text>
+    <text class="chip-text" x="8" y="46">  --title "learn(errors): …" \</text>
+    <text class="chip-text" x="8" y="62">  --body "auto-generated rule …"</text>
+    <text class="chip-text" x="8" y="78"></text>
+  </g>
+  <text class="annot" x="80" y="335">creation command</text>
+
+  <!-- ============== TAGLINE ============== -->
+  <text class="tagline" x="1176" y="538" text-anchor="end">no path to main without lint-rules + CODEOWNERS</text>
+  <text class="mono-dim" x="24"   y="538">skill-everything  /  references/errors/self-extension-workflow.md</text>
+</svg>
