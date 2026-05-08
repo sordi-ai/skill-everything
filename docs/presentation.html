@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill-Everythink — Präsentation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0d1117;
+    --bg-card: #161b22;
+    --bg-code: #1c2128;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --accent4: #d2a8ff;
+    --border: #30363d;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* Slides */
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 80px;
+    opacity: 0;
+    transform: translateX(60px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none;
+  }
+  .slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: all;
+  }
+  .slide.prev {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+
+  /* Progress */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+    z-index: 100;
+  }
+  .slide-counter {
+    position: fixed;
+    bottom: 24px;
+    right: 32px;
+    font-size: 14px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    z-index: 100;
+  }
+  .nav-hint {
+    position: fixed;
+    bottom: 24px;
+    left: 32px;
+    font-size: 13px;
+    color: var(--text-muted);
+    z-index: 100;
+  }
+
+  /* Typography */
+  h1 { font-size: 3.2em; font-weight: 900; line-height: 1.1; margin-bottom: 16px; }
+  h2 { font-size: 2.2em; font-weight: 700; margin-bottom: 24px; color: var(--accent); }
+  h3 { font-size: 1.3em; font-weight: 600; margin-bottom: 12px; color: var(--accent2); }
+  p, li { font-size: 1.15em; line-height: 1.7; color: var(--text); }
+  .muted { color: var(--text-muted); }
+  .accent { color: var(--accent); }
+  .green { color: var(--accent2); }
+  .orange { color: var(--accent3); }
+  .purple { color: var(--accent4); }
+
+  /* Tagline */
+  .tagline {
+    font-size: 1.5em;
+    font-weight: 300;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-style: italic;
+  }
+  .subtitle {
+    font-size: 1.2em;
+    color: var(--accent2);
+    font-weight: 600;
+    margin-top: 12px;
+  }
+
+  /* Cards */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 1100px;
+    margin-top: 16px;
+  }
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+  }
+  .card .icon { font-size: 2em; margin-bottom: 12px; }
+  .card h3 { margin-bottom: 8px; }
+  .card p { font-size: 0.95em; color: var(--text-muted); }
+
+  /* Problem list */
+  .problem-list {
+    list-style: none;
+    max-width: 800px;
+    width: 100%;
+  }
+  .problem-list li {
+    padding: 16px 20px;
+    margin: 8px 0;
+    background: var(--bg-card);
+    border-left: 4px solid var(--accent3);
+    border-radius: 0 8px 8px 0;
+    font-size: 1.1em;
+  }
+  .problem-list li .emoji { margin-right: 12px; }
+
+  /* Solution list */
+  .solution-list {
+    list-style: none;
+    max-width: 800px;
+    width: 100%;
+  }
+  .solution-list li {
+    padding: 16px 20px;
+    margin: 8px 0;
+    background: var(--bg-card);
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 8px 8px 0;
+    font-size: 1.1em;
+  }
+
+  /* Flowchart */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 32px 0;
+  }
+  .flow-step {
+    background: var(--bg-card);
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    padding: 16px 20px;
+    text-align: center;
+    font-size: 0.95em;
+    font-weight: 600;
+    min-width: 140px;
+  }
+  .flow-step.highlight {
+    border-color: var(--accent2);
+    background: rgba(63, 185, 80, 0.1);
+  }
+  .flow-arrow {
+    font-size: 1.5em;
+    color: var(--accent);
+  }
+
+  /* Tree */
+  .tree {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95em;
+    line-height: 1.9;
+    max-width: 700px;
+    width: 100%;
+    white-space: pre;
+  }
+  .tree .folder { color: var(--accent); font-weight: 600; }
+  .tree .file { color: var(--text-muted); }
+  .tree .comment { color: var(--accent2); font-style: italic; }
+
+  /* Error example */
+  .error-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    max-width: 800px;
+    width: 100%;
+  }
+  .error-card .field {
+    margin: 8px 0;
+    display: flex;
+    gap: 12px;
+  }
+  .error-card .label {
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    min-width: 120px;
+    font-weight: 600;
+  }
+  .error-card .value { color: var(--text); font-size: 0.95em; }
+
+  .before-after {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 800px;
+    width: 100%;
+    margin-top: 20px;
+  }
+  .ba-box {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 24px;
+    border: 2px solid var(--border);
+  }
+  .ba-box.before { border-color: var(--accent3); }
+  .ba-box.after { border-color: var(--accent2); }
+
+  /* Comparison table */
+  .cmp-table {
+    width: 100%;
+    max-width: 1000px;
+    border-collapse: collapse;
+    margin-top: 12px;
+  }
+  .cmp-table th {
+    background: var(--bg-card);
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 700;
+    border-bottom: 2px solid var(--border);
+    font-size: 0.95em;
+  }
+  .cmp-table th:last-child {
+    color: var(--accent2);
+  }
+  .cmp-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.95em;
+  }
+  .cmp-table tr:hover td { background: rgba(88, 166, 255, 0.05); }
+
+  /* Steps */
+  .steps {
+    max-width: 600px;
+    width: 100%;
+  }
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin: 12px 0;
+    position: relative;
+  }
+  .step-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9em;
+    flex-shrink: 0;
+  }
+  .step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 17px;
+    top: 40px;
+    width: 2px;
+    height: calc(100% - 8px);
+    background: var(--border);
+  }
+  .step-text { padding-top: 6px; font-size: 1.05em; }
+
+  /* Roadmap */
+  .roadmap { max-width: 700px; width: 100%; }
+  .rm-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .rm-version {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 60px;
+  }
+  .rm-status {
+    font-size: 0.85em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+  .rm-status.done { background: rgba(63,185,80,0.15); color: var(--accent2); }
+  .rm-status.next { background: rgba(88,166,255,0.15); color: var(--accent); }
+  .rm-status.planned { background: rgba(139,148,158,0.15); color: var(--text-muted); }
+
+  /* CTA */
+  .cta-box {
+    background: linear-gradient(135deg, rgba(88,166,255,0.1), rgba(63,185,80,0.1));
+    border: 2px solid var(--accent);
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    max-width: 600px;
+  }
+  .cta-box h2 { margin-bottom: 16px; }
+  .cta-btn {
+    display: inline-block;
+    margin: 8px;
+    padding: 14px 32px;
+    background: var(--accent2);
+    color: var(--bg);
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.1em;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.2s;
+  }
+  .cta-btn:hover { transform: scale(1.05); }
+  .cta-btn.secondary {
+    background: transparent;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+  }
+
+  /* Logo */
+  .logo {
+    font-size: 5em;
+    margin-bottom: 16px;
+    filter: drop-shadow(0 0 30px rgba(88,166,255,0.3));
+  }
+
+  @media (max-width: 768px) {
+    .slide { padding: 30px 24px; }
+    h1 { font-size: 2em; }
+    h2 { font-size: 1.5em; }
+    .card-grid { grid-template-columns: 1fr; }
+    .before-after { grid-template-columns: 1fr; }
+    .flow { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+<div class="slide-counter" id="counter"></div>
+<div class="nav-hint">← → Pfeiltasten oder Klick</div>
+
+<!-- SLIDE 1: Titel -->
+<div class="slide active" id="s0">
+  <div class="logo">🧠</div>
+  <h1>Skill-Everythink</h1>
+  <p class="tagline">"Agents that never make the same mistake twice"</p>
+  <p class="subtitle">Git-Versioned Agent Memory — Der intelligente Feintuning-Ersatz</p>
+  <p class="muted" style="margin-top: 32px; font-size: 0.9em;">Open Source &bull; MIT Lizenz &bull; Agent-agnostisch</p>
+</div>
+
+<!-- SLIDE 2: Das Problem -->
+<div class="slide" id="s1">
+  <h2>Das Problem</h2>
+  <p class="muted" style="margin-bottom: 20px; max-width: 700px; text-align: center;">AI-Agenten vergessen alles. Jede Session startet bei Null. Existierende Lösungen haben fundamentale Schwächen:</p>
+  <ul class="problem-list">
+    <li><span class="emoji">💸</span> <strong>Fine-Tuning</strong> — Teuer ($$$), starr, veraltet schnell, Vendor Lock-in</li>
+    <li><span class="emoji">🏗️</span> <strong>RAG</strong> — Braucht Infrastruktur: Vektordatenbanken, Embedding-APIs, Maintenance</li>
+    <li><span class="emoji">📄</span> <strong>Custom Instructions</strong> — Statisch, nicht versioniert, keine Struktur</li>
+    <li><span class="emoji">🔒</span> <strong>Cursor Rules</strong> — Cursor-only, kein Gedächtnis, keine Fehler-Lernkurve</li>
+    <li><span class="emoji">🧊</span> <strong>mem0 / MemGPT</strong> — Opaque (du siehst nicht was gespeichert wird), API-abhängig</li>
+  </ul>
+  <p style="margin-top: 24px; font-size: 1.3em; font-weight: 700; color: var(--accent3);">→ Keiner dieser Ansätze LERNT aus Fehlern.</p>
+</div>
+
+<!-- SLIDE 3: Die Lösung -->
+<div class="slide" id="s2">
+  <h2>Die Lösung: Skill-Everythink</h2>
+  <ul class="solution-list">
+    <li><strong class="green">✅ Lebendes Skill-System</strong> aus Plain Markdown — kein Setup, kein API-Key</li>
+    <li><strong class="green">✅ Fehler-Gedächtnis</strong> — Jeder Fehler wird festgehalten, analysiert, zur Regel</li>
+    <li><strong class="green">✅ Domänenwissen</strong> — Prozesse, Regeln, interne Begriffe, Partner, Architektur</li>
+    <li><strong class="green">✅ Git-versioniert</strong> — Jede Änderung nachvollziehbar, reviewbar, rollback-fähig</li>
+    <li><strong class="green">✅ Agent-agnostisch</strong> — OpenCode, Claude, Cursor, jeder Agent der Kontext liest</li>
+    <li><strong class="green">✅ Modular</strong> — Sub-Skills für verschiedene Domänen, wächst mit dem Team</li>
+  </ul>
+  <p style="margin-top: 24px; font-size: 1.1em; color: var(--text-muted);">→ Wie Fine-Tuning, aber kostenlos, flexibel und transparent.</p>
+</div>
+
+<!-- SLIDE 4: Wie es funktioniert -->
+<div class="slide" id="s3">
+  <h2>Wie es funktioniert</h2>
+  <p class="muted" style="margin-bottom: 8px;">Der selbst-lernende Kreislauf:</p>
+  <div class="flow">
+    <div class="flow-step" style="border-color: var(--accent3);">🐛 Agent<br>macht Fehler</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">🔍 Fehler wird<br>analysiert</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">📝 Regel wird<br>formuliert</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step highlight">💾 Skill wird<br>aktualisiert</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border-color: var(--accent2);">✅ Nie wieder<br>dieser Fehler</div>
+  </div>
+  <div style="margin-top: 24px; background: var(--bg-card); border-radius: 12px; padding: 20px 28px; max-width: 700px; border-left: 4px solid var(--accent4);">
+    <p style="font-size: 1em;"><strong class="purple">Und nicht nur Fehler:</strong> Neues Domänenwissen, Prozesse, Konventionen, Partner-Infos — alles was der Agent wissen sollte, fließt in das Skill-System ein.</p>
+  </div>
+</div>
+
+<!-- SLIDE 5: Architektur -->
+<div class="slide" id="s4">
+  <h2>Architektur</h2>
+  <div class="tree"><span class="folder">skill-everythink/</span>
+├── <span class="file">SKILL.md</span>              <span class="comment">← Router / Einstiegspunkt</span>
+├── <span class="folder">references/</span>
+│   ├── <span class="folder">development/</span>      <span class="comment">← Code-Qualität, 15 Regeln</span>
+│   │   └── <span class="file">code-quality.md</span>
+│   ├── <span class="folder">git/</span>              <span class="comment">← Commit-Konventionen</span>
+│   │   └── <span class="file">conventions.md</span>
+│   ├── <span class="folder">domain/</span>           <span class="comment">← Firmenwissen (Template)</span>
+│   │   └── <span class="file">template.md</span>
+│   ├── <span class="folder">process/</span>          <span class="comment">← Reviews, Deployment</span>
+│   │   └── <span class="file">review-deployment.md</span>
+│   └── <span class="folder">errors/</span>           <span class="comment">← Fehler-Log + Workflow</span>
+│       ├── <span class="file">error-log.md</span>
+│       └── <span class="file">self-extension-workflow.md</span>
+└── <span class="folder">_templates/</span>           <span class="comment">← Vorlagen für neue Skills</span></div>
+  <p class="muted" style="margin-top: 16px; font-size: 0.95em;">SKILL.md agiert als Router — der Agent lädt nur die Sub-Skills, die er gerade braucht.</p>
+</div>
+
+<!-- SLIDE 6: Fehler-Einfang -->
+<div class="slide" id="s5">
+  <h2>Fehler-Einfang-System</h2>
+  <div class="error-card">
+    <div class="field">
+      <span class="label">ID:</span>
+      <span class="value" style="font-family: 'JetBrains Mono', monospace; color: var(--accent3);">ERR-2025-001</span>
+      <span class="value muted" style="margin-left: auto;">kritisch</span>
+    </div>
+    <div class="field">
+      <span class="label">Kontext:</span>
+      <span class="value">Deployment einer neuen API-Version mit DB-Migration</span>
+    </div>
+    <div class="field">
+      <span class="label">Was passierte:</span>
+      <span class="value">Agent deployed neues Backend VOR der Migration → 45s Produktionsausfall</span>
+    </div>
+    <div class="field">
+      <span class="label">Root Cause:</span>
+      <span class="value">Falsche Annahme: "Migration kann nach Deployment laufen"</span>
+    </div>
+    <div class="field" style="padding-top: 8px; border-top: 1px solid var(--border);">
+      <span class="label" style="color: var(--accent2);">Neue Regel:</span>
+      <span class="value" style="font-weight: 600;">"Immer additive DB-Migrationen VOR dem Deployment ausführen."</span>
+    </div>
+  </div>
+  <div class="before-after">
+    <div class="ba-box before">
+      <h3 style="color: var(--accent3);">❌ Vorher</h3>
+      <p style="font-size: 0.9em;">Agent deployed blind, wiederholt denselben Fehler in jedem Projekt</p>
+    </div>
+    <div class="ba-box after">
+      <h3 style="color: var(--accent2);">✅ Nachher</h3>
+      <p style="font-size: 0.9em;">Agent liest Regel, führt Migration zuerst aus — automatisch, immer</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: Vergleichstabelle -->
+<div class="slide" id="s6">
+  <h2>Vergleich</h2>
+  <table class="cmp-table">
+    <tr>
+      <th>Feature</th>
+      <th>Fine-Tuning</th>
+      <th>RAG</th>
+      <th>Cursor Rules</th>
+      <th style="color: var(--accent2);">Skill-Everythink</th>
+    </tr>
+    <tr>
+      <td>Kosten</td>
+      <td class="orange">$$$$</td>
+      <td class="orange">$$</td>
+      <td class="green">Frei</td>
+      <td class="green"><strong>Frei</strong></td>
+    </tr>
+    <tr>
+      <td>Lernt aus Fehlern</td>
+      <td>❌</td>
+      <td>❌</td>
+      <td>❌</td>
+      <td class="green"><strong>✅</strong></td>
+    </tr>
+    <tr>
+      <td>Git-versioniert</td>
+      <td>❌</td>
+      <td>❌</td>
+      <td>✅</td>
+      <td class="green"><strong>✅</strong></td>
+    </tr>
+    <tr>
+      <td>Agent-agnostisch</td>
+      <td>❌</td>
+      <td>✅</td>
+      <td>❌</td>
+      <td class="green"><strong>✅</strong></td>
+    </tr>
+    <tr>
+      <td>Kein Setup nötig</td>
+      <td>❌</td>
+      <td>❌</td>
+      <td>✅</td>
+      <td class="green"><strong>✅</strong></td>
+    </tr>
+    <tr>
+      <td>Domänenwissen</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>❌</td>
+      <td class="green"><strong>✅</strong></td>
+    </tr>
+    <tr>
+      <td>Modular erweiterbar</td>
+      <td>❌</td>
+      <td>❌</td>
+      <td>❌</td>
+      <td class="green"><strong>✅</strong></td>
+    </tr>
+    <tr>
+      <td>Transparent / inspizierbar</td>
+      <td>❌</td>
+      <td>❌</td>
+      <td>✅</td>
+      <td class="green"><strong>✅</strong></td>
+    </tr>
+  </table>
+</div>
+
+<!-- SLIDE 8: Starter-Skills -->
+<div class="slide" id="s7">
+  <h2>5 Starter-Skills inklusive</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="icon">💻</div>
+      <h3>Code-Qualität</h3>
+      <p>15 Regeln aus echten Projekten: Funktionslänge, Benennung, Fehlerbehandlung, Imports, Tests</p>
+    </div>
+    <div class="card">
+      <div class="icon">🔀</div>
+      <h3>Git-Konventionen</h3>
+      <p>15 Regeln: Conventional Commits, Branching-Strategie, PR-Größe, Merge-Strategie</p>
+    </div>
+    <div class="card">
+      <div class="icon">🏢</div>
+      <h3>Domänenwissen</h3>
+      <p>Template für Firmenwissen: ADRs, Naming, Business-Regeln, Integrationen, Glossar</p>
+    </div>
+    <div class="card">
+      <div class="icon">🚀</div>
+      <h3>Review & Deployment</h3>
+      <p>PR-Checkliste, Deployment-Reihenfolge, Rollback-Plan, Eskalations-Regeln</p>
+    </div>
+    <div class="card">
+      <div class="icon">🐛</div>
+      <h3>Fehler-Log</h3>
+      <p>Strukturiertes YAML-Format für eingefangene Fehler mit automatischem Regel-Update</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 9: Selbst-Erweiterung -->
+<div class="slide" id="s8">
+  <h2>Selbst-Erweiterung</h2>
+  <p class="muted" style="margin-bottom: 20px;">Der Agent erweitert den Skill automatisch:</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text"><strong>Fehler erkennen</strong> — Test schlägt fehl, Review-Kommentar, falscher Ansatz</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text"><strong>Kategorie bestimmen</strong> — Development, Git, Deployment, Security, Domain?</div>
+    </div>
+    <div class="step">
+      <div class="step-num" style="background: var(--accent3);">3</div>
+      <div class="step-text"><strong>"Search before Write"</strong> — Gibt es schon eine ähnliche Regel? Update statt Duplikat.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-text"><strong>Regel formulieren</strong> — Handlungsanweisung, nicht Beschreibung</div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-text"><strong>In Ziel-Datei einfügen</strong> — Am Ende des passenden Abschnitts</div>
+    </div>
+    <div class="step">
+      <div class="step-num" style="background: var(--accent2);">6</div>
+      <div class="step-text"><strong>Error-Log aktualisieren</strong> — Vollständiger YAML-Eintrag mit Kontext</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 10: Roadmap -->
+<div class="slide" id="s9">
+  <h2>Community & Roadmap</h2>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 900px; width: 100%;">
+    <div>
+      <h3 style="margin-bottom: 16px;">🗺️ Roadmap</h3>
+      <div class="roadmap">
+        <div class="rm-item">
+          <span class="rm-version">v1.0</span>
+          <span>Core System + 5 Starter-Skills</span>
+          <span class="rm-status done">aktuell</span>
+        </div>
+        <div class="rm-item">
+          <span class="rm-version">v1.1</span>
+          <span>CLI-Tool: <code>npx skill-everythink init</code></span>
+          <span class="rm-status next">nächstes</span>
+        </div>
+        <div class="rm-item">
+          <span class="rm-version">v1.2</span>
+          <span>Consolidation-Loop (Auto-Aufräumen)</span>
+          <span class="rm-status planned">geplant</span>
+        </div>
+        <div class="rm-item">
+          <span class="rm-version">v2.0</span>
+          <span>Skill-Marketplace & Registry</span>
+          <span class="rm-status planned">geplant</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3 style="margin-bottom: 16px;">🤝 Community</h3>
+      <ul class="solution-list" style="margin: 0;">
+        <li><strong>Open Source</strong> — MIT Lizenz, jeder kann beitragen</li>
+        <li><strong>Sub-Skills teilen</strong> — Eigene Regeln als PR einreichen</li>
+        <li><strong>Templates</strong> — Vorlagen für jede Branche & Stack</li>
+        <li><strong>Issue-Templates</strong> — Fehler melden = Skill verbessern</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11: CTA -->
+<div class="slide" id="s10">
+  <div class="cta-box">
+    <div style="font-size: 3em; margin-bottom: 12px;">🧠⭐</div>
+    <h2 style="color: var(--text);">Starte jetzt</h2>
+    <p style="margin-bottom: 24px; color: var(--text-muted);">Baue deinen ersten Skill in 5 Minuten.<br>Dein Agent wird es dir danken.</p>
+    <a class="cta-btn">⭐ Star auf GitHub</a>
+    <a class="cta-btn secondary">📖 Dokumentation</a>
+    <p style="margin-top: 24px; font-size: 0.9em; color: var(--text-muted);">
+      <code style="background: var(--bg-code); padding: 6px 12px; border-radius: 6px; font-size: 1em;">
+        git clone https://github.com/your-org/skill-everythink.git
+      </code>
+    </p>
+  </div>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const progress = document.getElementById('progress');
+  const counter = document.getElementById('counter');
+  let current = 0;
+
+  function show(n) {
+    if (n < 0 || n >= slides.length) return;
+    const dir = n > current ? 1 : -1;
+    slides[current].classList.remove('active');
+    slides[current].classList.toggle('prev', dir > 0);
+    current = n;
+    slides.forEach((s, i) => {
+      s.classList.remove('active', 'prev');
+      if (i < current) s.classList.add('prev');
+    });
+    slides[current].classList.add('active');
+    progress.style.width = ((current + 1) / slides.length * 100) + '%';
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); show(current + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); show(current - 1); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+  });
+
+  document.addEventListener('click', e => {
+    const x = e.clientX / window.innerWidth;
+    if (x > 0.5) show(current + 1);
+    else show(current - 1);
+  });
+
+  // Touch support
+  let touchX = 0;
+  document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; });
+  document.addEventListener('touchend', e => {
+    const diff = touchX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) show(current + 1);
+      else show(current - 1);
+    }
+  });
+
+  show(0);
+</script>
+</body>
+</html>

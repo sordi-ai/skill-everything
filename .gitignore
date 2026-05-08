@@ -1,0 +1,21 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Sisyphus internal
+.sisyphus/
+
+# Node (falls CLI-Tool in Zukunft)
+node_modules/
+package-lock.json
+
+# Temp
+*.tmp
+*.bak
