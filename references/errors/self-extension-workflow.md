@@ -102,12 +102,21 @@ gh pr create --label needs-rule-review \
              --body "Auto-generated rule. Reviewer: confirm rule wording and target file. CI \`lint-rules\` must pass."
 ```
 
+![PR flow — branch, commit, push, PR; lint-rules and auto-approve-rule-pr CI gates run in parallel; CODEOWNERS human gate; squash-merge into main behind branch protection](../../docs/pr-flow.svg)
+
+*Branch through CI gates and CODEOWNERS into a squash-merge on `main`.*
+
 **Why a PR (not a direct commit):**
 
-- The CI lint-rules workflow runs on PRs and validates against [`schemas/error-entry.json`](../../schemas/error-entry.json) plus the verb allow-list and forbidden-pattern set.
-- The `auto-approve-rule-pr` workflow gates the merge on (a) diff scope (only `references/errors/**`) and (b) presence of a `Co-Authored-By:` trailer (the maintainer co-authoring the agent's work).
-- Branch protection on `main` requires CODEOWNERS approval for `references/errors/`.
-- Every rule that goes live has been seen by a human. **The validator is best-effort, not airtight.**
+| Layer | What it gates | Where |
+|---|---|---|
+| `lint-rules` | Schema + verb allow-list + forbidden patterns | [`schemas/error-entry.json`](../../schemas/error-entry.json) |
+| `auto-approve-rule-pr` | Diff scope (`references/errors/**`) and `Co-Authored-By:` trailer | `.github/workflows/auto-approve-rule-pr.yml` |
+| Branch protection | CODEOWNERS approval for `references/errors/` | `.github/CODEOWNERS` |
+| Human review | Final read of rule wording and target file | maintainer |
+
+> [!NOTE]
+> The four-layer gating is what `pr-flow.svg` above shows. Every rule that goes live has been seen by a human. The validator is best-effort, not airtight — see [SECURITY.md](../../SECURITY.md) Limitations section.
 
 The commit type `learn` makes self-extension visible in `git log --grep="learn("`.
 

@@ -4,6 +4,8 @@ Thanks for taking the time. This is an independent open-source side project — 
 
 If something below is unclear or wrong, please open an issue or a PR fixing it.
 
+The visual conventions in this file — tables, callouts, code-block language hints — follow the [`design-system.md`](../design/design-system.md) Section 7 Markdown mapping. Consistency makes review faster.
+
 ---
 
 ## Quick start (5 minutes)
@@ -22,9 +24,9 @@ If `pytest` passes locally, you're ready. Branch off `main`, follow the relevant
 
 ## Three contribution flows
 
-### 1. New rule from a real mistake — `learn(errors): ERR-YYYY-NNN`
+### 1. `learn(errors)` — new rule from a real mistake
 
-This is the **primary contribution flow** — every rule should be born from a real observed mistake, not from opinion.
+This is the **primary contribution flow** — every rule should be born from a real observed mistake, not from opinion. The full procedure with troubleshooting lives at [`references/errors/self-extension-workflow.md`](./references/errors/self-extension-workflow.md).
 
 1. Copy [`references/_templates/error-entry.template.md`](./references/_templates/error-entry.template.md).
 2. Search [`references/errors/error-log.md`](./references/errors/error-log.md) for similar entries first. If you find one, increment its `count` and update `last_seen` instead of writing a new entry.
@@ -41,12 +43,10 @@ This is the **primary contribution flow** — every rule should be born from a r
    git push -u origin learn/ERR-YYYY-NNN
    gh pr create --label needs-rule-review
    ```
-6. The CI lint validator runs against the JSON-Schema and the verb allow-list. The `auto-approve-rule-pr` workflow gates merge on diff-scope and the `Co-Authored-By:` trailer.
+6. The CI `lint-rules` validator runs against the JSON-Schema and the verb allow-list. The `auto-approve-rule-pr` workflow gates merge on diff-scope and the `Co-Authored-By:` trailer.
 7. A maintainer reviews and merges. **Always squash-merge.**
 
-The full procedure with troubleshooting lives at [`references/errors/self-extension-workflow.md`](./references/errors/self-extension-workflow.md).
-
-### 2. New sub-skill — `feat(skills): add <id>`
+### 2. `feat(skills)` — new sub-skill
 
 When the existing sub-skills don't cover an area you need (Go, Rust, Java, infrastructure-as-code, etc.):
 
@@ -71,16 +71,20 @@ When the existing sub-skills don't cover an area you need (Go, Rust, Java, infra
 5. Add an entry to [`references/_index.yml`](./references/_index.yml) with the loader strings for `claude`, `gemini`, and `skill_resource`. Then run `python tools/render_loaders.py` so `SKILL.md`, `CLAUDE.md`, and `GEMINI.md` regenerate. Commit those changes — the CI no-drift job verifies them.
 6. Branch as `feat/skill-<id>`, PR title `feat(skills): add <id>`, label `new-skill`.
 
-**Sub-skill PR review checklist** (the maintainers will use this):
+**Sub-skill PR review checklist:**
 
-- [ ] Frontmatter passes `python tools/validate_rules.py`
-- [ ] Token count is below `tokens_target`, and `tokens_target` is below 3000
-- [ ] Every rule starts with `Always`, `Never`, `Before`, `After`, `Prefer`, `Avoid`, `Use`, `Do`, or `Ensure`
-- [ ] At least one cross-reference to an existing sub-skill (`see also references/development/code-quality.md#…`)
-- [ ] At least one rule is grounded in a `Reference: ERR-YYYY-NNN` from `error-log.md` (or, if this is the first rule of its kind, the rule was added together with a fresh ERR entry in the same PR)
-- [ ] At least one re-mistake test added to `tests/eval/tasks/` (see [`tests/eval/README.md`](./tests/eval/README.md))
+| Check | What | Where verified |
+|---|---|---|
+| Schema | Frontmatter passes `python tools/validate_rules.py` | `schemas/skill-manifest.json` |
+| Token budget | `tokens_target` < 3000 and real count < `tokens_target` | `tools/render_readme_table.py` |
+| Verb allow-list | Every rule starts with `Always`, `Never`, `Before`, `After`, `Prefer`, `Avoid`, `Use`, `Do`, or `Ensure` | `tools/validate_rules.py` |
+| Cross-reference | At least one link to an existing sub-skill (e.g. `references/development/code-quality.md#…`) | reviewer reads diff |
+| Real grounding | At least one rule has `Reference: ERR-YYYY-NNN`, or a fresh ERR is added in the same PR | `references/errors/error-log.md` |
+| Re-mistake test | At least one task added to `tests/eval/tasks/` | `tests/eval/README.md` |
 
-### 3. Tooling, docs, infrastructure
+*Six checks. Reviewers can copy-paste from the table into the PR conversation.*
+
+### 3. `feat` / `fix` / `chore` — tooling, docs, infrastructure
 
 For everything that isn't a rule — fixes to `tools/`, docs, CI, the dashboard — the normal open-source flow applies. Conventional Commits as below; PR titles describe the *why*, not the *what*.
 
@@ -100,7 +104,7 @@ Conventional Commits with a small custom set of types:
 
 Subject in the imperative. ≤ 72 characters. Body explains *why*, not *what*.
 
-```
+```text
 learn(errors): ERR-2026-014 — never inherit from concrete React components
 ```
 
@@ -108,7 +112,7 @@ learn(errors): ERR-2026-014 — never inherit from concrete React components
 
 ## Validator false-positive bypass
 
-The CI lint validator is best-effort, not airtight (see [SECURITY.md](./SECURITY.md)). When a legitimate rule has to mention a forbidden pattern (e.g. a rule about preventing `subprocess` misuse that names `subprocess`):
+The CI `lint-rules` validator is best-effort, not airtight (see [SECURITY.md](./SECURITY.md)). When a legitimate rule has to mention a forbidden pattern (e.g. a rule about preventing `subprocess` misuse that names `subprocess`):
 
 1. Add the new ERR-ID to [`references/errors/exceptions.yml`](./references/errors/exceptions.yml) with a one-line rationale.
 2. CODEOWNERS approval is required to merge changes to that file. The bypass is auditable in git.
@@ -126,9 +130,12 @@ When a new rule lands, please add a re-mistake test to [`tests/eval/tasks/`](./t
 
 ## Co-maintainer onboarding (if you become one of us)
 
+> [!WARNING]
+> Compliance-Side-Letter required before first push. If your day-job employer has a side-project policy (most large tech employers, including BMW and Google), file the personal-open-source disclosure first. We will not ship a PR signed by your work account.
+
 If you start co-maintaining the project, before your first push:
 
-1. **Compliance check.** If your day job is at a company with a side-project policy (most large tech employers, including BMW and Google), file a personal-open-source disclosure with your employer. The `DISCLAIMER.md` is the public-facing doc; the side-letter is the private one. We will not ship a PR signed by your work account.
+1. **Compliance check.** File a personal-open-source disclosure with your employer. The `DISCLAIMER.md` is the public-facing doc; the side-letter is the private one.
 2. **Use a personal GitHub account** with your real name. We don't ship pseudonymous co-maintainer commits — `git shortlog -sne` is the first thing skeptical readers check.
 3. **Add yourself to `.github/CODEOWNERS`** under the `@sordi-ai/maintainers` team and confirm with the existing maintainer.
 4. **Read the threat model** in [SECURITY.md](./SECURITY.md). The self-extension workflow is the trust-boundary. You are the human in "the human reviews the PR".
@@ -158,7 +165,7 @@ Adding a new top-level category? Open a PR that updates this README, `references
 
 ## What makes a good contribution
 
-| ✅ | ❌ |
+| Good | Bad |
 |---|---|
 | Concrete rules from real projects | Generic tips you'd find in any tutorial |
 | Action directives | Descriptions ("X is dangerous") |
