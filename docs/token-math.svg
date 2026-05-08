@@ -100,13 +100,13 @@
   </g>
 
   <!-- ============== LANES ============== -->
+  <!-- Single divider above the chart. The setup-name + meta labels under
+       each bar are the table; an extra "SETUP TABLE" lane band would only
+       crowd them and make the lane line cut through "Monolithic" /
+       "uncached". The headline at y=465 is its own visual anchor. -->
   <line x1="24"   y1="70"  x2="1176" y2="70"  class="lane"/>
-  <line x1="24"   y1="380" x2="1176" y2="380" class="lane"/>
-  <line x1="24"   y1="430" x2="1176" y2="430" class="lane"/>
 
-  <text class="lane-label" x="30"  y="85">CHART  ·  cost per 1 000 messages</text>
-  <text class="lane-label" x="30"  y="395">SETUP TABLE  ·  per-message inputs</text>
-  <text class="lane-label" x="30"  y="445">HEADLINE</text>
+  <text class="lane-label" x="30"  y="85">CHART  ·  cost per 1 000 messages, Sonnet pricing</text>
 
   <!-- ============== Y-AXIS (cost in $) ============== -->
   <!-- y from 100..360, $0..$80 scale. 1$ = 3.25px. -->
@@ -159,11 +159,17 @@
   <g transform="translate(370 0)">
     <!-- output: $45 -->
     <rect class="bar-output" x="0" y="214" width="100" height="146"/>
-    <!-- input cached: ~$3 from y=204.25 to 213.75 -->
+    <!-- input cached: ~$3 from y=204 to y=214 -->
     <rect class="bar-input"  x="0" y="204" width="100" height="10"/>
-    <!-- ghost cache savings: $27 from y=117 to y=204 -->
-    <rect class="bar-cache"  x="0" y="117" width="100" height="87" fill-opacity="0.35"/>
-    <text class="col-cost"   x="50" y="108" text-anchor="middle">$48</text>
+    <!-- The bar truthfully shows $48 total. The savings vs uncached
+         monolithic ($75 → $48 = $27) live as a small dashed outline
+         segment on the left edge, NOT as a ghost block that makes the
+         bar look as tall as $75. -->
+    <rect x="-4" y="117" width="4" height="87" fill="none"
+          stroke="var(--human)" stroke-width="1" stroke-dasharray="2 2"/>
+    <text class="annot" x="-8" y="163" text-anchor="end">saved</text>
+    <text class="annot" x="-8" y="175" text-anchor="end">~$27</text>
+    <text class="col-cost"   x="50" y="196" text-anchor="middle">$48</text>
     <text class="col-name"   x="50" y="378" text-anchor="middle">Monolithic</text>
     <text class="col-meta"   x="50" y="392" text-anchor="middle">+ caching 90%</text>
   </g>
@@ -194,11 +200,13 @@
   <g transform="translate(970 0)">
     <!-- output: $45 -->
     <rect class="bar-output" x="0" y="214" width="100" height="146"/>
-    <!-- input cached: $2.4 from y=206 to 213.75 -->
+    <!-- input cached: $2.4 from y=206 to 214 -->
     <rect class="bar-input"  x="0" y="206" width="100" height="8"/>
-    <!-- ghost cache savings: $2.4 from y=198 to y=206 (small) -->
-    <rect class="bar-cache"  x="0" y="198" width="100" height="8" fill-opacity="0.35"/>
-    <text class="col-cost"   x="50" y="190" text-anchor="middle">$47</text>
+    <!-- Small dashed outline showing the partial cache saving on the
+         left edge — same visual idiom as setup B, scaled down. -->
+    <rect x="-4" y="198" width="4" height="8" fill="none"
+          stroke="var(--human)" stroke-width="1" stroke-dasharray="2 2"/>
+    <text class="col-cost"   x="50" y="196" text-anchor="middle">$47</text>
     <text class="col-name"   x="50" y="378" text-anchor="middle">skill-everything</text>
     <text class="col-meta"   x="50" y="392" text-anchor="middle">+ caching</text>
   </g>
