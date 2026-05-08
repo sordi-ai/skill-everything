@@ -1,221 +1,292 @@
+<div align="center">
+
 # 🧠 Skill-Everythink
-**Agents that never make the same mistake twice.**
 
-Git-Versioned Agent Memory — Der intelligente Feintuning-Ersatz.
+### Agents that never make the same mistake twice.
 
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![GitHub Stars](https://img.shields.io/github/stars/sordi-ai/skill-everything?style=social)
-![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
+**A Git-versioned memory system for AI coding agents — plain Markdown, zero infrastructure.**
 
----
+<br>
 
-## 🤔 Warum Skill-Everythink? Das Problem
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/sordi-ai/skill-everything?style=social)](https://github.com/sordi-ai/skill-everything)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
-Fine-Tuning ist teuer, zeitaufwändig und liefert ein starres Modell, das nach dem Training nichts mehr dazulernt. RAG löst das Wissensproblem, erfordert aber Vektorinfrastruktur, Embeddings und laufende Wartung. Cursor Rules sind statisch, nicht versioniert und funktionieren nur in Cursor — kein anderer Agent profitiert davon. Systeme wie mem0 oder MemGPT sind mächtig, aber opaque: Man weiß nicht, was gespeichert wurde, warum, und wie es sich auf das Verhalten auswirkt.
-
-Das Kernproblem bleibt überall gleich: **Kein Agent lernt aus seinen Fehlern.** Derselbe Fehler passiert morgen wieder — in einem anderen Projekt, mit einem anderen Nutzer, auf einem anderen Rechner.
+</div>
 
 ---
 
-## ✅ Die Lösung
+## 🤔 The Problem
 
-Skill-Everythink ist ein Git-versioniertes Gedächtnissystem aus Plain-Markdown-Dateien:
+Fine-tuning is expensive, slow, and produces a frozen model that stops learning the moment training ends. RAG solves the knowledge problem but demands vector infrastructure, embeddings, and ongoing maintenance. Cursor Rules are static, unversioned, and locked to a single tool. Systems like mem0 or MemGPT are powerful but opaque — you never know what was stored, why, or how it shapes behavior.
 
-- **Plain Markdown** — keine Datenbank, kein Framework, kein Lock-in
-- **Git-versioniert** — jede Änderung ist nachvollziehbar, revertierbar, reviewbar
-- **Fehler-Gedächtnis** — Fehler werden analysiert, als Regel formuliert und dauerhaft gespeichert
-- **Domänenwissen** — Firmenprozesse, Konventionen, Partner-Infos fließen strukturiert ein
-- **Agent-agnostisch** — funktioniert mit OpenCode, Cursor, Claude, GPT-4, jedem LLM-basierten Agent
-- **Modular** — Sub-Skills sind unabhängig, kombinierbar, einzeln ladbar
-- **Kein Setup** — `git clone` und fertig, keine Infrastruktur nötig
-- **Transparent** — jeder kann lesen, was der Agent weiß und warum
+The core problem is the same everywhere: **no agent learns from its mistakes.** The same error happens tomorrow — in a different project, with a different user, on a different machine.
 
 ---
 
-## 🚀 Quick-Start
+## ✅ The Solution
 
-**Schritt 1: Repository klonen**
+Skill-Everythink is a Git-versioned memory system built entirely from plain Markdown files:
+
+- **Plain Markdown** — no database, no framework, no lock-in
+- **Git-versioned** — every change is traceable, revertable, and reviewable
+- **Error memory** — mistakes are analyzed, turned into rules, and stored permanently
+- **Domain knowledge** — company processes, conventions, and partner quirks flow in structurally
+- **Agent-agnostic** — works with OpenCode, Claude Code, Cursor, GPT-4, any LLM-based agent
+- **Modular** — sub-skills are independent, composable, and individually loadable
+- **Zero setup** — `git clone` and you're done, no infrastructure required
+- **Transparent** — anyone can read exactly what the agent knows and why
+
+---
+
+## 🚀 Quick Start
+
+**Step 1 — Clone the repository**
 
 ```bash
 git clone https://github.com/sordi-ai/skill-everything.git
 ```
 
-**Schritt 2: Skill in deinen Agent laden**
+**Step 2 — Load the skill into your agent**
 
-```bash
-# OpenCode — in opencode.json oder als Skill-Pfad
-"skills": ["./skill-everythink/SKILL.md"]
+<details>
+<summary><strong>OpenCode</strong> — via <code>opencode.json</code> or skill path</summary>
 
-# Cursor — in .cursorrules oder Settings > Rules
+```json
+{
+  "skills": ["./skill-everythink/SKILL.md"]
+}
+```
+
+The `skill_resource` tool lets the agent load individual sub-skills on demand without bloating the context window.
+
+</details>
+
+<details>
+<summary><strong>Claude Code</strong> — via <code>CLAUDE.md</code> and <code>@file</code> imports</summary>
+
+Add to your project's `CLAUDE.md`:
+
+```markdown
+@file ./skill-everythink/SKILL.md
+```
+
+Or reference sub-skills directly in your prompts:
+
+```markdown
+@references/errors/error-log.md
+@references/development/code-quality.md
+```
+
+</details>
+
+<details>
+<summary><strong>Cursor</strong> — via <code>.cursorrules</code> or Settings › Rules</summary>
+
+```
 @file:./skill-everythink/SKILL.md
-
-# Claude (API / Projects) — als System-Prompt-Anhang
-<skill src="./skill-everythink/SKILL.md" />
 ```
 
-**Schritt 3: Fertig.**
+Or paste the contents of `SKILL.md` directly into **Settings › Rules for AI**.
 
-Dein Agent hat jetzt Gedächtnis. Er kennt deine Konventionen, erinnert sich an vergangene Fehler und erweitert sein Wissen bei jedem neuen Einsatz.
+</details>
+
+**Step 3 — Done.**
+
+Your agent now has memory. It knows your conventions, remembers past mistakes, and expands its knowledge with every session.
 
 ---
 
-## ⚙️ Wie es funktioniert
+## ⚙️ How It Works
 
-### Der Lernkreislauf
+### The Learning Loop
 
 ```
-Agent macht Fehler
-       ↓
-Fehler wird analysiert (Ursache, Kontext, Auswirkung)
-       ↓
-Regel wird formuliert ("Tue X nie ohne Y zu prüfen")
-       ↓
-Skill wird aktualisiert (references/errors/ oder passendes Sub-Modul)
-       ↓
-Agent macht den Fehler nie wieder — in keinem Projekt
+Agent makes a mistake
+        ↓
+Mistake is analyzed  (cause · context · impact)
+        ↓
+Rule is formulated   ("Never do X without checking Y first")
+        ↓
+Skill is updated     (references/errors/ or the matching sub-module)
+        ↓
+Agent never makes that mistake again — in any project
 ```
 
-### Nicht nur Fehler
+### Not Just Errors
 
-Der Kreislauf gilt für jede Art von Wissen:
+The same loop applies to any kind of knowledge:
 
-- **Neue Erkenntnisse** — bessere Patterns, effizientere Ansätze
-- **Prozesse** — Deployment-Schritte, Review-Checklisten, Onboarding-Flows
-- **Konventionen** — Namensgebung, Commit-Stil, Architekturentscheidungen
-- **Partner-Infos** — API-Eigenheiten, externe Systeme, Integrationsfallen
+- **New insights** — better patterns, more efficient approaches
+- **Processes** — deployment steps, review checklists, onboarding flows
+- **Conventions** — naming schemes, commit style, architecture decisions
+- **Partner knowledge** — API quirks, external systems, integration pitfalls
 
-Jedes Mal, wenn der Agent etwas Wichtiges lernt, landet es im Skill — strukturiert, versioniert, sofort verfügbar.
+Every time the agent learns something important, it lands in the skill — structured, versioned, immediately available.
 
 ---
 
-## 📊 Vergleichstabelle
+## 📊 How It Compares
 
-| Feature | Fine-Tuning | RAG | Cursor Rules | **Skill-Everythink** |
-|---|---|---|---|---|
-| Kosten | Hoch (GPU, Zeit) | Mittel (Infra) | Gering | **Minimal** |
-| Lernt aus Fehlern | Nein | Nein | Nein | **Ja** |
-| Git-versioniert | Nein | Nein | Optional | **Ja** |
-| Agent-agnostisch | Nein | Teilweise | Nein (Cursor only) | **Ja** |
-| Kein Setup nötig | Nein | Nein | Ja | **Ja** |
-| Domänenwissen | Begrenzt | Ja | Begrenzt | **Ja** |
-| Modular | Nein | Teilweise | Nein | **Ja** |
-| Transparent | Nein | Teilweise | Ja | **Ja** |
+| Feature | Fine-Tuning | RAG | Cursor Rules | mem0 / MemGPT | **Skill-Everythink** |
+|---|:---:|:---:|:---:|:---:|:---:|
+| Learns from mistakes | ✗ | ✗ | ✗ | ✓ | **✓** |
+| Git-versioned | ✗ | ✗ | optional | ✗ | **✓** |
+| Agent-agnostic | ✗ | partial | ✗ | partial | **✓** |
+| Zero setup | ✗ | ✗ | ✓ | ✗ | **✓** |
+| Domain knowledge | limited | ✓ | limited | ✓ | **✓** |
+| Modular | ✗ | partial | ✗ | ✗ | **✓** |
+| Transparent | ✗ | partial | ✓ | ✗ | **✓** |
+| Cost | High (GPU) | Medium (infra) | Low | Medium (API) | **Minimal** |
 
 ---
 
-## 📁 Projektstruktur
+## 📁 Project Structure
 
 ```
 skill-everythink/
-├── SKILL.md                    # Router — Einstiegspunkt (wird immer geladen)
+├── SKILL.md                    # Router — entry point, always loaded
+├── CLAUDE.md                   # Claude Code integration entry point
 ├── references/
-│   ├── development/            # Code-Qualität (15 Regeln)
-│   ├── git/                    # Commit-Konventionen (15 Regeln)
-│   ├── domain/                 # Firmenwissen-Template
-│   ├── process/                # Review & Deployment
-│   ├── errors/                 # Fehler-Log + Selbst-Erweiterung
-│   └── _templates/             # Vorlagen für neue Skills
-├── docs/                       # Präsentation & Erklärungen
-├── CONTRIBUTING.md             # Wie man beiträgt
+│   ├── development/            # Code quality rules (15 rules)
+│   ├── git/                    # Commit conventions (15 rules)
+│   ├── domain/                 # Company knowledge template
+│   ├── process/                # Review & deployment checklists
+│   ├── errors/                 # Error log + self-extension workflow
+│   └── _templates/             # Templates for new skills
+├── docs/                       # Explanations & presentations
+├── CONTRIBUTING.md             # How to contribute
 └── LICENSE                     # MIT
 ```
 
-`SKILL.md` ist der zentrale Einstiegspunkt. Er wird immer geladen und entscheidet, welche Sub-Skills für die aktuelle Aufgabe relevant sind. Sub-Skills in `references/` sind eigenständige Module — sie können einzeln, kombiniert oder vollständig geladen werden.
+`SKILL.md` is the central entry point. It is always loaded and decides which sub-skills are relevant for the current task. Sub-skills in `references/` are standalone modules — they can be loaded individually, in combination, or all at once.
 
 ---
 
-## 📦 Mitgelieferte Starter-Skills
+## 📦 Starter Skills
 
-| Sub-Skill | Beschreibung |
+Five production-ready sub-skills ship out of the box:
+
+| Sub-Skill | What It Contains |
 |---|---|
-| `references/development/` | 15 Regeln für sauberen, wartbaren Code — von Namensgebung bis Fehlerbehandlung |
-| `references/git/` | 15 Regeln für konsistente Commit-Nachrichten, Branch-Strategien und PR-Hygiene |
-| `references/domain/` | Template für firmenspezifisches Wissen: Systeme, Prozesse, Ansprechpartner |
-| `references/process/` | Checklisten für Code-Review, Deployment und Incident-Response |
-| `references/errors/` | Strukturiertes Fehler-Log mit Analyse, Regel und Präventions-Maßnahme |
+| `references/development/` | 15 rules for clean, maintainable code — from naming to error handling |
+| `references/git/` | 15 rules for consistent commit messages, branch strategies, and PR hygiene |
+| `references/domain/` | Template for company-specific knowledge: systems, processes, contacts |
+| `references/process/` | Checklists for code review, deployment, and incident response |
+| `references/errors/` | Structured error log with cause analysis, rule formulation, and prevention |
 
 ---
 
-## 🔄 Selbst-Erweiterung
+## 🔄 Self-Extension
 
-Der Agent kann seinen eigenen Skill erweitern — ohne menschliches Eingreifen. So funktioniert der Workflow:
+The agent can extend its own skill — without human intervention. Here's the workflow:
 
-1. **Trigger** — Der Agent erkennt einen Fehler, eine neue Erkenntnis oder eine fehlende Regel
-2. **Analyse** — Ursache, Kontext und Auswirkung werden strukturiert erfasst
-3. **Formulierung** — Eine klare, handlungsrelevante Regel wird formuliert (präzise, nicht vage)
-4. **Einordnung** — Die Regel wird dem passenden Sub-Skill zugeordnet (`errors/`, `development/`, etc.)
-5. **Eintrag** — Der Agent schreibt den Eintrag in die entsprechende Markdown-Datei
-6. **Commit** — Die Änderung wird per Git committet — mit Kontext, Datum und Begründung
+1. **Trigger** — The agent detects a mistake, a new insight, or a missing rule
+2. **Analysis** — Cause, context, and impact are captured in a structured format
+3. **Formulation** — A clear, action-oriented rule is written (precise, not vague)
+4. **Classification** — The rule is assigned to the right sub-skill (`errors/`, `development/`, etc.)
+5. **Entry** — The agent writes the entry into the appropriate Markdown file
+6. **Commit** — The change is committed via Git — with context, date, and rationale
 
-Das Ergebnis: Ein Skill, der mit jedem Einsatz besser wird — nachvollziehbar, revertierbar, reviewbar.
+The result: a skill that improves with every session — traceable, revertable, reviewable.
 
 ---
 
-## 🛠️ Eigenen Skill erstellen
+## 🛠️ Creating Your Own Skill
 
-**Schritt 1: Template kopieren**
-
-```bash
-cp references/_templates/skill-template.md references/mein-bereich/SKILL.md
-```
-
-**Schritt 2: Template ausfüllen**
-
-Trage Kontext, Regeln und Beispiele ein. Halte jeden Sub-Skill unter 3000 Tokens — lieber aufteilen als aufblähen.
-
-**Schritt 3: PR erstellen**
+**Step 1 — Copy the template**
 
 ```bash
-git checkout -b feat/mein-skill
-git add references/mein-bereich/
-git commit -m "feat(skills): add mein-bereich skill"
-git push origin feat/mein-skill
+cp references/_templates/skill-template.md references/my-area/SKILL.md
 ```
 
-Dann Pull Request auf GitHub öffnen. Details und Review-Kriterien in [./CONTRIBUTING.md](./CONTRIBUTING.md).
+**Step 2 — Fill in the template**
+
+Add context, rules, and examples. Keep each sub-skill under 3,000 tokens — split rather than bloat.
+
+**Step 3 — Open a PR**
+
+```bash
+git checkout -b feat/my-skill
+git add references/my-area/
+git commit -m "feat(skills): add my-area skill"
+git push origin feat/my-skill
+```
+
+Then open a Pull Request on GitHub. Details and review criteria in [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ---
 
 ## 🗺️ Roadmap
 
-- **v1.0** — Core System + 5 Starter-Skills ← *aktuell*
-- **v1.1** — CLI-Tool (`npx skill-everythink init`) für schnelles Projekt-Setup
-- **v1.2** — Consolidation-Loop (automatisches Zusammenführen ähnlicher Regeln) + GitHub Actions Linter
-- **v2.0** — Skill-Marketplace: Community-Skills entdecken, bewerten und direkt einbinden
+| Version | Status | What's included |
+|---|---|---|
+| **v1.0** | ✅ current | Core system · 5 starter skills · Claude Code support · OpenCode + Cursor integration |
+| **v1.1** | planned | CLI tool (`npx skill-everythink init`) for fast project setup |
+| **v1.2** | planned | Consolidation loop (auto-merge similar rules) · GitHub Actions linter |
+| **v2.0** | planned | Skill Marketplace — discover, rate, and embed community skills |
 
 ---
 
 ## ❓ FAQ
 
-**Funktioniert das mit meinem Agent?**
-Ja. Skill-Everythink ist vollständig agent-agnostisch. Solange dein Agent Markdown-Dateien als Kontext laden kann — ob als System-Prompt, Datei-Referenz oder Skill-Konfiguration — funktioniert es. Getestet mit OpenCode, Cursor, Claude Projects, GPT-4 und lokalen Modellen via Ollama.
+<details>
+<summary><strong>Does this work with my agent?</strong></summary>
 
-**Wie groß darf ein Skill werden?**
-Pro Sub-Skill maximal 3000 Tokens. Das ist die Grenze, ab der Kontext-Overhead und Aufmerksamkeitsverlust spürbar werden. Wenn ein Bereich wächst, teile ihn in zwei fokussierte Sub-Skills auf — lieber zwei präzise Module als ein aufgeblähtes.
+Yes. Skill-Everythink is fully agent-agnostic. As long as your agent can load Markdown files as context — whether as a system prompt, file reference, or skill configuration — it works. Tested with OpenCode, Claude Code, Cursor, Claude Projects, GPT-4, and local models via Ollama.
 
-**Kann der Agent den Skill wirklich selbst erweitern?**
-Ja. Der Selbst-Erweiterungs-Workflow in `references/errors/` beschreibt exakt, wie der Agent neue Einträge formuliert, einordnet und committet. Der Mensch reviewt den PR — der Agent schreibt ihn.
+</details>
 
-**Was ist der Unterschied zu `.cursorrules`?**
-Cursor Rules sind statisch, nicht versioniert und funktionieren nur in Cursor. Skill-Everythink ist modular, Git-versioniert, agent-agnostisch und hat ein aktives Fehler-Gedächtnis. Ein Skill wächst mit — eine `.cursorrules`-Datei nicht.
+<details>
+<summary><strong>How large can a skill get?</strong></summary>
 
-**Brauche ich eine Datenbank?**
-Nein. Alles ist Plain Markdown, gespeichert im Dateisystem, versioniert mit Git. Keine Vektordatenbank, kein Embedding-Service, kein laufender Prozess. `git clone` ist das einzige Setup.
+Maximum 3,000 tokens per sub-skill. That's the threshold where context overhead and attention loss become noticeable. When an area grows, split it into two focused sub-skills — two precise modules beat one bloated one.
 
-**Kann ich Skill-Everythink in einem bestehenden Projekt verwenden?**
-Ja. Klone das Repository neben dein Projekt oder füge es als Git-Submodul ein. Der Skill-Pfad wird einmalig in der Agent-Konfiguration eingetragen — danach läuft alles automatisch.
+</details>
 
-**Was passiert, wenn ein Skill-Eintrag falsch ist?**
-`git revert`. Jede Änderung ist versioniert und kann in Sekunden rückgängig gemacht werden. Das ist einer der Kernvorteile gegenüber opaquen Speichersystemen.
+<details>
+<summary><strong>Can the agent really extend the skill itself?</strong></summary>
+
+Yes. The self-extension workflow in `references/errors/` describes exactly how the agent formulates new entries, classifies them, and commits them. The human reviews the PR — the agent writes it.
+
+</details>
+
+<details>
+<summary><strong>What's the difference from <code>.cursorrules</code>?</strong></summary>
+
+Cursor Rules are static, unversioned, and only work in Cursor. Skill-Everythink is modular, Git-versioned, agent-agnostic, and has an active error memory. A skill grows with you — a `.cursorrules` file doesn't.
+
+</details>
+
+<details>
+<summary><strong>Do I need a database?</strong></summary>
+
+No. Everything is plain Markdown, stored on the filesystem, versioned with Git. No vector database, no embedding service, no running process. `git clone` is the only setup step.
+
+</details>
+
+<details>
+<summary><strong>Can I use this in an existing project?</strong></summary>
+
+Yes. Clone the repository next to your project or add it as a Git submodule. The skill path is registered once in your agent configuration — after that, everything runs automatically.
+
+</details>
+
+<details>
+<summary><strong>What if a skill entry is wrong?</strong></summary>
+
+`git revert`. Every change is versioned and can be undone in seconds. That's one of the core advantages over opaque memory systems.
+
+</details>
 
 ---
 
 ## 🤝 Contributing
 
-Beiträge sind willkommen — ob neue Starter-Skills, Verbesserungen bestehender Regeln oder Tooling. Bitte lies zuerst [./CONTRIBUTING.md](./CONTRIBUTING.md).
+Contributions are welcome — new starter skills, improvements to existing rules, or tooling. Please read [CONTRIBUTING.md](./CONTRIBUTING.md) first.
 
 ---
 
-## 📄 Lizenz
+## 📄 License
 
-MIT — frei verwendbar, modifizierbar und verteilbar, auch kommerziell. Siehe [LICENSE](./LICENSE).
+MIT — free to use, modify, and distribute, including commercially. See [LICENSE](./LICENSE).

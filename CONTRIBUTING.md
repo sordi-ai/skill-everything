@@ -1,82 +1,82 @@
-# Beitragen zu Skill-Everythink
+# Contributing to Skill-Everythink
 
-Danke für dein Interesse! Skill-Everythink lebt von Community-Beiträgen — je mehr Wissen einfließt, desto besser werden die Agents für alle.
-
----
-
-## Wie du beitragen kannst
-
-### 1. Neuen Sub-Skill erstellen
-
-1. Kopiere die Vorlage: `references/_templates/sub-skill.template.md`
-2. Erstelle einen neuen Ordner unter `references/` oder nutze einen bestehenden
-3. Benenne die Datei beschreibend: `references/[kategorie]/[thema].md`
-4. Fülle mindestens 5 konkrete Regeln ein
-5. Erstelle einen Pull Request
-
-### 2. Bestehende Skills erweitern
-
-1. Finde den passenden Sub-Skill in `references/`
-2. Füge neue Regeln am Ende der passenden Kategorie ein
-3. Format: `NNN. **[Regelname].** [Handlungsanweisung.]`
-4. Wenn die Regel aus einem Fehler stammt: `Referenz: ERR-YYYY-NNN` anhängen
-
-### 3. Fehler dokumentieren
-
-1. Kopiere die Vorlage: `references/_templates/error-entry.template.md`
-2. Fülle alle Felder aus
-3. Füge den Eintrag in `references/errors/error-log.md` ein
-4. Erstelle die zugehörige Regel im passenden Sub-Skill
+Thank you for your interest! Skill-Everythink thrives on community contributions — the more knowledge flows in, the better agents become for everyone.
 
 ---
 
-## Konventionen
+## How You Can Contribute
 
-### Dateinamen
-- Kleinbuchstaben, Bindestriche: `code-quality.md`, `review-deployment.md`
-- Beschreibend, nicht abgekürzt: `conventions.md` statt `conv.md`
+### 1. Create a New Sub-Skill
 
-### Sprache
-- Deutsch für Inhalte
-- Englische Fachbegriffe sind OK: "Commit", "Pull Request", "Deploy"
-- Regeln als Handlungsanweisungen: "Immer X" / "Nie Y ohne Z"
+1. Copy the template: `references/_templates/sub-skill.template.md`
+2. Create a new folder under `references/` or use an existing one
+3. Name the file descriptively: `references/[category]/[topic].md`
+4. Fill in at least 5 concrete rules
+5. Open a Pull Request
 
-### Regeln
-- Konkret und praxisnah — keine abstrakten Philosophien
-- Mit Beispiel wenn möglich (Code-Snippet, konkreter Fall)
-- Eine Regel pro Punkt — keine Doppelregeln
+### 2. Extend Existing Skills
+
+1. Find the matching sub-skill in `references/`
+2. Add new rules at the end of the appropriate category
+3. Format: `NNN. **[Rule Name].** [Action directive.]`
+4. If the rule originates from an error: append `Reference: ERR-YYYY-NNN`
+
+### 3. Document an Error
+
+1. Copy the template: `references/_templates/error-entry.template.md`
+2. Fill in all fields
+3. Add the entry to `references/errors/error-log.md`
+4. Create the corresponding rule in the appropriate sub-skill
+
+---
+
+## Conventions
+
+### File Names
+- Lowercase with hyphens: `code-quality.md`, `review-deployment.md`
+- Descriptive, not abbreviated: `conventions.md` instead of `conv.md`
+
+### Language
+- English for all content
+- Technical terms are fine as-is: "Commit", "Pull Request", "Deploy"
+- Always phrase rules as action directives: "Always X before Y" or "Never Z without W"
+
+### Rules
+- Concrete and practical — no abstract philosophies
+- Include an example where possible (code snippet, concrete case)
+- One rule per point — never combine multiple rules into one
 
 ### Pull Requests
-- Titel im Format: `docs([kategorie]): [was geändert wurde]`
-- Beispiel: `docs(development): add React hook rules`
-- Beschreibe kurz warum die Regel/der Skill wichtig ist
-- Maximal ein Thema pro PR
+- Title format: `docs([category]): [what was changed]`
+- Example: `docs(development): add React hook rules`
+- Briefly describe why the rule or skill matters
+- Always limit a PR to one topic
 
 ---
 
-## Ordnerstruktur
+## Folder Structure
 
 ```
 references/
-├── development/     → Code-Qualität, Patterns, häufige Fehler
-├── git/             → Commit-Konventionen, Branching, PRs
-├── domain/          → Firmenwissen, Business-Regeln, Glossar
-├── process/         → Reviews, Deployment, Checklisten
-├── errors/          → Fehler-Log, Selbst-Erweiterungs-Workflow
-└── _templates/      → Vorlagen für neue Skills und Fehler
+├── development/     → Code quality, patterns, common mistakes
+├── git/             → Commit conventions, branching, PRs
+├── domain/          → Company knowledge, business rules, glossary
+├── process/         → Reviews, deployment, checklists
+├── errors/          → Error log, self-extension workflow
+└── _templates/      → Templates for new skills and errors
 ```
 
-Neue Kategorien sind willkommen! Erstelle einfach einen neuen Ordner mit einer `SKILL.md` oder thematischen `.md`-Datei.
+> New categories are welcome! Simply create a new folder with a `SKILL.md` or a thematic `.md` file.
 
 ---
 
-## Was macht einen guten Beitrag aus?
+## What Makes a Good Contribution?
 
-✅ Konkrete Regeln aus echten Projekten
-✅ Handlungsanweisungen statt Beschreibungen
-✅ Fehler-Einträge mit Root-Cause-Analyse
-✅ Domänenwissen das kein LLM von sich aus kennt
+✅ Concrete rules from real projects  
+✅ Action directives instead of descriptions  
+✅ Error entries with root-cause analysis  
+✅ Domain knowledge that no LLM would know by default  
 
-❌ Generische Tipps die in jeder Dokumentation stehen
-❌ Persönliche Meinungen ohne Begründung
-❌ Regeln ohne praktischen Mehrwert
+❌ Generic tips found in any documentation  
+❌ Personal opinions without justification  
+❌ Rules without practical value  

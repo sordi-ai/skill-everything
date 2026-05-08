@@ -1,24 +1,24 @@
 ---
-name: "Neuen Sub-Skill vorschlagen"
-about: "Schlage einen neuen Sub-Skill oder eine neue Kategorie vor"
+name: "Propose a New Sub-Skill"
+about: "Suggest a new sub-skill or a new category"
 title: "[Skill] "
 labels: ["enhancement", "new-skill"]
 ---
 
 ## Sub-Skill Name
-[z.B. "React Best Practices", "Python Type Safety", "AWS Deployment"]
+[e.g. "React Best Practices", "Python Type Safety", "AWS Deployment"]
 
-## Kategorie
-[z.B. development, process, domain — oder neue Kategorie]
+## Category
+[e.g. development, process, domain — or a new category]
 
-## Zweck
-[1-2 Sätze: Was soll dieser Sub-Skill verhindern/verbessern?]
+## Purpose
+[1-2 sentences: What should this sub-skill prevent or improve?]
 
-## Vorgeschlagene Regeln (mindestens 3)
+## Proposed Rules (at least 3)
 
-1. **[Regelname]:** [Handlungsanweisung]
-2. **[Regelname]:** [Handlungsanweisung]
-3. **[Regelname]:** [Handlungsanweisung]
+1. **[Rule Name]:** [Action directive]
+2. **[Rule Name]:** [Action directive]
+3. **[Rule Name]:** [Action directive]
 
-## Warum ist dieser Sub-Skill wichtig?
-[Welches Problem löst er? Warum kann ein LLM das nicht von sich aus?]
+## Why Is This Sub-Skill Important?
+[What problem does it solve? Why can't an LLM handle this on its own?]
