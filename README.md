@@ -43,22 +43,9 @@
 
 ## ⚙️ How It Works
 
-```mermaid
-graph LR
-    A["🤖 Agent makes<br/>a mistake"] --> B["🔍 Mistake is<br/>analyzed"]
-    B --> C["📝 Rule is<br/>formulated"]
-    C --> D["📂 Skill file<br/>is updated"]
-    D --> E["🔒 Git commit<br/>preserves it"]
-    E --> F["✅ Never happens<br/>again"]
-    F -.->|"next session"| A
-
-    style A fill:#ff6b6b,stroke:#333,color:#fff
-    style B fill:#ffd93d,stroke:#333,color:#333
-    style C fill:#6bcb77,stroke:#333,color:#333
-    style D fill:#4d96ff,stroke:#333,color:#fff
-    style E fill:#9b59b6,stroke:#333,color:#fff
-    style F fill:#2ecc71,stroke:#333,color:#fff
-```
+<p align="center">
+  <img src="./docs/how-it-works.svg" alt="How It Works — The Self-Extension Loop" width="100%"/>
+</p>
 
 > **Not just errors.** The same loop captures new insights, better patterns, deployment gotchas, naming conventions, API quirks — anything worth remembering. Every lesson is a Git commit you can `diff`, `blame`, `revert`, or `cherry-pick` into another project.
 >
