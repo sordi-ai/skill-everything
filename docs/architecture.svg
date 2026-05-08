@@ -112,7 +112,10 @@
 
   <text class="lane-label" x="30"  y="85">SOURCE  ·  references/_index.yml</text>
   <text class="lane-label" x="30"  y="195">TOOLING  /  GENERATOR</text>
-  <text class="lane-label" x="30"  y="315">LOADER OUTPUT  ·  per-tool entry-points</text>
+  <!-- LOADER-OUTPUT lane label moved from x=30 to x=540 to clear the
+       four vertical fan-out stems at x=180/430/770/1020. The stem at
+       x=180 had been overstriking the original label at x=30.        -->
+  <text class="lane-label" x="540" y="315">LOADER OUTPUT  ·  per-tool entry-points</text>
   <text class="lane-label" x="30"  y="415">SUB-SKILL DIRECTORY  ·  references/**/*.md</text>
 
   <!-- ============== SOURCE: _index.yml hub ============== -->
@@ -166,11 +169,25 @@
     <text class="chip-text" x="8" y="14">python tools/render_loaders.py</text>
   </g>
 
-  <!-- arrows: generator → 4 loader outputs -->
-  <line x1="540" y1="280" x2="180" y2="320" class="arrow" marker-end="url(#a-rule)"/>
-  <line x1="570" y1="280" x2="430" y2="320" class="arrow" marker-end="url(#a-rule)"/>
-  <line x1="630" y1="280" x2="770" y2="320" class="arrow" marker-end="url(#a-rule)"/>
-  <line x1="660" y1="280" x2="1020" y2="320" class="arrow" marker-end="url(#a-rule)"/>
+  <!-- ============== FAN-OUT: generator → 4 loader outputs ==============
+       Replaced four diagonal lines with a Manhattan-routed trunk-and-
+       branch tree. The diagonals cut through the LOADER-OUTPUT lane
+       label (the leftmost arrow crossed y=315 at x≈225, mid-glyph).
+       The trunk preserves the "one source, four loaders" fan-out as
+       the diagram's central narrative — branches now read as siblings.
+        - vertical drop:  x=600,  y=280 → y=294   (Generator bottom → trunk)
+        - trunk:          y=294,  x=180 → x=1020  (above separator y=300)
+        - four stems:     y=294 → y=322 at x=180, 430, 770, 1020
+       Trunk at y=294 sits 6 px above the lane separator (y=300); no
+       text shares the band, so the 4-px-from-separator rule (which
+       governs text baselines) is satisfied by all labels. Stems cross
+       the separator vertically, which is permitted for connectors.   -->
+  <line x1="600" y1="280" x2="600" y2="294" class="arrow"/>
+  <line x1="180" y1="294" x2="1020" y2="294" class="arrow"/>
+  <line x1="180" y1="294" x2="180"  y2="322" class="arrow" marker-end="url(#a-rule)"/>
+  <line x1="430" y1="294" x2="430"  y2="322" class="arrow" marker-end="url(#a-rule)"/>
+  <line x1="770" y1="294" x2="770"  y2="322" class="arrow" marker-end="url(#a-rule)"/>
+  <line x1="1020" y1="294" x2="1020" y2="322" class="arrow" marker-end="url(#a-rule)"/>
 
   <!-- ============== LOADER OUTPUTS (4 files) ============== -->
   <!-- 1. SKILL.md (OpenCode) -->
