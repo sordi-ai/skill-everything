@@ -1,44 +1,44 @@
-# Sub-Skill: Git & Workflow-Konventionen
+# Sub-Skill: Git & Workflow Conventions
 
-**Zweck:** Einheitliche Commit-Historie, saubere Branches, keine Merge-Konflikte durch Disziplin.
-Regeln die in Teams mit 2–20 Entwicklern funktionieren.
+**Purpose:** Consistent commit history, clean branches, no merge conflicts through discipline.
+Rules that work in teams of 2–20 developers.
 
 ---
 
-## Regeln
+## Rules
 
-### Commit-Nachrichten (Conventional Commits)
+### Commit Messages (Conventional Commits)
 
-1. **Format:** `<type>(<scope>): <beschreibung>` — immer Kleinbuchstaben, kein Punkt am Ende.
-   - Typen: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `perf`, `ci`
-   - Beispiel: `feat(auth): add JWT refresh token rotation`
-2. **Beschreibung im Imperativ.** `add feature` nicht `added feature` oder `adds feature`.
-3. **Scope ist der betroffene Modul-Name.** `fix(user-service): handle null email` — nicht `fix(backend)`.
-4. **Breaking Changes mit `!` markieren.** `feat(api)!: remove deprecated v1 endpoints`
-5. **Body bei nicht-offensichtlichen Änderungen.** Erklärt das *Warum*, nicht das *Was*.
+1. **Format:** `<type>(<scope>): <description>` — always lowercase, no period at the end.
+   - Types: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `perf`, `ci`
+   - Example: `feat(auth): add JWT refresh token rotation`
+2. **Description in imperative mood.** `add feature` not `added feature` or `adds feature`.
+3. **Scope is the affected module name.** `fix(user-service): handle null email` — not `fix(backend)`.
+4. **Mark breaking changes with `!`.** `feat(api)!: remove deprecated v1 endpoints`
+5. **Body for non-obvious changes.** Explains the *why*, not the *what*.
 
 ### Branching
 
-6. **Branch-Namen:** `<type>/<ticket-id>-<kurzbeschreibung>` — z.B. `feat/PROJ-123-user-export`.
-7. **Feature-Branches leben max. 2 Tage.** Länger → täglich rebasen auf `main`.
-8. **Kein direkter Push auf `main` oder `develop`.** Immer über Pull Request.
-9. **Branch vor PR löschen.** Merged Branches im Remote aufräumen.
+6. **Branch names:** `<type>/<ticket-id>-<short-description>` — e.g. `feat/PROJ-123-user-export`.
+7. **Feature branches live max. 2 days.** Longer → rebase daily onto `main`.
+8. **No direct push to `main` or `develop`.** Always through a pull request.
+9. **Delete branch before PR merge.** Clean up merged branches from remote.
 
 ### Pull Requests
 
-10. **PR-Titel = Commit-Nachricht des Squash-Commits.** Konsistenz zwischen PR und Git-Log.
-11. **Max. 400 Zeilen Diff pro PR.** Größer → aufteilen. Reviewer können nicht mehr als 400 Zeilen sinnvoll reviewen.
-12. **Self-Review vor PR-Öffnung.** Einmal selbst durchlesen, offensichtliche Fehler fixen.
+10. **PR title = commit message of the squash commit.** Consistency between PR and git log.
+11. **Max. 400 lines diff per PR.** Larger → split. Reviewers cannot meaningfully review more than 400 lines.
+12. **Self-review before opening a PR.** Read through once yourself, fix obvious mistakes.
 
-### Merge-Strategie
+### Merge Strategy
 
-13. **Squash-Merge für Feature-Branches.** Saubere lineare Historie auf `main`.
-14. **Merge-Commit für Release-Branches.** Damit Release-Punkte sichtbar bleiben.
-15. **`git rebase -i` vor PR für saubere Commits.** WIP-Commits zusammenfassen.
+13. **Squash-merge for feature branches.** Clean linear history on `main`.
+14. **Merge commit for release branches.** So release points remain visible.
+15. **`git rebase -i` before PR for clean commits.** Squash WIP commits together.
 
 ---
 
-## Warum dieser Sub-Skill Sterne bringt
+## Why This Sub-Skill Earns Stars
 
-Der Agent erstellt automatisch korrekte Commit-Nachrichten und Branch-Namen.
-Kein manuelles Nachkorrigieren, keine Diskussionen im Review über Formatierung.
+The agent automatically creates correct commit messages and branch names.
+No manual corrections, no discussions in review about formatting.

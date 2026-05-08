@@ -1,151 +1,100 @@
-# Sub-Skill: Fehler-Log
+# Sub-Skill: Error Log
 
-**Zweck:** Zentrales Gedächtnis für alle Fehler die der Agent gemacht hat oder beobachtet hat.
-Jeder Eintrag verhindert, dass derselbe Fehler zweimal passiert.
+**Purpose:** Central memory for all mistakes the agent has made or observed.
+Each entry prevents the same mistake from happening twice.
 
 ---
 
-## Format-Spezifikation
+## Format Specification
 
-Jeder Fehler-Eintrag folgt exakt diesem YAML-Format:
+Every error entry follows exactly this YAML format:
 
 ```yaml
-- id: ERR-YYYY-NNN          # Jahr + laufende Nummer, z.B. ERR-2025-001
-  datum: YYYY-MM-DD
-  last_seen: YYYY-MM-DD     # Letztes Auftreten (bei Wiederholung aktualisieren)
-  count: 1                   # Wie oft dieser Fehler aufgetreten ist
-  kategorie: development|git|deployment|security|performance|domain
-  schwere: kritisch|hoch|mittel|niedrig
-  kontext: |
-    [1-3 Sätze: In welcher Situation ist der Fehler aufgetreten?
-    Welche Aufgabe wurde bearbeitet? Welches Projekt/Modul?]
-  was_passierte: |
-    [Konkrete Beschreibung was der Agent getan hat.
-    Code-Snippet wenn relevant.]
+- id: ERR-YYYY-NNN          # Year + sequential number, e.g. ERR-2025-001
+  date: YYYY-MM-DD
+  last_seen: YYYY-MM-DD     # Last occurrence (update on repeat)
+  count: 1                   # How many times this error has occurred
+  category: development|git|deployment|security|performance|domain
+  severity: critical|high|medium|low
+  context: |
+    [1-3 sentences: In what situation did the error occur?
+    What task was being worked on? Which project/module?]
+  what_happened: |
+    [Concrete description of what the agent did.
+    Code snippet if relevant.]
   root_cause: |
-    [Warum ist es passiert? Welche falsche Annahme lag zugrunde?]
-  auswirkung: |
-    [Was war die Konsequenz? Datenverlust? Sicherheitslücke? Zeitverlust?]
-  loesung: |
-    [Was wurde getan um den Fehler zu beheben?]
-  neue_regel: |
-    [Die konkrete Regel die aus diesem Fehler folgt.
-    Formuliert als Handlungsanweisung: "Immer X bevor Y" oder "Nie Z ohne W".]
-  datei: references/[kategorie]/[dateiname].md   # Wo die Regel eingepflegt wurde
+    [Why did it happen? What false assumption was the cause?]
+  impact: |
+    [What was the consequence? Data loss? Security breach? Time wasted?]
+  resolution: |
+    [What was done to fix the error?]
+  new_rule: |
+    [The concrete rule derived from this error.
+    Phrased as action directive: "Always X before Y" or "Never Z without W".]
+  target_file: references/[category]/[filename].md   # Where the rule was added
 ```
 
 ---
 
-## Beispiel-Einträge
+## Example Entries
 
 ```yaml
-fehler:
+errors:
 
   - id: ERR-2025-001
-    datum: 2025-03-14
-    kategorie: deployment
-    schwere: kritisch
-    kontext: |
-      Deployment einer neuen API-Version für den OrderFlow-Service.
-      Die neue Version enthielt eine DB-Migration die eine Spalte umbenennt.
-    was_passierte: |
-      Agent hat zuerst das neue Backend deployed, dann die Migration ausgeführt.
-      Zwischen Deployment und Migration (ca. 45 Sekunden) lief der neue Code
-      gegen das alte Schema und warf 500-Fehler für alle Bestellungen.
+    date: 2025-03-14
+    category: deployment
+    severity: critical
+    context: |
+      Deploying a new API version for the OrderFlow service.
+      The new version contained a DB migration that renames a column.
+    what_happened: |
+      Agent deployed the new backend first, then ran the migration.
+      Between deployment and migration (~45 seconds), the new code
+      ran against the old schema and threw 500 errors for all orders.
     root_cause: |
-      Falsche Annahme: "Migration kann nach Deployment laufen".
-      Tatsächlich: Wenn Code neue Spalten-Namen erwartet, muss Migration ZUERST laufen.
-    auswirkung: |
-      45 Sekunden Produktionsausfall. ~200 fehlgeschlagene API-Requests.
-      Kein Datenverlust, aber Kundenbeschwerden.
-    loesung: |
-      Sofort zurückgerollt auf alte Version. Migration ausgeführt.
-      Dann neue Version deployed. Diesmal ohne Fehler.
-    neue_regel: |
-      Immer additive DB-Migrationen VOR dem Deployment ausführen.
-      Bei Rename-Migrationen: Erst neue Spalte hinzufügen (additiv),
-      Code auf neue Spalte umstellen, dann alte Spalte entfernen (separates Deployment).
-    datei: references/process/review-deployment.md
+      False assumption: "Migration can run after deployment."
+      Reality: When code expects new column names, migration MUST run FIRST.
+    impact: |
+      45 seconds of production downtime. ~200 failed API requests.
+      No data loss, but customer complaints.
+    resolution: |
+      Immediately rolled back to old version. Ran migration.
+      Then deployed new version. No errors this time.
+    new_rule: |
+      Always run additive DB migrations BEFORE deployment.
+      For rename migrations: First add new column (additive),
+      update code to use new column, then remove old column (separate deployment).
+    target_file: references/process/review-deployment.md
 
   - id: ERR-2025-002
-    datum: 2025-04-02
-    kategorie: security
-    schwere: kritisch
-    kontext: |
-      Implementierung eines neuen Such-Endpunkts für Produkte.
-      Nutzer können nach Produktnamen suchen.
-    was_passierte: |
-      Agent hat folgende Query gebaut:
-      ```sql
-      SELECT * FROM products WHERE name LIKE '%' + userInput + '%'
-      ```
-      Direkte String-Konkatenation mit User-Input in SQL-Query.
+    date: 2025-03-18
+    category: development
+    severity: medium
+    context: |
+      Implementing a user search feature with filter by status.
+    what_happened: |
+      Agent wrote `SELECT * FROM users WHERE status = '${userInput}'`
+      instead of using a parameterized query.
     root_cause: |
-      Fokus auf Funktionalität, Sicherheit nicht mitgedacht.
-      Kein Prepared Statement verwendet.
-    auswirkung: |
-      SQL-Injection-Lücke. Angreifer könnte alle Daten auslesen oder löschen.
-      Im Code-Review entdeckt, nie in Produktion.
-    loesung: |
-      Umgeschrieben mit Prepared Statement:
-      ```sql
-      SELECT * FROM products WHERE name LIKE ?
-      ```
-      Parameter: `%${userInput}%`
-    neue_regel: |
-      Nie User-Input direkt in SQL-Queries konkatenieren.
-      Immer Prepared Statements oder ORM-Query-Builder verwenden.
-      Vor jedem neuen Endpunkt: Checkliste "Sicherheit" aus review-deployment.md durchgehen.
-    datei: references/process/review-deployment.md
-
-  - id: ERR-2025-003
-    datum: 2025-04-18
-    kategorie: performance
-    schwere: hoch
-    kontext: |
-      Feature: Dashboard zeigt alle Bestellungen eines Nutzers mit Produktdetails.
-      Implementierung der Backend-API für das Dashboard.
-    was_passierte: |
-      Agent hat folgende Logik implementiert:
-      ```typescript
-      const orders = await db.orders.findAll({ where: { userId } });
-      for (const order of orders) {
-        order.items = await db.orderItems.findAll({ where: { orderId: order.id } });
-        for (const item of order.items) {
-          item.product = await db.products.findOne({ where: { id: item.productId } });
-        }
-      }
-      ```
-      Bei 50 Bestellungen mit je 5 Items: 1 + 50 + 250 = 301 DB-Queries.
-    root_cause: |
-      N+1-Query-Problem. Jede Ebene der Verschachtelung multipliziert die Queries.
-      Kein JOIN oder eager loading verwendet.
-    auswirkung: |
-      Dashboard lädt 8 Sekunden statt <500ms.
-      Datenbank unter Last bei mehreren gleichzeitigen Nutzern.
-    loesung: |
-      Umgeschrieben mit einem einzigen JOIN-Query:
-      ```sql
-      SELECT o.*, oi.*, p.*
-      FROM orders o
-      JOIN order_items oi ON oi.order_id = o.id
-      JOIN products p ON p.id = oi.product_id
-      WHERE o.user_id = ?
-      ```
-      Ladezeit: 45ms.
-    neue_regel: |
-      Vor jeder Implementierung die Daten aus DB lädt: Prüfen ob Schleifen mit
-      DB-Calls drin sind. Wenn ja → JOIN oder Batch-Query verwenden.
-      Faustregel: Maximal 1 DB-Query pro HTTP-Request (Ausnahmen dokumentieren).
-    datei: references/development/code-quality.md
+      Agent defaulted to string interpolation for "simplicity."
+      Didn't consider that user input could contain SQL injection.
+    impact: |
+      Security vulnerability. Caught in code review before production.
+    resolution: |
+      Rewritten with prepared statement:
+      `db.query('SELECT * FROM users WHERE status = $1', [userInput])`
+    new_rule: |
+      Never concatenate user input directly into SQL queries.
+      Always use prepared statements or ORM query builders.
+    target_file: references/development/code-quality.md
 ```
 
 ---
 
-## Workflow: Fehler einpflegen
+## Consolidation
 
-1. **Fehler erkennen:** Test schlägt fehl, Review-Kommentar, Produktionsfehler, oder Agent merkt selbst dass Ansatz falsch war.
-2. **ID vergeben:** Nächste freie Nummer in diesem Jahr (`ERR-YYYY-NNN`).
-3. **Eintrag ausfüllen:** Alle Felder, besonders `neue_regel` — das ist der Wert.
-4. **Regel einpflegen:** Die `neue_regel` in die passende Datei unter `references/` einfügen.
-5. **Commit:** `docs(errors): add ERR-2025-NNN - [kurze Beschreibung]`
+When this file exceeds 50 entries:
+1. Merge errors with the same root cause into one entry (increase `count`)
+2. Archive entries older than 6 months with `severity: low`
+3. Rules derived from errors remain in their respective sub-skills

@@ -1,201 +1,126 @@
-# Selbst-Erweiterungs-Workflow
+# Self-Extension Workflow
 
-**Zweck:** Exakter Prompt und Ablauf den der Agent nach jedem Fehler ausführt,
-um das Skill-System automatisch zu aktualisieren.
-
----
-
-## Trigger-Bedingungen
-
-Der Agent startet diesen Workflow wenn **eine** dieser Bedingungen zutrifft:
-
-- Ein Test schlägt fehl und der Agent hat den falschen Code geschrieben
-- Ein Code-Review-Kommentar korrigiert den Agent
-- Der Agent merkt während der Implementierung, dass sein erster Ansatz falsch war
-- Ein Deployment-Problem tritt auf das der Agent verursacht hat
-- Der Nutzer sagt explizit: "Das war falsch" / "Das solltest du dir merken"
+**Purpose:** Exact prompt and procedure the agent executes after every mistake
+to automatically update the skill system.
 
 ---
 
-## Schritt-für-Schritt-Ablauf
+## Trigger Conditions
 
-### Schritt 0: Search before Write (PFLICHT)
+The agent starts this workflow when **any** of these conditions is met:
 
-**Bevor du einen neuen Fehler-Eintrag erstellst**, durchsuche das bestehende Error-Log:
+- A test fails and the agent wrote the faulty code
+- A code review comment corrects the agent
+- The agent realizes during implementation that its first approach was wrong
+- A deployment problem occurs that the agent caused
+- The user explicitly says: "That was wrong" / "Remember this"
 
-```
-1. Lies references/errors/error-log.md
-2. Suche nach ähnlichen Fehlern (gleiche Kategorie + ähnlicher Kontext)
-3. Wenn ein ähnlicher Eintrag existiert:
-   → Erhöhe dessen `count` Feld um 1
-   → Aktualisiere `last_seen` auf heute
-   → Ergänze den Kontext falls nötig
-   → Erstelle KEINEN neuen Eintrag
-4. Nur wenn kein ähnlicher Eintrag existiert → weiter mit Schritt 1
-```
+---
 
-### Schritt 1: Fehler analysieren
+## Step-by-Step Procedure
 
-Der Agent stellt sich intern diese Fragen:
+### Step 0: Search before Write (MANDATORY)
+
+**Before creating a new error entry**, search the existing error log:
 
 ```
-1. Was genau habe ich getan? (konkreter Code/Aktion)
-2. Was hätte ich stattdessen tun sollen?
-3. Warum habe ich es falsch gemacht? (falsche Annahme, fehlendes Wissen, Unachtsamkeit)
-4. Welche Kategorie trifft zu?
-   - development: Code-Fehler, falsche Implementierung
-   - git: Commit/Branch-Fehler
-   - deployment: Deployment-Reihenfolge, Konfiguration
-   - security: Sicherheitslücke
-   - performance: N+1, fehlende Indizes, zu große Datenmengen
-   - domain: Falsches Verständnis von Business-Regeln
-5. Wie schwer war der Fehler? (kritisch/hoch/mittel/niedrig)
+1. Read references/errors/error-log.md
+2. Search for similar errors (same category + similar context)
+3. If a similar entry exists:
+   → Increment its `count` field by 1
+   → Update `last_seen` to today
+   → Supplement the context if needed
+   → Do NOT create a new entry
+4. Only if no similar entry exists → continue with Step 1
 ```
 
-### Schritt 2: Neue Fehler-ID bestimmen
+### Step 1: Analyze the Error
+
+The agent internally asks itself these questions:
+
+```
+1. What exactly did I do? (concrete code/action)
+2. What should I have done instead?
+3. Why did I do it wrong? (false assumption, missing knowledge, carelessness)
+4. Which category applies?
+   - development: code error, wrong implementation
+   - git: commit/branch mistake
+   - deployment: deployment order, configuration
+   - security: security vulnerability
+   - performance: N+1, missing indexes, datasets too large
+   - domain: wrong understanding of business rules
+5. How severe was the error? (critical/high/medium/low)
+```
+
+### Step 2: Determine New Error ID
 
 ```bash
-# Letzten Eintrag in error-log.md finden
+# Find last entry in error-log.md
 grep "id: ERR-" references/errors/error-log.md | tail -1
-# Nächste Nummer nehmen: ERR-2025-004 → ERR-2025-005
+# Take next number: ERR-2025-004 → ERR-2025-005
 ```
 
-### Schritt 3: Fehler-Eintrag formulieren
+### Step 3: Formulate Error Entry
 
-Der Agent füllt das Template aus `references/errors/error-log.md` aus.
-**Kritisch:** Die `neue_regel` muss eine **Handlungsanweisung** sein, keine Beschreibung.
+The agent fills out the template from `references/errors/error-log.md`.
+**Critical:** The `new_rule` must be an **action directive**, not a description.
 
-❌ Schlecht: `"SQL-Injection ist gefährlich"`
-✅ Gut: `"Nie User-Input direkt in SQL konkatenieren. Immer Prepared Statements."`
+❌ Bad: `"SQL injection is dangerous"`
+✅ Good: `"Never concatenate user input directly into SQL. Always use prepared statements."`
 
-### Schritt 4: Passende Ziel-Datei bestimmen
+### Step 4: Determine Target File
 
-| Fehler-Kategorie | Ziel-Datei |
-|-----------------|-----------|
+| Error Category | Target File |
+|---------------|------------|
 | development | `references/development/code-quality.md` |
 | git | `references/git/conventions.md` |
 | deployment | `references/process/review-deployment.md` |
-| security | `references/process/review-deployment.md` (Sicherheits-Abschnitt) |
-| performance | `references/development/code-quality.md` (Performance-Abschnitt) |
-| domain | `references/domain/<projektname>.md` |
+| security | `references/development/code-quality.md` (Security section) |
+| performance | `references/development/code-quality.md` (Performance section) |
+| domain | `references/domain/<project>.md` |
 
-### Schritt 5: Regel in Ziel-Datei einfügen
+### Step 5: Insert Rule
 
-Die neue Regel wird am Ende des passenden Abschnitts eingefügt.
-Format: `NNN. **[Kurzer Regelname]:** [Handlungsanweisung]. Referenz: ERR-YYYY-NNN`
+1. Open the target file
+2. Find the matching category section
+3. Add the new rule at the end of the section
+4. Number continues sequentially
+5. Add reference: `Reference: ERR-YYYY-NNN`
 
-Beispiel:
-```markdown
-16. **Kein direktes SQL mit User-Input:** Nie User-Input in SQL-Queries konkatenieren.
-    Immer Prepared Statements oder ORM verwenden. Referenz: ERR-2025-002
-```
-
-### Schritt 6: Fehler-Eintrag in error-log.md einfügen
-
-Neuen YAML-Block am Ende der `fehler:`-Liste in `references/errors/error-log.md` einfügen.
-
-### Schritt 7: Committen
+### Step 6: Commit
 
 ```bash
-git add references/errors/error-log.md references/[kategorie]/[dateiname].md
-git commit -m "docs(errors): add ERR-$(date +%Y)-NNN - [kurze Beschreibung des Fehlers]"
+git add references/
+git commit -m "learn(errors): ERR-YYYY-NNN — [short description]"
 ```
+
+The commit message uses the `learn` type — so it's visible in the git log that this was a knowledge update, not a feature or bugfix.
 
 ---
 
-## Der konkrete Selbst-Erweiterungs-Prompt
+## Consolidation Loop
 
-Wenn der Agent einen Fehler erkennt, führt er intern diesen Prompt aus:
+When the error log exceeds 50 entries, the agent performs consolidation:
 
 ```
-FEHLER-DOKUMENTATION STARTEN
-
-Ich habe gerade einen Fehler gemacht. Ich dokumentiere ihn jetzt systematisch.
-
-ANALYSE:
-- Was ich getan habe: [konkrete Aktion/Code]
-- Was ich hätte tun sollen: [korrekte Aktion/Code]  
-- Warum ich es falsch gemacht habe: [root cause]
-- Kategorie: [development|git|deployment|security|performance|domain]
-- Schwere: [kritisch|hoch|mittel|niedrig]
-
-NEUE REGEL (Handlungsanweisung):
-"[Immer/Nie/Vor X immer Y] ..."
-
-AKTIONEN:
-1. Nächste freie ERR-ID aus error-log.md bestimmen
-2. Vollständigen YAML-Eintrag in error-log.md einfügen
-3. Neue Regel in [ziel-datei] am Ende des passenden Abschnitts einfügen
-4. Beide Dateien committen mit: docs(errors): add [ERR-ID] - [beschreibung]
-
-JETZT AUSFÜHREN.
+1. Read all entries in references/errors/error-log.md
+2. Group by root_cause similarity
+3. For groups with same root cause:
+   → Keep the most detailed entry
+   → Sum up all `count` values
+   → Set `last_seen` to the most recent date
+   → Delete the duplicates
+4. For entries older than 6 months with severity: low:
+   → Archive (move to a comment block or separate archive file)
+   → The rules derived from them remain in the sub-skills
+5. Commit: "chore(errors): consolidate error log (N entries merged)"
 ```
+
+**When to run:** Every 10th new entry, or when the user explicitly requests it.
 
 ---
 
-## Beispiel: Vollständiger Durchlauf
+## Why This Sub-Skill Earns Stars
 
-**Situation:** Agent hat eine React-Komponente ohne `key`-Prop in einer Liste gerendert.
-React zeigt Warning, Performance-Probleme bei Re-Renders.
-
-**Schritt 1 — Analyse:**
-```
-Was getan: <li>{item.name}</li> in .map() ohne key-Prop
-Was stattdessen: <li key={item.id}>{item.name}</li>
-Warum falsch: key-Prop vergessen, kein Linter-Fehler weil ESLint nicht konfiguriert
-Kategorie: development
-Schwere: mittel
-```
-
-**Schritt 2 — ID:** Letzte ID war ERR-2025-003 → neue ID: ERR-2025-004
-
-**Schritt 3 — Neue Regel:**
-```
-"Jedes .map() in React muss ein key-Prop haben. key = stabile eindeutige ID aus den Daten,
-nie Array-Index (außer Liste ist statisch und nie umsortiert)."
-```
-
-**Schritt 4 — Ziel-Datei:** `references/development/code-quality.md` (development-Kategorie)
-
-**Schritt 5 — Regel einfügen** in `code-quality.md`:
-```markdown
-16. **React list key-Prop:** Jedes `.map()` braucht `key={item.id}`.
-    Nie Array-Index als key bei dynamischen Listen. Referenz: ERR-2025-004
-```
-
-**Schritt 6 — YAML-Eintrag** in `error-log.md` einfügen (vollständiges Format).
-
-**Schritt 7 — Commit:**
-```bash
-git commit -m "docs(errors): add ERR-2025-004 - react list missing key prop"
-```
-
----
-
-## Qualitätskontrolle
-
-Nach dem Einfügen prüft der Agent:
-
-- [ ] Ist die `neue_regel` eine Handlungsanweisung (nicht nur eine Beschreibung)?
-- [ ] Hat der Eintrag alle Pflichtfelder (id, datum, kategorie, schwere, kontext, was_passierte, root_cause, neue_regel)?
-- [ ] Ist die Regel in der richtigen Ziel-Datei eingefügt?
-- [ ] Ist der Commit mit korrektem Conventional-Commit-Format?
-- [ ] Würde diese Regel denselben Fehler in Zukunft verhindern?
-
-Wenn alle 5 Punkte ✅ → Workflow abgeschlossen.
-
----
-
-## Consolidation-Loop (ab 50 Einträgen)
-
-Wenn `references/errors/error-log.md` mehr als **50 Fehler-Einträge** enthält, führe nach dem normalen Workflow zusätzlich eine Konsolidierung durch:
-
-### Regeln:
-1. **Zusammenfassen:** Fehler mit gleicher `root_cause` und `kategorie` → in einen Eintrag mit `count: N` zusammenfassen
-2. **Archivieren:** Fehler mit `schwere: niedrig` die älter als 6 Monate sind → in `references/errors/archive/` verschieben
-3. **Regeln behalten:** Die daraus entstandenen Regeln in den Sub-Skills bleiben IMMER erhalten — nur der Error-Log-Eintrag wird archiviert
-4. **Prüfen:** Sind alle Regeln in den Sub-Skills noch relevant? Veraltete Regeln markieren mit `(veraltet seit YYYY-MM-DD)`
-
-### Wann prüfen:
-- Nach jedem 10. neuen Fehler-Eintrag
-- Oder wenn der User explizit "Fehler-Log aufräumen" sagt
+The agent doesn't just fix errors — it learns from them.
+Every mistake makes the system permanently better, and the improvement is traceable, revertable, and reviewable via Git.

@@ -1,27 +1,27 @@
 # Sub-Skill: [Name]
 
-**Zweck:** [1-2 Sätze: Was dieser Sub-Skill bewirkt und warum er existiert.]
+**Purpose:** [1-2 sentences: What this sub-skill does and why it exists.]
 
 ---
 
-## Regeln
+## Rules
 
-### [Kategorie 1]
+### [Category 1]
 
-1. **[Regelname].** [Handlungsanweisung — "Immer X" oder "Nie Y ohne Z".]
-2. **[Regelname].** [Handlungsanweisung.]
-3. **[Regelname].** [Handlungsanweisung.]
+1. **[Rule name].** [Action directive — "Always X" or "Never Y without Z".]
+2. **[Rule name].** [Action directive.]
+3. **[Rule name].** [Action directive.]
 
-### [Kategorie 2]
+### [Category 2]
 
-4. **[Regelname].** [Handlungsanweisung.]
-5. **[Regelname].** [Handlungsanweisung.]
+4. **[Rule name].** [Action directive.]
+5. **[Rule name].** [Action directive.]
 
 ---
 
-## Hinweise
+## Notes
 
-- Regeln werden als Handlungsanweisungen formuliert, nicht als Beschreibungen
-- Jede Regel die aus einem Fehler entstanden ist, hat eine Referenz: `Referenz: ERR-YYYY-NNN`
-- Neue Regeln am Ende der passenden Kategorie einfügen
-- Bei mehr als 30 Regeln: Datei aufteilen in thematische Unter-Dateien
+- Rules are phrased as action directives, not descriptions
+- Every rule derived from an error has a reference: `Reference: ERR-YYYY-NNN`
+- Add new rules at the end of the matching category
+- When exceeding 30 rules: split into thematic sub-files

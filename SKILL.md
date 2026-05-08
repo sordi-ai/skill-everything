@@ -1,55 +1,55 @@
 ---
 name: skill-everythink
 description: Git-Versioned Agent Memory — Agents that never make the same mistake twice
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Skill-Everythink
 
-Du nutzt das **Skill-Everythink** Wissenssystem. Es enthält akkumuliertes Wissen aus vergangenen Fehlern, Projektkonventionen, Domänenwissen und Prozessen.
+You are using the **Skill-Everythink** knowledge system. It contains accumulated knowledge from past mistakes, project conventions, domain knowledge, and processes.
 
-## Deine Pflichten
+## Your Responsibilities
 
-1. **Vor jeder Implementierung:** Prüfe ob relevante Sub-Skills existieren und lade sie via `skill_resource`.
-2. **Nach jedem Fehler:** Führe den Selbst-Erweiterungs-Workflow aus (siehe unten).
-3. **Bei neuem Wissen:** Pflege es in die passende Kategorie ein.
+1. **Before every implementation:** Check if relevant sub-skills exist and load them via `skill_resource`.
+2. **After every mistake:** Execute the self-extension workflow (see below).
+3. **When you learn something new:** Add it to the appropriate category.
 
-## Sub-Skill-Verzeichnis
+## Sub-Skill Directory
 
-Lade den passenden Sub-Skill wenn der Kontext zutrifft:
+Load the matching sub-skill when the context applies:
 
-| Kontext | Sub-Skill | Laden via |
-|---------|-----------|-----------|
-| Code schreiben, refactoren, reviewen | Code-Qualität | `skill_resource(skill_name="skill-everythink", relative_path="references/development/code-quality.md")` |
-| Git-Operationen, Commits, Branches, PRs | Git-Konventionen | `skill_resource(skill_name="skill-everythink", relative_path="references/git/conventions.md")` |
-| Projektspezifisches Wissen benötigt | Domänenwissen | `skill_resource(skill_name="skill-everythink", relative_path="references/domain/template.md")` |
-| PR erstellen, Deployment, Review | Review & Deployment | `skill_resource(skill_name="skill-everythink", relative_path="references/process/review-deployment.md")` |
-| Einen Fehler gemacht / korrigiert | Fehler-Log | `skill_resource(skill_name="skill-everythink", relative_path="references/errors/error-log.md")` |
+| Context | Sub-Skill | Load via |
+|---------|-----------|----------|
+| Writing, refactoring, or reviewing code | Code Quality | `skill_resource(skill_name="skill-everythink", relative_path="references/development/code-quality.md")` |
+| Git operations, commits, branches, PRs | Git Conventions | `skill_resource(skill_name="skill-everythink", relative_path="references/git/conventions.md")` |
+| Project-specific knowledge needed | Domain Knowledge | `skill_resource(skill_name="skill-everythink", relative_path="references/domain/template.md")` |
+| Creating PRs, deployment, review | Review & Deployment | `skill_resource(skill_name="skill-everythink", relative_path="references/process/review-deployment.md")` |
+| Made or corrected a mistake | Error Log | `skill_resource(skill_name="skill-everythink", relative_path="references/errors/error-log.md")` |
 
-## Fehler-Einfang-Trigger
+## Error Capture Triggers
 
-Starte den Selbst-Erweiterungs-Workflow wenn:
+Start the self-extension workflow when:
 
-- Ein Test fehlschlägt wegen deinem Code
-- Der User dich korrigiert ("Das war falsch", "Merk dir das")
-- Du merkst dass dein erster Ansatz falsch war
-- Ein Deployment-Problem auftritt
+- A test fails because of your code
+- The user corrects you ("That was wrong", "Remember this")
+- You realize your first approach was wrong
+- A deployment issue occurs
 
-**Workflow laden:**
+**Load workflow:**
 ```
 skill_resource(skill_name="skill-everythink", relative_path="references/errors/self-extension-workflow.md")
 ```
 
-## Consolidation-Regel
+## Consolidation Rule
 
-Wenn `references/errors/error-log.md` mehr als 50 Einträge hat:
-1. Ähnliche Fehler zusammenfassen (gleiche Root-Cause → ein Eintrag mit `count`)
-2. Fehler die älter als 6 Monate sind und `schwere: niedrig` haben → archivieren
-3. Regeln die daraus entstanden sind bleiben in den Sub-Skills erhalten
+When `references/errors/error-log.md` has more than 50 entries:
+1. Merge similar errors (same root cause → one entry with `count`)
+2. Archive errors older than 6 months with `severity: low`
+3. Rules derived from errors remain in their respective sub-skills
 
-## Wichtig
+## Important
 
-- **Search before Write:** Bevor du einen neuen Fehler loggst, durchsuche das Error-Log nach ähnlichen Einträgen. Update statt Duplikat.
-- **Handlungsanweisungen statt Beschreibungen:** Regeln immer als "Immer X bevor Y" oder "Nie Z ohne W" formulieren.
-- **Kompakt bleiben:** Jeder Sub-Skill sollte unter 3000 Tokens bleiben. Bei Überschreitung → aufteilen.
-- **Ohne `skill_resource`?** Falls dein Agent dieses Tool nicht hat: Lade die Dateien direkt aus dem `references/`-Ordner via Dateisystem-Zugriff oder bitte den User, den Inhalt einzufügen.
+- **Search before Write:** Before logging a new error, search the error log for similar entries. Update instead of duplicate.
+- **Action directives, not descriptions:** Always formulate rules as "Always X before Y" or "Never Z without W".
+- **Stay compact:** Each sub-skill should stay under 3000 tokens. If exceeded → split.
+- **Without `skill_resource`?** If your agent doesn't have this tool: load the files directly from the `references/` folder via filesystem access, or ask the user to paste the content.

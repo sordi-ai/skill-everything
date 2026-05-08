@@ -1,69 +1,69 @@
-# Sub-Skill: Review & Deployment-Prozess
+# Sub-Skill: Review & Deployment Process
 
-**Zweck:** Verhindert Deployment-Unfälle und stellt sicher, dass Reviews mehr als Rubber-Stamping sind.
-Konkrete Checklisten die der Agent vor jedem PR und Deployment durchläuft.
+**Purpose:** Prevents deployment accidents and ensures reviews are more than rubber-stamping.
+Concrete checklists the agent runs through before every PR and deployment.
 
 ---
 
-## PR-Review-Checkliste (Agent führt diese durch bevor er einen PR öffnet)
+## PR Review Checklist (Agent runs this before opening a PR)
 
-### Korrektheit
-- [ ] Alle neuen Funktionen haben Tests
-- [ ] Bestehende Tests laufen durch (`npm test` / `pytest` / etc.)
-- [ ] Edge Cases abgedeckt: null/undefined, leere Arrays, negative Zahlen
-- [ ] Keine TODO-Kommentare ohne zugehöriges Ticket
+### Correctness
+- [ ] All new functions have tests
+- [ ] Existing tests pass (`npm test` / `pytest` / etc.)
+- [ ] Edge cases covered: null/undefined, empty arrays, negative numbers
+- [ ] No TODO comments without a linked ticket
 
-### Sicherheit
-- [ ] Keine Secrets oder API-Keys im Code (auch nicht in Kommentaren)
-- [ ] User-Input wird validiert bevor er in DB-Queries oder Shell-Befehle fließt
-- [ ] Neue Endpunkte haben Authentifizierung/Autorisierung
-- [ ] Keine `eval()`, `exec()`, oder dynamische SQL-Strings ohne Prepared Statements
+### Security
+- [ ] No secrets or API keys in code (not even in comments)
+- [ ] User input is validated before flowing into DB queries or shell commands
+- [ ] New endpoints have authentication/authorization
+- [ ] No `eval()`, `exec()`, or dynamic SQL strings without prepared statements
 
 ### Performance
-- [ ] Keine N+1-Queries (Datenbankabfragen in Schleifen)
-- [ ] Große Datenmengen werden paginiert, nicht komplett geladen
-- [ ] Neue Indizes für neue WHERE-Klauseln in Queries
+- [ ] No N+1 queries (database queries in loops)
+- [ ] Large datasets are paginated, not loaded entirely
+- [ ] New indexes for new WHERE clauses in queries
 
-### Wartbarkeit
-- [ ] Komplexe Logik ist kommentiert (das *Warum*, nicht das *Was*)
-- [ ] Keine duplizierten Code-Blöcke (DRY)
-- [ ] Abhängigkeiten aktualisiert in `package.json` / `requirements.txt`
-
----
-
-## Deployment-Checkliste
-
-### Vor dem Deployment
-1. **Migrations prüfen:** Sind alle DB-Migrations rückwärtskompatibel? (Kein DROP COLUMN ohne vorherigen Deprecation-Zyklus)
-2. **Feature Flags:** Neue Features hinter Feature Flag? Besonders bei großen Änderungen.
-3. **Rollback-Plan:** Wie wird zurückgerollt wenn etwas schiefläuft? Dokumentiert?
-4. **Monitoring:** Sind Alerts für neue kritische Pfade eingerichtet?
-
-### Deployment-Reihenfolge (bei Microservices)
-1. Zuerst: Datenbankmigrationen (additive Änderungen)
-2. Dann: Backend-Services (neue Version)
-3. Zuletzt: Frontend (neue Version)
-4. Niemals: Frontend vor Backend wenn API-Änderungen
-
-### Nach dem Deployment
-- [ ] Health-Check-Endpunkt antwortet mit 200
-- [ ] Error-Rate in Monitoring nicht erhöht (5 Minuten beobachten)
-- [ ] Kritische User-Flows manuell testen (Login, Hauptfunktion, Checkout)
+### Maintainability
+- [ ] Complex logic is commented (the *why*, not the *what*)
+- [ ] No duplicated code blocks (DRY)
+- [ ] Dependencies updated in `package.json` / `requirements.txt`
 
 ---
 
-## Eskalations-Regeln
+## Deployment Checklist
 
-| Situation | Aktion |
+### Before Deployment
+1. **Check migrations:** Are all DB migrations backward-compatible? (No DROP COLUMN without prior deprecation cycle)
+2. **Feature flags:** New features behind a feature flag? Especially for large changes.
+3. **Rollback plan:** How to roll back if something goes wrong? Documented?
+4. **Monitoring:** Are alerts set up for new critical paths?
+
+### Deployment Order (for microservices)
+1. First: Database migrations (additive changes)
+2. Then: Backend services (new version)
+3. Last: Frontend (new version)
+4. Never: Frontend before backend when there are API changes
+
+### After Deployment
+- [ ] Health check endpoint responds with 200
+- [ ] Error rate in monitoring not elevated (observe for 5 minutes)
+- [ ] Critical user flows manually tested (login, main feature, checkout)
+
+---
+
+## Escalation Rules
+
+| Situation | Action |
 |-----------|--------|
-| Test-Coverage fällt unter 70% | PR blockieren, Tests nachfordern |
-| Security-Vulnerability in Dependency | Sofort patchen, kein Merge bis gefixt |
-| Produktions-Fehler > 1% Error-Rate | Sofort rollback, dann analysieren |
-| Deployment dauert > 30min | Abbrechen, Ursache suchen |
+| Test coverage drops below 70% | Block PR, request additional tests |
+| Security vulnerability in dependency | Patch immediately, no merge until fixed |
+| Production errors > 1% error rate | Rollback immediately, then analyze |
+| Deployment takes > 30 min | Abort, investigate root cause |
 
 ---
 
-## Warum dieser Sub-Skill Sterne bringt
+## Why This Sub-Skill Earns Stars
 
-Der Agent vergisst nie die Sicherheits-Checks oder die Deployment-Reihenfolge.
-Jeder PR ist production-ready bevor ein Mensch ihn sieht.
+The agent never forgets security checks or deployment order.
+Every PR is reviewed as if a senior developer went through the checklist — automatically.

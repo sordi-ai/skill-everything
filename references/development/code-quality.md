@@ -1,59 +1,59 @@
-# Sub-Skill: Code-Qualität & häufige Fehler
+# Sub-Skill: Code Quality & Common Mistakes
 
-**Zweck:** Verhindert die 20% der Fehler, die 80% der Review-Kommentare ausmachen.
-Konkrete Regeln aus echten Projekten — kein Boilerplate.
+**Purpose:** Prevents the 20% of mistakes that cause 80% of review comments.
+Concrete rules from real projects — no boilerplate.
 
 ---
 
-## Regeln
+## Rules
 
-### Funktionen & Logik
+### Functions & Logic
 
-1. **Funktionen max. 30 Zeilen.** Länger → aufteilen. Keine Ausnahmen für "komplexe Logik".
-2. **Kein Boolean-Parameter als letztes Argument.** `render(true)` ist unleserlich. Stattdessen Enum oder benanntes Objekt: `render({ withHeader: true })`.
-3. **Early Return statt verschachtelter if-Blöcke.** Tiefe > 2 ist ein Warnsignal.
-4. **Keine Magic Numbers.** `if (status === 3)` → `if (status === OrderStatus.SHIPPED)`.
-5. **Keine doppelte Negation.** `if (!isNotValid)` → `if (isValid)`.
+1. **Functions max. 30 lines.** Longer → split. No exceptions for "complex logic".
+2. **No boolean parameter as last argument.** `render(true)` is unreadable. Use enum or named object instead: `render({ withHeader: true })`.
+3. **Early return instead of nested if-blocks.** Nesting depth > 2 is a warning sign.
+4. **No magic numbers.** `if (status === 3)` → `if (status === OrderStatus.SHIPPED)`.
+5. **No double negation.** `if (!isNotValid)` → `if (isValid)`.
 
-### Variablen & Benennung
+### Variables & Naming
 
-6. **Variablennamen beschreiben Inhalt, nicht Typ.** `userList` statt `arr`, `activeUserId` statt `id`.
-7. **Temporäre Variablen für komplexe Ausdrücke.** `const isEligible = age >= 18 && !isBanned;` statt alles in ein `if`.
-8. **Keine Abkürzungen außer etablierten** (`id`, `url`, `ctx`, `req`, `res`). `usr`, `cfg`, `tmp` → ausschreiben.
+6. **Variable names describe content, not type.** `userList` instead of `arr`, `activeUserId` instead of `id`.
+7. **Temporary variables for complex expressions.** `const isEligible = age >= 18 && !isBanned;` instead of cramming it all into an `if`.
+8. **No abbreviations except established ones** (`id`, `url`, `ctx`, `req`, `res`). `usr`, `cfg`, `tmp` → spell them out.
 
-### Fehlerbehandlung
+### Error Handling
 
-9. **Jeder `async`-Aufruf hat ein `try/catch` oder `.catch()`.** Unbehandelte Promise-Rejections crashen Node-Prozesse.
-10. **Fehler-Objekte nie stumm schlucken.** `catch (e) {}` ist verboten. Mindestens `logger.warn(e)`.
-11. **Fehlermeldungen enthalten Kontext.** `throw new Error('User not found: ' + userId)` statt `throw new Error('Not found')`.
+9. **Every `async` call needs a `try/catch` or `.catch()`.** Unhandled promise rejections crash Node processes.
+10. **Never silently swallow error objects.** `catch (e) {}` is forbidden. At minimum: `logger.warn(e)`.
+11. **Error messages must include context.** `throw new Error('User not found: ' + userId)` not `throw new Error('Not found')`.
 
-### Imports & Abhängigkeiten
+### Imports & Dependencies
 
-12. **Keine zirkulären Imports.** Bei Verdacht: `madge --circular src/` ausführen.
-13. **Externe Abhängigkeiten nur in dedizierten Adapter-Dateien.** Kein direktes `axios.get()` in Business-Logik — immer über ein Interface wrappen.
-14. **`console.log` vor Commit entfernen.** Pre-commit Hook oder Linter-Regel `no-console`.
+12. **No circular imports.** When in doubt: run `madge --circular src/`.
+13. **External dependencies only in dedicated adapter files.** No direct `axios.get()` in business logic — always wrap through an interface.
+14. **Remove `console.log` before commit.** Use a pre-commit hook or linter rule `no-console`.
 
 ### Tests
 
-15. **Jede neue Funktion mit mindestens einem Happy-Path-Test.** Kein Merge ohne Test-Coverage für neue Logik.
+15. **Every new function needs at least one happy-path test.** No merge without test coverage for new logic.
 
 ### Performance
 
-16. **Keine DB-Queries in Schleifen (N+1-Problem).** Statt `for (item of items) { await db.find(item.id) }` → einen JOIN oder `WHERE id IN (...)` Query nutzen.
-17. **Große Datenmengen paginieren.** Nie `SELECT * FROM table` ohne `LIMIT`. API-Endpunkte mit Listen brauchen `?page=` und `?limit=`.
-18. **Neue WHERE-Klauseln brauchen Indizes.** Vor jeder neuen Query prüfen: Gibt es einen passenden DB-Index? Ohne Index → Full Table Scan bei wachsenden Daten.
-19. **Lazy Loading für schwere Operationen.** Daten erst laden wenn sie gebraucht werden, nicht "auf Vorrat".
+16. **No DB queries in loops (N+1 problem).** Instead of `for (item of items) { await db.find(item.id) }` → use a JOIN or `WHERE id IN (...)` query.
+17. **Paginate large datasets.** Never `SELECT * FROM table` without `LIMIT`. API endpoints with lists need `?page=` and `?limit=`.
+18. **New WHERE clauses need indexes.** Before every new query: is there a matching DB index? Without index → full table scan on growing data.
+19. **Lazy loading for heavy operations.** Load data only when needed, not "just in case".
 
 ### Security
 
-20. **Nie User-Input direkt in Queries.** Immer Prepared Statements oder ORM-Query-Builder. Gilt für SQL, NoSQL, Shell-Commands, und Template-Engines.
-21. **Neue API-Endpunkte brauchen Auth.** Kein Endpunkt ohne Authentifizierung und Autorisierung — auch nicht "interne" Endpunkte.
-22. **Secrets nie im Code.** Keine API-Keys, Passwörter, Tokens in Quellcode oder Kommentaren. Immer Umgebungsvariablen nutzen.
-23. **User-Input validieren und sanitizen.** An der Systemgrenze (API-Eingang): Typ, Länge, Format prüfen. Nie blindes Vertrauen.
+20. **Never use user input directly in queries.** Always use prepared statements or ORM query builders. Applies to SQL, NoSQL, shell commands, and template engines.
+21. **New API endpoints need auth.** No endpoint without authentication and authorization — not even "internal" endpoints.
+22. **Never put secrets in code.** No API keys, passwords, or tokens in source code or comments. Always use environment variables.
+23. **Validate and sanitize user input.** At the system boundary (API entry): check type, length, format. Never trust blindly.
 
 ---
 
-## Warum dieser Sub-Skill Sterne bringt
+## Why This Sub-Skill Earns Stars
 
-Ohne diese Regeln produziert der Agent Code, der zwar funktioniert aber in Reviews sofort auffällt.
-Mit diesen Regeln schreibt er Code, der wie von einem Senior-Entwickler aussieht — beim ersten Versuch.
+Without these rules, the agent produces code that works but immediately gets flagged in reviews.
+With these rules, it writes code that looks like it came from a senior developer — on the first try.
