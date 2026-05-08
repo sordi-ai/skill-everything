@@ -1,5 +1,16 @@
+---
+id: domain-template
+version: 1.0.0
+tokens_target: 850
+triggers:
+  - project-specific knowledge
+  - business rules
+loads_after: []
+supersedes: []
+---
+
 # Sub-Skill: Domain Knowledge Template
-<!-- ~850 tokens (empty template) -->
+<!-- target: ~850 tokens (empty template — grows when filled in for your project) -->
 
 **Purpose:** Structured template for capturing company- or project-specific knowledge
 that no public model can know — architecture decisions, naming conventions, business rules.

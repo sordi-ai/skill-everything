@@ -1,0 +1,113 @@
+# Single source of truth for sub-skill index.
+# tools/render_loaders.py reads this and regenerates SKILL.md, CLAUDE.md, GEMINI.md.
+# CI fails if the regenerated files differ from what's in git (drift detection).
+
+meta:
+  name: skill-everything
+  version: 1.2.0
+  description: Git-versioned agent memory — agents that never make the same mistake twice.
+
+skills:
+  - id: code-quality
+    title: Code Quality
+    path: references/development/code-quality.md
+    triggers:
+      - writing code
+      - refactoring
+      - review
+    loaders:
+      claude:  '@references/development/code-quality.md'
+      gemini:  '@references/development/code-quality.md'
+      skill_resource: 'skill_resource(skill_name="skill-everything", relative_path="references/development/code-quality.md")'
+
+  - id: python
+    title: Python
+    path: references/development/python.md
+    triggers:
+      - python code
+      - type hints
+      - python packaging
+    loaders:
+      claude:  '@references/development/python.md'
+      gemini:  '@references/development/python.md'
+      skill_resource: 'skill_resource(skill_name="skill-everything", relative_path="references/development/python.md")'
+
+  - id: typescript
+    title: TypeScript
+    path: references/development/typescript.md
+    triggers:
+      - typescript code
+      - strict types
+      - async typescript
+    loaders:
+      claude:  '@references/development/typescript.md'
+      gemini:  '@references/development/typescript.md'
+      skill_resource: 'skill_resource(skill_name="skill-everything", relative_path="references/development/typescript.md")'
+
+  - id: react
+    title: React
+    path: references/development/react.md
+    triggers:
+      - react component
+      - react hooks
+      - react performance
+    loaders:
+      claude:  '@references/development/react.md'
+      gemini:  '@references/development/react.md'
+      skill_resource: 'skill_resource(skill_name="skill-everything", relative_path="references/development/react.md")'
+
+  - id: git-conventions
+    title: Git Conventions
+    path: references/git/conventions.md
+    triggers:
+      - git commit
+      - branch
+      - pull request
+    loaders:
+      claude:  '@references/git/conventions.md'
+      gemini:  '@references/git/conventions.md'
+      skill_resource: 'skill_resource(skill_name="skill-everything", relative_path="references/git/conventions.md")'
+
+  - id: review-deployment
+    title: Review & Deployment
+    path: references/process/review-deployment.md
+    triggers:
+      - creating PR
+      - deployment
+      - review checklist
+    loaders:
+      claude:  '@references/process/review-deployment.md'
+      gemini:  '@references/process/review-deployment.md'
+      skill_resource: 'skill_resource(skill_name="skill-everything", relative_path="references/process/review-deployment.md")'
+
+  - id: domain-template
+    title: Domain Knowledge (template)
+    path: references/domain/template.md
+    triggers:
+      - project-specific knowledge
+      - business rules
+    loaders:
+      claude:  '@references/domain/template.md'
+      gemini:  '@references/domain/template.md'
+      skill_resource: 'skill_resource(skill_name="skill-everything", relative_path="references/domain/template.md")'
+
+  - id: error-log
+    title: Error Log
+    path: references/errors/error-log.md
+    triggers:
+      - made or corrected a mistake
+      - learn from this
+    loaders:
+      claude:  '@references/errors/error-log.md'
+      gemini:  '@references/errors/error-log.md'
+      skill_resource: 'skill_resource(skill_name="skill-everything", relative_path="references/errors/error-log.md")'
+
+  - id: self-extension-workflow
+    title: Self-Extension Workflow
+    path: references/errors/self-extension-workflow.md
+    triggers:
+      - executing self-extension
+    loaders:
+      claude:  '@references/errors/self-extension-workflow.md'
+      gemini:  '@references/errors/self-extension-workflow.md'
+      skill_resource: 'skill_resource(skill_name="skill-everything", relative_path="references/errors/self-extension-workflow.md")'

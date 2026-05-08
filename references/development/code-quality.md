@@ -1,5 +1,17 @@
+---
+id: code-quality
+version: 1.0.0
+tokens_target: 1000
+triggers:
+  - writing code
+  - refactoring
+  - review
+loads_after: []
+supersedes: []
+---
+
 # Sub-Skill: Code Quality & Common Mistakes
-<!-- ~800 tokens | 23 rules -->
+<!-- target: ~1000 tokens (real tiktoken count, see tools/render_readme_table.py) | 23 rules -->
 
 **Purpose:** Prevents the 20% of mistakes that cause 80% of review comments.
 Concrete rules from real projects — no boilerplate.

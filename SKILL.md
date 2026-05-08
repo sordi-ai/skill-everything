@@ -1,58 +1,57 @@
 ---
-name: skill-everythink
-description: Git-Versioned Agent Memory — Agents that never make the same mistake twice
-version: 1.1.0
+name: skill-everything
+description: Git-versioned agent memory — agents that never make the same mistake twice.
+version: 1.2.0
 ---
 
-# Skill-Everythink
+# skill-everything
 
-You are using the **Skill-Everythink** knowledge system. It contains accumulated knowledge from past mistakes, project conventions, domain knowledge, and processes.
+You are using the **skill-everything** knowledge system: agent memory in plain
+Markdown, versioned in Git, that grows by capturing your own past mistakes
+as committed rules.
 
-## Your Responsibilities
+## Your responsibilities
 
-1. **Before every implementation:** Check if relevant sub-skills exist and load them via `skill_resource`.
-2. **After every mistake:** Execute the self-extension workflow (see below).
-3. **When you learn something new:** Add it to the appropriate category.
+1. **Before every implementation:** check the sub-skill directory below,
+   load the matching skill via `skill_resource(...)`.
+2. **After every mistake:** execute the self-extension workflow.
+3. **When you learn something new:** add it to the appropriate category.
 
-## Sub-Skill Directory
+## Sub-skill directory
 
-Load the matching sub-skill when the context applies:
+| Trigger | Sub-skill | Load via |
+|---|---|---|
+| writing code, refactoring, review | Code Quality | `skill_resource(skill_name="skill-everything", relative_path="references/development/code-quality.md")` |
+| python code, type hints, python packaging | Python | `skill_resource(skill_name="skill-everything", relative_path="references/development/python.md")` |
+| typescript code, strict types, async typescript | TypeScript | `skill_resource(skill_name="skill-everything", relative_path="references/development/typescript.md")` |
+| react component, react hooks, react performance | React | `skill_resource(skill_name="skill-everything", relative_path="references/development/react.md")` |
+| git commit, branch, pull request | Git Conventions | `skill_resource(skill_name="skill-everything", relative_path="references/git/conventions.md")` |
+| creating PR, deployment, review checklist | Review & Deployment | `skill_resource(skill_name="skill-everything", relative_path="references/process/review-deployment.md")` |
+| project-specific knowledge, business rules | Domain Knowledge (template) | `skill_resource(skill_name="skill-everything", relative_path="references/domain/template.md")` |
+| made or corrected a mistake, learn from this | Error Log | `skill_resource(skill_name="skill-everything", relative_path="references/errors/error-log.md")` |
+| executing self-extension | Self-Extension Workflow | `skill_resource(skill_name="skill-everything", relative_path="references/errors/self-extension-workflow.md")` |
 
-| Context | Sub-Skill | ~Tokens | Load via |
-|---------|-----------|------:|----------|
-| Writing, refactoring, or reviewing code | Code Quality | 800 | `skill_resource(skill_name="skill-everythink", relative_path="references/development/code-quality.md")` |
-| Git operations, commits, branches, PRs | Git Conventions | 500 | `skill_resource(skill_name="skill-everythink", relative_path="references/git/conventions.md")` |
-| Project-specific knowledge needed | Domain Knowledge | 850 | `skill_resource(skill_name="skill-everythink", relative_path="references/domain/template.md")` |
-| Creating PRs, deployment, review | Review & Deployment | 650 | `skill_resource(skill_name="skill-everythink", relative_path="references/process/review-deployment.md")` |
-| Python code (types, packaging, pitfalls) | Python | 1,600 | `skill_resource(skill_name="skill-everythink", relative_path="references/development/python.md")` |
-| TypeScript code (types, async, config) | TypeScript | 1,800 | `skill_resource(skill_name="skill-everythink", relative_path="references/development/typescript.md")` |
-| React components (hooks, state, perf) | React | 1,850 | `skill_resource(skill_name="skill-everythink", relative_path="references/development/react.md")` |
-| Made or corrected a mistake | Error Log | 900 | `skill_resource(skill_name="skill-everythink", relative_path="references/errors/error-log.md")` |
+## Error capture triggers
 
-## Error Capture Triggers
+Start the self-extension workflow when **any** of these is met:
 
-Start the self-extension workflow when:
+- A test fails because of code you wrote.
+- The user corrects you ("That was wrong", "Remember this").
+- You realise during implementation that your first approach was wrong.
+- A deployment problem occurs that your code caused.
 
-- A test fails because of your code
-- The user corrects you ("That was wrong", "Remember this")
-- You realize your first approach was wrong
-- A deployment issue occurs
+Load the workflow:
 
-**Load workflow:**
 ```
-skill_resource(skill_name="skill-everythink", relative_path="references/errors/self-extension-workflow.md")
+skill_resource(skill_name="skill-everything", relative_path="references/errors/self-extension-workflow.md")
 ```
-
-## Consolidation Rule
-
-When `references/errors/error-log.md` has more than 50 entries:
-1. Merge similar errors (same root cause → one entry with `count`)
-2. Archive errors older than 6 months with `severity: low`
-3. Rules derived from errors remain in their respective sub-skills
 
 ## Important
 
-- **Search before Write:** Before logging a new error, search the error log for similar entries. Update instead of duplicate.
-- **Action directives, not descriptions:** Always formulate rules as "Always X before Y" or "Never Z without W".
-- **Stay compact:** Each sub-skill should stay under 3000 tokens. If exceeded → split.
-- **Without `skill_resource`?** If your agent doesn't have this tool: load the files directly from the `references/` folder via filesystem access, or ask the user to paste the content.
+- **Search before write.** Before logging a new error, search the existing log for similar entries. Update instead of duplicate.
+- **Action directives, not descriptions.** Always formulate rules as "Always X before Y" or "Never Z without W".
+- **Stay compact.** Each sub-skill stays under 3,000 tokens. If exceeded, split.
+- **PR-flow is mandatory.** Self-extension commits are opened as PRs labelled `needs-rule-review`. Never push to `main`.
+- **Without `skill_resource`?** If your agent doesn't have the tool, load files directly via filesystem access from the `references/` folder.
+
+> This file is generated from `references/_index.yml`. Edit the index, then run `python tools/render_loaders.py`.

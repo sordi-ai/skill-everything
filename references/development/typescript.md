@@ -1,5 +1,18 @@
+---
+id: typescript
+version: 1.0.0
+tokens_target: 2300
+triggers:
+  - typescript code
+  - strict types
+  - async typescript
+loads_after:
+  - code-quality
+supersedes: []
+---
+
 # Sub-Skill: TypeScript Best Practices
-<!-- ~1,800 tokens | 17 rules -->
+<!-- target: ~2300 tokens (real tiktoken count) | 17 rules -->
 
 **Purpose:** Prevents the TypeScript-specific mistakes LLMs make repeatedly — weak types, unsafe assertions, and patterns that compile but fail at runtime.
 

@@ -1,5 +1,19 @@
+---
+id: react
+version: 1.0.0
+tokens_target: 2400
+triggers:
+  - react component
+  - react hooks
+  - react performance
+loads_after:
+  - code-quality
+  - typescript
+supersedes: []
+---
+
 # Sub-Skill: React Best Practices
-<!-- ~1,850 tokens | 17 rules -->
+<!-- target: ~2400 tokens (real tiktoken count) | 17 rules -->
 
 **Purpose:** Prevents the React-specific mistakes LLMs make repeatedly — wrong state placement, stale closures, unnecessary re-renders, and broken async patterns. Concrete rules with code examples.
 

@@ -1,5 +1,17 @@
+---
+id: git-conventions
+version: 1.0.0
+tokens_target: 650
+triggers:
+  - git commit
+  - branch
+  - pull request
+loads_after: []
+supersedes: []
+---
+
 # Sub-Skill: Git & Workflow Conventions
-<!-- ~500 tokens | 15 rules -->
+<!-- target: ~650 tokens (real tiktoken count) | 15 rules -->
 
 **Purpose:** Consistent commit history, clean branches, no merge conflicts through discipline.
 Rules that work in teams of 2–20 developers.

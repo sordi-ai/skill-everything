@@ -1,45 +1,49 @@
-# Skill-Everythink
+# skill-everything
 
-You are using the **Skill-Everythink** knowledge system. It contains accumulated knowledge from past mistakes, project conventions, domain knowledge, and processes.
+You are using the **skill-everything** knowledge system: agent memory in plain
+Markdown, versioned in Git, that grows by capturing your own past mistakes
+as committed rules.
 
-## Your Responsibilities
+## Your responsibilities
 
-1. **Before every implementation:** Check if relevant sub-skills exist and load them using `@references/...` imports.
-2. **After every mistake:** Execute the self-extension workflow (see below).
-3. **When you learn something new:** Add it to the appropriate category.
+1. **Before every implementation:** check the sub-skill directory below, load the matching skill using `@references/...` imports.
+2. **After every mistake:** execute the self-extension workflow.
+3. **When you learn something new:** add it to the appropriate category.
 
-## Sub-Skill Directory
+## Sub-skill directory
 
-Load the matching sub-skill when the context applies:
+| Trigger | Sub-skill | Load via |
+|---|---|---|
+| writing code, refactoring, review | Code Quality | `@references/development/code-quality.md` |
+| python code, type hints, python packaging | Python | `@references/development/python.md` |
+| typescript code, strict types, async typescript | TypeScript | `@references/development/typescript.md` |
+| react component, react hooks, react performance | React | `@references/development/react.md` |
+| git commit, branch, pull request | Git Conventions | `@references/git/conventions.md` |
+| creating PR, deployment, review checklist | Review & Deployment | `@references/process/review-deployment.md` |
+| project-specific knowledge, business rules | Domain Knowledge (template) | `@references/domain/template.md` |
+| made or corrected a mistake, learn from this | Error Log | `@references/errors/error-log.md` |
+| executing self-extension | Self-Extension Workflow | `@references/errors/self-extension-workflow.md` |
 
-| Context | Sub-Skill | Load via |
-|---------|-----------|----------|
-| Writing, refactoring, or reviewing code | Code Quality | `@references/development/code-quality.md` |
-| Git operations, commits, branches, PRs | Git Conventions | `@references/git/conventions.md` |
-| Project-specific knowledge needed | Domain Knowledge | `@references/domain/template.md` |
-| Creating PRs, deployment, review | Review & Deployment | `@references/process/review-deployment.md` |
-| Made or corrected a mistake | Error Log | `@references/errors/error-log.md` |
+## Error capture triggers
 
-## Error Capture Triggers
+Start the self-extension workflow when **any** of these is met:
 
-Start the self-extension workflow when:
+- A test fails because of code you wrote.
+- The user corrects you ("That was wrong", "Remember this").
+- You realise during implementation that your first approach was wrong.
+- A deployment problem occurs that your code caused.
 
-- A test fails because of your code
-- The user corrects you ("That was wrong", "Remember this")
-- You realize your first approach was wrong
-- A deployment issue occurs
+Load the workflow:
 
-**Load workflow:** `@references/errors/self-extension-workflow.md`
-
-## Consolidation Rule
-
-When `references/errors/error-log.md` has more than 50 entries:
-1. Merge similar errors (same root cause → one entry with `count`)
-2. Archive errors older than 6 months with `severity: low`
-3. Rules derived from errors remain in their respective sub-skills
+```
+@references/errors/self-extension-workflow.md
+```
 
 ## Important
 
-- **Search before Write:** Before logging a new error, search the error log for similar entries. Update instead of duplicate.
-- **Action directives, not descriptions:** Always formulate rules as "Always X before Y" or "Never Z without W".
-- **Stay compact:** Each sub-skill should stay under 3000 tokens. If exceeded → split.
+- **Search before write.** Before logging a new error, search the existing log for similar entries. Update instead of duplicate.
+- **Action directives, not descriptions.** Always formulate rules as "Always X before Y" or "Never Z without W".
+- **Stay compact.** Each sub-skill stays under 3,000 tokens. If exceeded, split.
+- **PR-flow is mandatory.** Self-extension commits are opened as PRs labelled `needs-rule-review`. Never push to `main`.
+
+> This file is generated from `references/_index.yml`. Edit the index, then run `python tools/render_loaders.py`.

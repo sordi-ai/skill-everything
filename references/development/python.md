@@ -1,5 +1,18 @@
+---
+id: python
+version: 1.0.0
+tokens_target: 2000
+triggers:
+  - python code
+  - type hints
+  - python packaging
+loads_after:
+  - code-quality
+supersedes: []
+---
+
 # Sub-Skill: Python Best Practices
-<!-- ~1,600 tokens | 20 rules -->
+<!-- target: ~2000 tokens (real tiktoken count) | 20 rules -->
 
 **Purpose:** Prevents the Python-specific mistakes LLMs make on autopilot — mutable defaults,
 bare excepts, missing guards, and subtle performance traps that pass review but break in production.

@@ -1,5 +1,18 @@
+---
+id: review-deployment
+version: 1.0.0
+tokens_target: 800
+triggers:
+  - creating PR
+  - deployment
+  - review checklist
+loads_after:
+  - git-conventions
+supersedes: []
+---
+
 # Sub-Skill: Review & Deployment Process
-<!-- ~650 tokens -->
+<!-- target: ~800 tokens (real tiktoken count) -->
 
 **Purpose:** Prevents deployment accidents and ensures reviews are more than rubber-stamping.
 Concrete checklists the agent runs through before every PR and deployment.
