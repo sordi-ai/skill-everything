@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill-Everythink — Learning Analytics</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;
+  --blue:#58a6ff;--green:#3fb950;--orange:#f78166;--purple:#d2a8ff;--yellow:#ffd93d;--red:#ff6b6b;
+  --cat-development:#58a6ff;--cat-deployment:#f78166;--cat-security:#ff6b6b;
+  --cat-git:#d2a8ff;--cat-performance:#ffd93d;--cat-domain:#3fb950;
+  --sev-critical:#ff6b6b;--sev-high:#f78166;--sev-medium:#ffd93d;--sev-low:#3fb950;
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+.mono{font-family:'JetBrains Mono','Fira Code',monospace}
+
+/* Top bar */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border)}
+.topbar h1{font-size:18px;font-weight:700}
+.topbar h1 span{color:var(--blue)}
+.topbar .meta{color:var(--muted);font-size:13px}
+
+/* Grid */
+.grid{display:grid;gap:16px;padding:20px 32px;flex:1}
+.row-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.row-charts{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.row-bottom{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 24px}
+.card h3{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:12px}
+
+/* Metric cards */
+.metric-card{position:relative;overflow:hidden;transition:border-color .2s}
+.metric-card:hover{border-color:var(--blue)}
+.metric-val{font-size:48px;font-weight:800;line-height:1}
+.metric-val.blue{color:var(--blue)}
+.metric-val.green{color:var(--green)}
+.metric-val.purple{color:var(--purple)}
+.metric-sub{font-size:13px;color:var(--muted);margin-top:6px}
+.metric-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 12px 12px}
+.metric-card:nth-child(1)::after{background:var(--blue)}
+.metric-card:nth-child(2)::after{background:var(--green)}
+.metric-card:nth-child(3)::after{background:var(--purple)}
+.metric-card:nth-child(1){box-shadow:0 0 20px rgba(88,166,255,.06)}
+.metric-card:nth-child(2){box-shadow:0 0 20px rgba(63,185,80,.06)}
+.metric-card:nth-child(3){box-shadow:0 0 20px rgba(210,168,255,.06)}
+
+/* Timeline bars */
+.timeline-bar{display:flex;align-items:center;gap:10px;margin:6px 0}
+.timeline-label{width:60px;font-size:12px;color:var(--muted);text-align:right}
+.timeline-track{flex:1;height:24px;background:var(--bg);border-radius:4px;overflow:hidden;position:relative}
+.timeline-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--blue),var(--purple));transition:width .8s ease-out;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:11px;font-weight:600;min-width:28px}
+
+/* Donut chart */
+.donut-wrap{display:flex;align-items:center;gap:24px;justify-content:center;margin-top:8px}
+.donut{width:140px;height:140px;border-radius:50%;position:relative}
+.donut-hole{position:absolute;inset:30px;background:var(--card);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.donut-hole .num{font-size:28px;font-weight:800;color:var(--text)}
+.donut-hole .lbl{font-size:10px;color:var(--muted);text-transform:uppercase}
+.legend{display:flex;flex-direction:column;gap:6px}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:13px}
+.legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+/* Severity bar */
+.sev-bar{height:32px;border-radius:6px;overflow:hidden;display:flex;margin:12px 0}
+.sev-seg{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#000;transition:width .8s ease-out}
+.sev-legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
+.sev-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.sev-legend-dot{width:8px;height:8px;border-radius:2px}
+
+/* Recent list */
+.recent-list{max-height:200px;overflow-y:auto}
+.recent-item{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
+.recent-item:last-child{border-bottom:none}
+.recent-id{font-size:12px;color:var(--orange);width:100px}
+.recent-date{font-size:12px;color:var(--muted);width:80px}
+.recent-desc{font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase}
+.badge-critical{background:rgba(255,107,107,.15);color:var(--red)}
+.badge-high{background:rgba(247,129,102,.15);color:var(--orange)}
+.badge-medium{background:rgba(255,217,61,.15);color:var(--yellow)}
+.badge-low{background:rgba(63,185,80,.15);color:var(--green)}
+
+/* Skills bar chart */
+.skill-bar{display:flex;align-items:center;gap:8px;margin:4px 0}
+.skill-name{width:110px;font-size:12px;color:var(--muted);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.skill-track{flex:1;height:18px;background:var(--bg);border-radius:3px;overflow:hidden}
+.skill-fill{height:100%;border-radius:3px;transition:width .8s ease-out;display:flex;align-items:center;padding-left:6px;font-size:10px;font-weight:600;min-width:24px}
+
+/* Footer */
+.footer{padding:12px 32px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.footer a{color:var(--blue);text-decoration:none}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+</head>
+<body>
+
+<script id="data" type="application/json">
+{
+  "generated_at": "2026-05-08T15:53:07.549785+00:00",
+  "date_range": {
+    "from": "2025-03-14",
+    "to": "2025-03-18"
+  },
+  "summary": {
+    "total_errors": 2,
+    "total_rules": 100,
+    "errors_prevented": 0,
+    "categories": {
+      "deployment": 1,
+      "development": 1
+    },
+    "severity": {
+      "critical": 1,
+      "medium": 1
+    },
+    "monthly": [
+      {
+        "month": "2025-03",
+        "count": 2
+      }
+    ]
+  },
+  "recent": [
+    {
+      "id": "ERR-2025-002",
+      "date": "2025-03-18",
+      "severity": "medium",
+      "description": ""
+    },
+    {
+      "id": "ERR-2025-001",
+      "date": "2025-03-14",
+      "severity": "critical",
+      "description": ""
+    }
+  ],
+  "skills": [
+    {
+      "name": "Code Quality",
+      "rules": 23,
+      "tokens": 815
+    },
+    {
+      "name": "Python",
+      "rules": 20,
+      "tokens": 1562
+    },
+    {
+      "name": "TypeScript",
+      "rules": 17,
+      "tokens": 1824
+    },
+    {
+      "name": "React",
+      "rules": 17,
+      "tokens": 1857
+    },
+    {
+      "name": "Git Conventions",
+      "rules": 15,
+      "tokens": 486
+    },
+    {
+      "name": "Review & Deployment",
+      "rules": 8,
+      "tokens": 639
+    }
+  ]
+}
+</script>
+
+<div class="topbar">
+  <h1>🧠 Skill-<span>Everythink</span> — Learning Analytics</h1>
+  <div class="meta mono" id="dateRange"></div>
+</div>
+
+<div class="grid">
+  <div class="row-metrics">
+    <div class="card metric-card">
+      <h3>Errors Captured</h3>
+      <div class="metric-val blue" id="mErrors">0</div>
+      <div class="metric-sub">mistakes turned into permanent rules</div>
+    </div>
+    <div class="card metric-card">
+      <h3>Rules Generated</h3>
+      <div class="metric-val green" id="mRules">0</div>
+      <div class="metric-sub">action directives across all sub-skills</div>
+    </div>
+    <div class="card metric-card">
+      <h3>Errors Prevented</h3>
+      <div class="metric-val purple" id="mPrevented">0</div>
+      <div class="metric-sub">repeat mistakes blocked by learned rules</div>
+    </div>
+  </div>
+
+  <div class="row-charts">
+    <div class="card">
+      <h3>Learning Timeline</h3>
+      <div id="timeline"></div>
+    </div>
+    <div class="card">
+      <h3>Errors by Category</h3>
+      <div class="donut-wrap">
+        <div class="donut" id="donut"></div>
+        <div class="legend" id="legend"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row-bottom">
+    <div class="card">
+      <h3>Severity Distribution</h3>
+      <div class="sev-bar" id="sevBar"></div>
+      <div class="sev-legend" id="sevLegend"></div>
+      <div style="margin-top:16px">
+        <h3 style="margin-bottom:8px">Sub-Skill Token Budgets</h3>
+        <div id="skillBars"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Recent Learnings</h3>
+      <div class="recent-list" id="recentList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <span>Generated by <a href="https://github.com/sordi-ai/skill-everything">skill-everythink</a></span>
+  <span class="mono">python3 tools/generate-dashboard.py</span>
+</div>
+
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const S = D.summary;
+
+document.getElementById('dateRange').textContent = D.date_range.from + ' → ' + D.date_range.to;
+
+function animateNum(el, target, dur) {
+  const start = performance.now();
+  function tick(now) {
+    const p = Math.min((now - start) / dur, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(target * ease);
+    if (p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+animateNum(document.getElementById('mErrors'), S.total_errors, 1000);
+animateNum(document.getElementById('mRules'), S.total_rules, 1000);
+animateNum(document.getElementById('mPrevented'), S.errors_prevented, 1200);
+
+// Timeline
+const maxCount = Math.max(...S.monthly.map(m => m.count));
+const tl = document.getElementById('timeline');
+S.monthly.forEach(m => {
+  const pct = (m.count / maxCount * 100).toFixed(0);
+  const label = m.month.split('-').slice(1).join('/') + '/' + m.month.split('-')[0].slice(2);
+  tl.innerHTML += `<div class="timeline-bar">
+    <div class="timeline-label mono">${m.month}</div>
+    <div class="timeline-track"><div class="timeline-fill" style="width:0%" data-w="${pct}%">${m.count}</div></div>
+  </div>`;
+});
+
+// Donut
+const catColors = {development:'var(--cat-development)',deployment:'var(--cat-deployment)',security:'var(--cat-security)',git:'var(--cat-git)',performance:'var(--cat-performance)',domain:'var(--cat-domain)'};
+const cats = Object.entries(S.categories).sort((a,b) => b[1] - a[1]);
+const total = cats.reduce((s,c) => s + c[1], 0);
+let gradParts = [], angle = 0;
+cats.forEach(([name, count]) => {
+  const deg = (count / total) * 360;
+  gradParts.push(`${catColors[name]} ${angle}deg ${angle + deg}deg`);
+  angle += deg;
+});
+document.getElementById('donut').style.background = `conic-gradient(${gradParts.join(',')})`;
+document.getElementById('donut').innerHTML = `<div class="donut-hole"><div class="num">${total}</div><div class="lbl">total</div></div>`;
+
+const leg = document.getElementById('legend');
+cats.forEach(([name, count]) => {
+  const pct = ((count / total) * 100).toFixed(0);
+  leg.innerHTML += `<div class="legend-item"><div class="legend-dot" style="background:${catColors[name]}"></div>${name} <span style="color:var(--muted)">${count} (${pct}%)</span></div>`;
+});
+
+// Severity
+const sevColors = {critical:'var(--sev-critical)',high:'var(--sev-high)',medium:'var(--sev-medium)',low:'var(--sev-low)'};
+const sevTotal = Object.values(S.severity).reduce((s,v) => s + v, 0);
+const sevBar = document.getElementById('sevBar');
+const sevLeg = document.getElementById('sevLegend');
+Object.entries(S.severity).forEach(([name, count]) => {
+  const pct = ((count / sevTotal) * 100).toFixed(0);
+  sevBar.innerHTML += `<div class="sev-seg" style="width:${pct}%;background:${sevColors[name]}">${count}</div>`;
+  sevLeg.innerHTML += `<div class="sev-legend-item"><div class="sev-legend-dot" style="background:${sevColors[name]}"></div>${name} (${count})</div>`;
+});
+
+// Skill bars
+const maxTok = Math.max(...D.skills.map(s => s.tokens));
+const sb = document.getElementById('skillBars');
+const skillColors = ['var(--blue)','var(--green)','var(--orange)','var(--purple)','var(--yellow)'];
+D.skills.forEach((s, i) => {
+  const pct = ((s.tokens / maxTok) * 100).toFixed(0);
+  sb.innerHTML += `<div class="skill-bar">
+    <div class="skill-name">${s.name}</div>
+    <div class="skill-track"><div class="skill-fill" style="width:0%;background:${skillColors[i % skillColors.length]}" data-w="${pct}%">${s.rules} rules · ${s.tokens} tok</div></div>
+  </div>`;
+});
+
+// Recent
+const rl = document.getElementById('recentList');
+D.recent.forEach(r => {
+  rl.innerHTML += `<div class="recent-item">
+    <div class="recent-id mono">${r.id}</div>
+    <div class="recent-date mono">${r.date}</div>
+    <div class="recent-desc">${r.description}</div>
+    <div class="badge badge-${r.severity}">${r.severity}</div>
+  </div>`;
+});
+
+// Animate bars after render
+setTimeout(() => {
+  document.querySelectorAll('[data-w]').forEach(el => { el.style.width = el.dataset.w; });
+}, 100);
+</script>
+</body>
+</html>

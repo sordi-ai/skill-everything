@@ -227,6 +227,8 @@ skill-everything/
 │   │   ├── error-log.md        #   structured YAML error log
 │   │   └── self-extension-workflow.md
 │   └── _templates/             # Templates for new skills + errors
+├── tools/
+│   └── generate-dashboard.py   # Generates learning analytics from error log
 ├── CONTRIBUTING.md
 └── LICENSE                     # MIT
 ```
@@ -336,6 +338,26 @@ async function getUser(id: string) {
 
 ---
 
+## 📊 Learning Analytics Dashboard
+
+Track your agent's growth over time. The dashboard auto-generates from your error log and shows:
+
+- **Errors captured** — how many mistakes were turned into rules
+- **Errors prevented** — how many repeat mistakes were blocked
+- **Learning timeline** — when your agent learned, month by month
+- **Category breakdown** — where mistakes happen most (development, deployment, security...)
+- **Severity distribution** — how critical are the mistakes being caught
+- **Sub-skill token budgets** — monitor context window usage
+
+```bash
+python3 tools/generate-dashboard.py    # → updates docs/dashboard.html
+open docs/dashboard.html               # → view in browser
+```
+
+> 📈 **"Your agent learned 12 new rules this month and prevented 34 repeat mistakes."** — That's the kind of insight that makes teams pay attention.
+
+---
+
 ## 🛠️ Create Your Own Skill
 
 ```bash
@@ -351,7 +373,7 @@ Keep each sub-skill under **3,000 tokens**. Split rather than bloat. Rules are a
 
 | Version | Status | What's included |
 |---|---|---|
-| **v1.1** | ✅ current | Core system · 8 starter skills (incl. Python, TypeScript, React) · OpenCode + Claude Code + Gemini CLI + Cursor |
+| **v1.1** | ✅ current | Core system · 8 starter skills · Learning Analytics Dashboard · 4 platforms |
 | **v1.2** | planned | CLI tool (`npx skill-everythink init`) for instant project setup |
 | **v1.3** | planned | Consolidation loop (auto-merge similar rules) · GitHub Actions linter |
 | **v2.0** | planned | Skill Marketplace — discover, rate, and embed community skills |
