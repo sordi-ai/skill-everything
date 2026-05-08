@@ -1,6 +1,18 @@
-# Sub-Skill: [Name]
+---
+id: <kebab-case-id>
+version: 1.0.0
+tokens_target: 1500
+triggers:
+  - <short trigger phrase>
+  - <another phrase the router matches against>
+loads_after: []
+supersedes: []
+---
 
-**Purpose:** [1-2 sentences: What this sub-skill does and why it exists.]
+# Sub-Skill: [Name]
+<!-- target: tokens_target above. Run `python tools/render_readme_table.py` to update README. -->
+
+**Purpose:** [1-2 sentences. What this sub-skill does and why it exists.]
 
 ---
 
@@ -8,8 +20,8 @@
 
 ### [Category 1]
 
-1. **[Rule name].** [Action directive — "Always X" or "Never Y without Z".]
-2. **[Rule name].** [Action directive.]
+1. **[Rule name].** [Action directive — must start with Always, Never, Before, After, Prefer, Avoid, Use, Do, or Ensure.]
+2. **[Rule name].** [Action directive.] Reference: ERR-YYYY-NNN
 3. **[Rule name].** [Action directive.]
 
 ### [Category 2]
@@ -19,9 +31,16 @@
 
 ---
 
+## See also
+
+- `references/development/code-quality.md` (when this skill specialises a generic rule, link to it)
+- `references/errors/error-log.md` (errors that motivated rules in this skill)
+
+---
+
 ## Notes
 
-- Rules are phrased as action directives, not descriptions
-- Every rule derived from an error has a reference: `Reference: ERR-YYYY-NNN`
-- Add new rules at the end of the matching category
-- When exceeding 30 rules: split into thematic sub-files
+- **Frontmatter is mandatory.** The CI validator (`tools/validate_rules.py`) will fail any sub-skill without a valid frontmatter against `schemas/skill-manifest.json`.
+- **Action directives, not descriptions.** "SQL injection is dangerous" is a description; "Never concatenate user input directly into SQL queries; always use prepared statements" is an action directive.
+- **`Reference: ERR-YYYY-NNN`** on every rule born out of a real observed mistake.
+- **Token budget under 3000.** When exceeded, split into thematic sub-skills with `loads_after` chains.

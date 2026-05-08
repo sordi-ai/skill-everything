@@ -1,82 +1,169 @@
-# Contributing to Skill-Everythink
+# Contributing to skill-everything
 
-Thank you for your interest! Skill-Everythink thrives on community contributions — the more knowledge flows in, the better agents become for everyone.
+Thanks for taking the time. This is an independent open-source side project — see [DISCLAIMER.md](./DISCLAIMER.md). The same review and validation rules apply to maintainers and external contributors.
 
----
-
-## How You Can Contribute
-
-### 1. Create a New Sub-Skill
-
-1. Copy the template: `references/_templates/sub-skill.template.md`
-2. Create a new folder under `references/` or use an existing one
-3. Name the file descriptively: `references/[category]/[topic].md`
-4. Fill in at least 5 concrete rules
-5. Open a Pull Request
-
-### 2. Extend Existing Skills
-
-1. Find the matching sub-skill in `references/`
-2. Add new rules at the end of the appropriate category
-3. Format: `NNN. **[Rule Name].** [Action directive.]`
-4. If the rule originates from an error: append `Reference: ERR-YYYY-NNN`
-
-### 3. Document an Error
-
-1. Copy the template: `references/_templates/error-entry.template.md`
-2. Fill in all fields
-3. Add the entry to `references/errors/error-log.md`
-4. Create the corresponding rule in the appropriate sub-skill
+If something below is unclear or wrong, please open an issue or a PR fixing it.
 
 ---
 
-## Conventions
+## Quick start (5 minutes)
 
-### File Names
-- Lowercase with hyphens: `code-quality.md`, `review-deployment.md`
-- Descriptive, not abbreviated: `conventions.md` instead of `conv.md`
+```bash
+git clone https://github.com/sordi-ai/skill-everything.git
+cd skill-everything
+pip install -e ".[dev]"
+pre-commit install
+pytest -q
+```
 
-### Language
-- English for all content
-- Technical terms are fine as-is: "Commit", "Pull Request", "Deploy"
-- Always phrase rules as action directives: "Always X before Y" or "Never Z without W"
-
-### Rules
-- Concrete and practical — no abstract philosophies
-- Include an example where possible (code snippet, concrete case)
-- One rule per point — never combine multiple rules into one
-
-### Pull Requests
-- Title format: `docs([category]): [what was changed]`
-- Example: `docs(development): add React hook rules`
-- Briefly describe why the rule or skill matters
-- Always limit a PR to one topic
+If `pytest` passes locally, you're ready. Branch off `main`, follow the relevant flow below, open a PR.
 
 ---
 
-## Folder Structure
+## Three contribution flows
+
+### 1. New rule from a real mistake — `learn(errors): ERR-YYYY-NNN`
+
+This is the **primary contribution flow** — every rule should be born from a real observed mistake, not from opinion.
+
+1. Copy [`references/_templates/error-entry.template.md`](./references/_templates/error-entry.template.md).
+2. Search [`references/errors/error-log.md`](./references/errors/error-log.md) for similar entries first. If you find one, increment its `count` and update `last_seen` instead of writing a new entry.
+3. If no match: add a new YAML block at the end. Pick the next sequential `ERR-YYYY-NNN`.
+4. Add the derived rule to the matching sub-skill (development / git / process / domain / errors). The `target_file` field tells the validator where to look.
+5. Branch + commit + PR — never push to `main`:
+   ```bash
+   git checkout -b learn/ERR-YYYY-NNN
+   git add references/
+   git diff --cached            # mandatory self-review
+   git commit -m "learn(errors): ERR-YYYY-NNN — <short>
+
+   Co-Authored-By: Real Name <real@email>"
+   git push -u origin learn/ERR-YYYY-NNN
+   gh pr create --label needs-rule-review
+   ```
+6. The CI lint validator runs against the JSON-Schema and the verb allow-list. The `auto-approve-rule-pr` workflow gates merge on diff-scope and the `Co-Authored-By:` trailer.
+7. A maintainer reviews and merges. **Always squash-merge.**
+
+The full procedure with troubleshooting lives at [`references/errors/self-extension-workflow.md`](./references/errors/self-extension-workflow.md).
+
+### 2. New sub-skill — `feat(skills): add <id>`
+
+When the existing sub-skills don't cover an area you need (Go, Rust, Java, infrastructure-as-code, etc.):
+
+1. Copy [`references/_templates/sub-skill.template.md`](./references/_templates/sub-skill.template.md).
+2. Pick a kebab-case `id` and a target file path: `references/<category>/<id>.md`.
+3. Fill in the YAML frontmatter — the schema is at [`schemas/skill-manifest.json`](./schemas/skill-manifest.json):
+   ```yaml
+   ---
+   id: go
+   version: 1.0.0
+   tokens_target: 2200      # hard cap: 3000
+   triggers:
+     - go code
+     - go modules
+     - error handling
+   loads_after:
+     - code-quality
+   supersedes: []
+   ---
+   ```
+4. Write **at least 8 concrete action-directive rules**, each grounded in a real mistake or convention you've observed.
+5. Add an entry to [`references/_index.yml`](./references/_index.yml) with the loader strings for `claude`, `gemini`, and `skill_resource`. Then run `python tools/render_loaders.py` so `SKILL.md`, `CLAUDE.md`, and `GEMINI.md` regenerate. Commit those changes — the CI no-drift job verifies them.
+6. Branch as `feat/skill-<id>`, PR title `feat(skills): add <id>`, label `new-skill`.
+
+**Sub-skill PR review checklist** (the maintainers will use this):
+
+- [ ] Frontmatter passes `python tools/validate_rules.py`
+- [ ] Token count is below `tokens_target`, and `tokens_target` is below 3000
+- [ ] Every rule starts with `Always`, `Never`, `Before`, `After`, `Prefer`, `Avoid`, `Use`, `Do`, or `Ensure`
+- [ ] At least one cross-reference to an existing sub-skill (`see also references/development/code-quality.md#…`)
+- [ ] At least one rule is grounded in a `Reference: ERR-YYYY-NNN` from `error-log.md` (or, if this is the first rule of its kind, the rule was added together with a fresh ERR entry in the same PR)
+- [ ] At least one re-mistake test added to `tests/eval/tasks/` (see [`tests/eval/README.md`](./tests/eval/README.md))
+
+### 3. Tooling, docs, infrastructure
+
+For everything that isn't a rule — fixes to `tools/`, docs, CI, the dashboard — the normal open-source flow applies. Conventional Commits as below; PR titles describe the *why*, not the *what*.
+
+---
+
+## Commit conventions
+
+Conventional Commits with a small custom set of types:
+
+| Type | Use for |
+|---|---|
+| `learn(errors)` | A rule generated by the self-extension workflow |
+| `feat(skills)` | New or expanded sub-skill |
+| `feat(tools)` | New or expanded automation |
+| `fix(security)` | Security-relevant fix |
+| `fix` / `feat` / `chore` / `docs` / `test` / `refactor` | Standard |
+
+Subject in the imperative. ≤ 72 characters. Body explains *why*, not *what*.
+
+```
+learn(errors): ERR-2026-014 — never inherit from concrete React components
+```
+
+---
+
+## Validator false-positive bypass
+
+The CI lint validator is best-effort, not airtight (see [SECURITY.md](./SECURITY.md)). When a legitimate rule has to mention a forbidden pattern (e.g. a rule about preventing `subprocess` misuse that names `subprocess`):
+
+1. Add the new ERR-ID to [`references/errors/exceptions.yml`](./references/errors/exceptions.yml) with a one-line rationale.
+2. CODEOWNERS approval is required to merge changes to that file. The bypass is auditable in git.
+3. The verb allow-list still applies even with a bypass entry.
+
+If you're not sure whether to bypass, ask in the PR — false positives are usually fixed by rephrasing.
+
+---
+
+## Eval contributions
+
+When a new rule lands, please add a re-mistake test to [`tests/eval/tasks/`](./tests/eval/) so future runs measure whether the rule actually prevents the mistake. The contract for what counts as a published Re-Mistake-Rate is in [`tests/eval/README.md`](./tests/eval/README.md). **Until that contract is met, no Re-Mistake-Rate goes into the README. Sven was right about the n=3 vibe check.**
+
+---
+
+## Co-maintainer onboarding (if you become one of us)
+
+If you start co-maintaining the project, before your first push:
+
+1. **Compliance check.** If your day job is at a company with a side-project policy (most large tech employers, including BMW and Google), file a personal-open-source disclosure with your employer. The `DISCLAIMER.md` is the public-facing doc; the side-letter is the private one. We will not ship a PR signed by your work account.
+2. **Use a personal GitHub account** with your real name. We don't ship pseudonymous co-maintainer commits — `git shortlog -sne` is the first thing skeptical readers check.
+3. **Add yourself to `.github/CODEOWNERS`** under the `@sordi-ai/maintainers` team and confirm with the existing maintainer.
+4. **Read the threat model** in [SECURITY.md](./SECURITY.md). The self-extension workflow is the trust-boundary. You are the human in "the human reviews the PR".
+5. **Workload expectation:** about 5h / week. Split: code + eval (existing maintainer) and sub-skill content + issue triage (new co-maintainer). Don't sprint at the same time as the other maintainer — merge conflicts in `references/errors/` are nobody's friend.
+
+---
+
+## Folder structure
 
 ```
 references/
-├── development/     → Code quality, patterns, common mistakes
-├── git/             → Commit conventions, branching, PRs
-├── domain/          → Company knowledge, business rules, glossary
-├── process/         → Reviews, deployment, checklists
-├── errors/          → Error log, self-extension workflow
-└── _templates/      → Templates for new skills and errors
+├── _index.yml          # source of truth for SKILL/CLAUDE/GEMINI
+├── _templates/         # copy these to start a new skill or error
+├── development/        # code-quality + per-language sub-skills
+├── git/                # commit, branch, PR conventions
+├── domain/             # template for project-specific knowledge
+├── process/            # review, deployment checklists
+└── errors/
+    ├── error-log.md            # YAML entries, schema-validated
+    ├── exceptions.yml          # validator bypass list
+    └── self-extension-workflow.md
 ```
 
-> New categories are welcome! Simply create a new folder with a `SKILL.md` or a thematic `.md` file.
+Adding a new top-level category? Open a PR that updates this README, `references/_index.yml`, and the relevant template. Two-of-two maintainer review is required for category changes.
 
 ---
 
-## What Makes a Good Contribution?
+## What makes a good contribution
 
-✅ Concrete rules from real projects  
-✅ Action directives instead of descriptions  
-✅ Error entries with root-cause analysis  
-✅ Domain knowledge that no LLM would know by default  
+| ✅ | ❌ |
+|---|---|
+| Concrete rules from real projects | Generic tips you'd find in any tutorial |
+| Action directives | Descriptions ("X is dangerous") |
+| Error entries with a real `count` ≥ 1 from observation | Hypothetical examples |
+| Domain knowledge no LLM has by default | Personal opinions without grounding |
+| Cross-references to existing skills | Duplicates or near-duplicates |
 
-❌ Generic tips found in any documentation  
-❌ Personal opinions without justification  
-❌ Rules without practical value  
+Thanks. Pull requests are how this project grows.

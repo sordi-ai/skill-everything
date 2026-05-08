@@ -9,13 +9,37 @@ Thumbs.db
 *.swo
 *~
 
-# Sisyphus internal
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyright/
+*.egg-info/
+build/
+dist/
+.tox/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Sisyphus internal (private)
 .sisyphus/
 
-# Node (falls CLI-Tool in Zukunft)
+# Node (kept ignored — there is no npm tool right now; remove this line
+# when a real CLI ships and ship the lockfile)
 node_modules/
 package-lock.json
 
 # Temp
 *.tmp
 *.bak
+
+# Local secrets, never commit
+.env
+.env.local
+*.key
+*.pem
