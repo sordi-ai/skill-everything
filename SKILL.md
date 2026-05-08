@@ -52,3 +52,4 @@ Wenn `references/errors/error-log.md` mehr als 50 Einträge hat:
 - **Search before Write:** Bevor du einen neuen Fehler loggst, durchsuche das Error-Log nach ähnlichen Einträgen. Update statt Duplikat.
 - **Handlungsanweisungen statt Beschreibungen:** Regeln immer als "Immer X bevor Y" oder "Nie Z ohne W" formulieren.
 - **Kompakt bleiben:** Jeder Sub-Skill sollte unter 3000 Tokens bleiben. Bei Überschreitung → aufteilen.
+- **Ohne `skill_resource`?** Falls dein Agent dieses Tool nicht hat: Lade die Dateien direkt aus dem `references/`-Ordner via Dateisystem-Zugriff oder bitte den User, den Inhalt einzufügen.
