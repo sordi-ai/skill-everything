@@ -116,12 +116,15 @@
   <text class="lane-label" x="30"  y="415">SUB-SKILL DIRECTORY  ·  references/**/*.md</text>
 
   <!-- ============== SOURCE: _index.yml hub ============== -->
+  <!-- Box height bumped 68 → 80 to fit the loader-keys list across two
+       lines instead of overflowing the right edge. -->
   <g transform="translate(490 95)">
-    <rect class="node git" x="0" y="0" width="220" height="68" rx="6"/>
+    <rect class="node git" x="0" y="0" width="220" height="80" rx="6"/>
     <text class="step-num" x="10" y="14">SOURCE</text>
     <text class="node-title" x="10" y="32">references/_index.yml</text>
     <text class="mono-tag"   x="10" y="48">9 skills · 4 loader-keys each</text>
-    <text class="mono-dim"   x="10" y="62">claude · gemini · skill_resource · cursor</text>
+    <text class="mono-dim"   x="10" y="62">claude · gemini</text>
+    <text class="mono-dim"   x="10" y="76">skill_resource · cursor</text>
   </g>
 
   <!-- annotation chip: skills count -->
@@ -138,9 +141,10 @@
     <text class="annot"     x="0" y="38">single source of truth</text>
   </g>
 
-  <!-- arrow: source → generator -->
-  <line x1="600" y1="163" x2="600" y2="220" class="arrow" marker-end="url(#a-rule)"/>
-  <text class="annot" x="608" y="195">read</text>
+  <!-- arrow: source → generator (start raised from y=163 to y=175 to match
+       the new SOURCE box bottom) -->
+  <line x1="600" y1="175" x2="600" y2="220" class="arrow" marker-end="url(#a-rule)"/>
+  <text class="annot" x="608" y="200">read</text>
 
   <!-- ============== TOOLING: render_loaders.py ============== -->
   <g transform="translate(490 220)">
@@ -222,16 +226,21 @@
   <text class="loop-label" x="600" y="412" text-anchor="middle">all four loaders point at the same files</text>
 
   <!-- ============== CI GATE: drift detection ============== -->
-  <g transform="translate(940 220)">
-    <rect class="gate-fill" x="0" y="0" width="200" height="60" rx="6"/>
-    <rect class="gate"      x="0" y="0" width="200" height="60" rx="6"/>
+  <!-- Box widened 200 → 245 and shifted left (x=940 → 910) so the
+       gate-label fits on one line. Height 60 → 76 to accommodate the
+       file-list in two lines instead of overflowing the right edge. -->
+  <g transform="translate(910 220)">
+    <rect class="gate-fill" x="0" y="0" width="245" height="76" rx="6"/>
+    <rect class="gate"      x="0" y="0" width="245" height="76" rx="6"/>
     <text class="gate-label" x="10" y="15">CI GATE  ·  loaders-and-table-no-drift</text>
     <text class="mono-tag"   x="10" y="32">git diff --exit-code</text>
-    <text class="mono-dim"   x="10" y="48">SKILL.md  CLAUDE.md  GEMINI.md  .cursorrules</text>
+    <text class="mono-dim"   x="10" y="48">SKILL.md   CLAUDE.md</text>
+    <text class="mono-dim"   x="10" y="62">GEMINI.md   .cursorrules</text>
   </g>
 
-  <!-- arrow: generator → CI gate -->
-  <path d="M 710 250 L 940 250" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
+  <!-- arrow: generator → CI gate (end shifted from x=940 to x=910 to
+       match the new CI-gate left edge) -->
+  <path d="M 710 250 L 910 250" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
 
   <!-- ============== TAGLINE ============== -->
   <text class="tagline" x="1176" y="488" text-anchor="end">edit the index, regenerate, commit  ·  drift fails CI</text>
