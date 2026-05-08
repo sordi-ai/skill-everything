@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 500" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
   <title id="title">skill-everything architecture — single source of truth, four loaders</title>
   <desc id="desc">references/_index.yml is rendered by tools/render_loaders.py into four tool-specific loader files: SKILL.md (OpenCode), CLAUDE.md (Claude Code), GEMINI.md (Gemini CLI) and a Cursor stub. All four loaders point at the same sub-skill directory. A loaders-and-table-no-drift CI gate fails the build if any loader file diverges from the index.</desc>
 
@@ -85,15 +85,15 @@
     </marker>
   </defs>
 
-  <!-- ============== FRAME ============== -->
-  <rect class="frame" x="0.5" y="0.5" width="1199" height="499" rx="6"/>
+  <!-- ============== FRAME (viewBox 1280 hosts the CI-Gate sentinel) -->
+  <rect class="frame" x="0.5" y="0.5" width="1279" height="499" rx="6"/>
 
   <!-- ============== HEADER ============== -->
   <text class="h-title" x="24" y="30">ARCHITECTURE  /  ONE INDEX, FOUR LOADERS</text>
   <text class="h-sub"   x="24" y="46">references/_index.yml is the source. tools/render_loaders.py writes the four loader files. CI fails on drift.</text>
 
   <!-- legend -->
-  <g transform="translate(740 22)">
+  <g transform="translate(820 22)">
     <rect class="node git" x="0" y="0" width="14" height="10" rx="2"/>
     <text class="legend-t" x="20" y="9">source / generator</text>
     <rect class="node"     x="140" y="0" width="14" height="10" rx="2"/>
@@ -104,23 +104,23 @@
     <text class="legend-t" x="368" y="9">same sub-skill</text>
   </g>
 
-  <!-- ============== SWIMLANES ============== -->
-  <line x1="24"   y1="70"  x2="1176" y2="70"  class="lane"/>
-  <line x1="24"   y1="180" x2="1176" y2="180" class="lane"/>
-  <line x1="24"   y1="300" x2="1176" y2="300" class="lane"/>
-  <line x1="24"   y1="400" x2="1176" y2="400" class="lane"/>
+  <!-- ============== SWIMLANES (extended to x=1160 for diagram body;
+       gate sentinel sits in the right gutter x=1160..1265). ========== -->
+  <line x1="24"   y1="70"  x2="1160" y2="70"  class="lane"/>
+  <line x1="24"   y1="180" x2="1160" y2="180" class="lane"/>
+  <line x1="24"   y1="300" x2="1160" y2="300" class="lane"/>
+  <line x1="24"   y1="400" x2="1160" y2="400" class="lane"/>
 
   <text class="lane-label" x="30"  y="85">SOURCE  ·  references/_index.yml</text>
   <text class="lane-label" x="30"  y="195">TOOLING  /  GENERATOR</text>
-  <!-- LOADER-OUTPUT lane label moved from x=30 to x=540 to clear the
-       four vertical fan-out stems at x=180/430/770/1020. The stem at
-       x=180 had been overstriking the original label at x=30.        -->
-  <text class="lane-label" x="540" y="315">LOADER OUTPUT  ·  per-tool entry-points</text>
-  <text class="lane-label" x="30"  y="415">SUB-SKILL DIRECTORY  ·  references/**/*.md</text>
+  <!-- LOADER-OUTPUT label trimmed and placed in the gap between the
+       OPENCODE stem (x=180) and CLAUDE stem (x=430). -->
+  <text class="lane-label" x="200" y="315">LOADER OUTPUT</text>
+  <!-- SUB-SKILL label trimmed to "SUB-SKILL DIRECTORY" so it ends well
+       before the OPENCODE loop-arrow at x=180. -->
+  <text class="lane-label" x="30"  y="415">SUB-SKILL DIRECTORY</text>
 
   <!-- ============== SOURCE: _index.yml hub ============== -->
-  <!-- Box height bumped 68 → 80 to fit the loader-keys list across two
-       lines instead of overflowing the right edge. -->
   <g transform="translate(490 95)">
     <rect class="node git" x="0" y="0" width="220" height="80" rx="6"/>
     <text class="step-num" x="10" y="14">SOURCE</text>
@@ -144,8 +144,7 @@
     <text class="annot"     x="0" y="38">single source of truth</text>
   </g>
 
-  <!-- arrow: source → generator (start raised from y=163 to y=175 to match
-       the new SOURCE box bottom) -->
+  <!-- arrow: source → generator -->
   <line x1="600" y1="175" x2="600" y2="220" class="arrow" marker-end="url(#a-rule)"/>
   <text class="annot" x="608" y="200">read</text>
 
@@ -157,10 +156,13 @@
     <text class="mono-tag"   x="10" y="48">Jinja2 · _templates/*.j2</text>
   </g>
 
-  <!-- annotation: idempotent -->
+  <!-- annotation: idempotent — placed beside the generator at row 1
+       (y=240 baseline) only; row 2 dropped. The CI-arrow corridor at
+       y=270 now has 26 px clearance to the annotation. Annotation
+       text descenders bottom out near y=243 (row 1, font 10), giving
+       a clean gap to the arrow. -->
   <g transform="translate(740 230)">
-    <text class="annot" x="0" y="14">deterministic · idempotent</text>
-    <text class="annot" x="0" y="30">re-run produces zero diff</text>
+    <text class="annot" x="0" y="14">deterministic · idempotent · zero diff</text>
   </g>
 
   <!-- annotation: command -->
@@ -169,19 +171,7 @@
     <text class="chip-text" x="8" y="14">python tools/render_loaders.py</text>
   </g>
 
-  <!-- ============== FAN-OUT: generator → 4 loader outputs ==============
-       Replaced four diagonal lines with a Manhattan-routed trunk-and-
-       branch tree. The diagonals cut through the LOADER-OUTPUT lane
-       label (the leftmost arrow crossed y=315 at x≈225, mid-glyph).
-       The trunk preserves the "one source, four loaders" fan-out as
-       the diagram's central narrative — branches now read as siblings.
-        - vertical drop:  x=600,  y=280 → y=294   (Generator bottom → trunk)
-        - trunk:          y=294,  x=180 → x=1020  (above separator y=300)
-        - four stems:     y=294 → y=322 at x=180, 430, 770, 1020
-       Trunk at y=294 sits 6 px above the lane separator (y=300); no
-       text shares the band, so the 4-px-from-separator rule (which
-       governs text baselines) is satisfied by all labels. Stems cross
-       the separator vertically, which is permitted for connectors.   -->
+  <!-- ============== FAN-OUT: trunk + 4 stems ============== -->
   <line x1="600" y1="280" x2="600" y2="294" class="arrow"/>
   <line x1="180" y1="294" x2="1020" y2="294" class="arrow"/>
   <line x1="180" y1="294" x2="180"  y2="322" class="arrow" marker-end="url(#a-rule)"/>
@@ -190,7 +180,6 @@
   <line x1="1020" y1="294" x2="1020" y2="322" class="arrow" marker-end="url(#a-rule)"/>
 
   <!-- ============== LOADER OUTPUTS (4 files) ============== -->
-  <!-- 1. SKILL.md (OpenCode) -->
   <g transform="translate(80 322)">
     <rect class="node" x="0" y="0" width="200" height="68" rx="6"/>
     <text class="step-num" x="10" y="14">OPENCODE</text>
@@ -199,7 +188,6 @@
     <text class="mono-dim"   x="10" y="62">9 calls  ·  one per sub-skill</text>
   </g>
 
-  <!-- 2. CLAUDE.md (Claude Code) -->
   <g transform="translate(330 322)">
     <rect class="node" x="0" y="0" width="200" height="68" rx="6"/>
     <text class="step-num" x="10" y="14">CLAUDE CODE</text>
@@ -208,7 +196,6 @@
     <text class="mono-dim"   x="10" y="62">imports + sub-skill table</text>
   </g>
 
-  <!-- 3. GEMINI.md (Gemini CLI) -->
   <g transform="translate(670 322)">
     <rect class="node" x="0" y="0" width="200" height="68" rx="6"/>
     <text class="step-num" x="10" y="14">GEMINI CLI</text>
@@ -217,7 +204,6 @@
     <text class="mono-dim"   x="10" y="62">imports + reload command</text>
   </g>
 
-  <!-- 4. .cursorrules (stub) -->
   <g transform="translate(920 322)">
     <rect class="node" x="0" y="0" width="200" height="68" rx="6"/>
     <text class="step-num" x="10" y="14">CURSOR  ·  optional</text>
@@ -239,27 +225,45 @@
   <line x1="770" y1="390" x2="770" y2="424" class="arrow same" marker-end="url(#a-same)"/>
   <line x1="1020" y1="390" x2="1020" y2="424" class="arrow same" marker-end="url(#a-same)"/>
 
-  <!-- "same" label centered above the directory -->
-  <text class="loop-label" x="600" y="412" text-anchor="middle">all four loaders point at the same files</text>
+  <!-- "same" label centered between CLAUDE-stem (x=430) and GEMINI-stem
+       (x=770). Center at x=600, text width ≈ 224 px → spans ≈488..712.
+       58 px clearance to the nearest stem on each side. Reads as
+       belonging to ALL four loop-arrows since it sits at the centre of
+       the loader row (rather than tucked next to one specific stem). -->
+  <text class="loop-label" x="600" y="412" text-anchor="middle">all four point at the same files</text>
 
-  <!-- ============== CI GATE: drift detection ============== -->
-  <!-- Box widened 200 → 245 and shifted left (x=940 → 910) so the
-       gate-label fits on one line. Height 60 → 76 to accommodate the
-       file-list in two lines instead of overflowing the right edge. -->
-  <g transform="translate(910 220)">
-    <rect class="gate-fill" x="0" y="0" width="245" height="76" rx="6"/>
-    <rect class="gate"      x="0" y="0" width="245" height="76" rx="6"/>
-    <text class="gate-label" x="10" y="15">CI GATE  ·  loaders-and-table-no-drift</text>
-    <text class="mono-tag"   x="10" y="32">git diff --exit-code</text>
-    <text class="mono-dim"   x="10" y="48">SKILL.md   CLAUDE.md</text>
-    <text class="mono-dim"   x="10" y="62">GEMINI.md   .cursorrules</text>
+  <!-- ============== CI GATE: drift detection (vertical sentinel) ====
+       Right gutter x=1160..1265, y=220..400 (width 105, height 180).
+       Increased height by 10 px so the file-list rows have comfortable
+       clearance to the bottom border. Arrow from generator now enters
+       the gate from the LEFT side at y=240, NOT from the top centre,
+       so it does not crowd the "CI GATE" header text.                -->
+  <g transform="translate(1160 220)">
+    <rect class="gate-fill" x="0" y="0" width="105" height="180" rx="6"/>
+    <rect class="gate"      x="0" y="0" width="105" height="180" rx="6"/>
+    <text class="gate-label" x="52" y="18" text-anchor="middle">CI GATE</text>
+    <line x1="10" y1="26" x2="95" y2="26" stroke="var(--ci)" stroke-width="0.8" stroke-dasharray="2 2"/>
+    <text class="mono-dim"   x="52" y="42" text-anchor="middle">loaders-and-</text>
+    <text class="mono-dim"   x="52" y="56" text-anchor="middle">table-no-drift</text>
+    <line x1="10" y1="68" x2="95" y2="68" stroke="var(--ci)" stroke-width="0.8" stroke-dasharray="2 2"/>
+    <text class="mono-tag"   x="52" y="86" text-anchor="middle">git diff</text>
+    <text class="mono-tag"   x="52" y="102" text-anchor="middle">--exit-code</text>
+    <line x1="10" y1="114" x2="95" y2="114" stroke="var(--ci)" stroke-width="0.8" stroke-dasharray="2 2"/>
+    <text class="mono-dim"   x="52" y="132" text-anchor="middle">SKILL.md</text>
+    <text class="mono-dim"   x="52" y="146" text-anchor="middle">CLAUDE.md</text>
+    <text class="mono-dim"   x="52" y="160" text-anchor="middle">GEMINI.md</text>
+    <text class="mono-dim"   x="52" y="174" text-anchor="middle">.cursorrules</text>
   </g>
 
-  <!-- arrow: generator → CI gate (end shifted from x=940 to x=910 to
-       match the new CI-gate left edge) -->
-  <path d="M 710 250 L 910 250" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
+  <!-- arrow: generator → CI gate (corridor at y=270; ends at gate's
+       LEFT edge at (1160, 240). This avoids crowding the "CI GATE"
+       header at the top and reads more naturally as "input from the
+       generator". Path stays clear of "deterministic / idempotent /
+       zero diff" annotation (single line at y=244, x=740..957) and
+       the lane separator (y=300).                                    -->
+  <path d="M 710 270 L 1140 270 L 1140 240 L 1160 240" class="arrow" stroke="var(--ci)" fill="none" marker-end="url(#a-ci)"/>
 
   <!-- ============== TAGLINE ============== -->
-  <text class="tagline" x="1176" y="488" text-anchor="end">edit the index, regenerate, commit  ·  drift fails CI</text>
+  <text class="tagline" x="1256" y="488" text-anchor="end">edit the index, regenerate, commit  ·  drift fails CI</text>
   <text class="mono-dim" x="24"   y="488">skill-everything  /  docs/architecture.svg</text>
 </svg>
