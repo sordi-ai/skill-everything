@@ -1,115 +1,142 @@
-# Twitter/X Launch Thread
+# Twitter / X launch thread
 
-Copy-paste ready. Each tweet is under 280 chars. Thread of 8 tweets.
+8 tweets, all under 280 chars. Honest tone. Lara's recommended Tagline B
+("inherits the fix") is the spine.
 
 ---
 
 ## Tweet 1 (Hook)
 
-Your AI coding agent makes the same mistake every single day.
+```
+Every mistake your AI coding agent makes — same one again tomorrow.
 
-You correct it. It forgets. You correct it again. It forgets again.
+We built something to fix that. Plain Markdown, plain Git, dogfooded
+for ~6 weeks. Independent open source.
 
-We built something to fix that. It's called Skill-Everythink, and it's open source.
+Show HN today. 🧵👇
 
-🧵👇
-
----
-
-## Tweet 2 (Problem)
-
-The problem is simple:
-
-Fine-tuning is frozen after training.
-RAG needs infrastructure.
-Cursor Rules are locked to one tool.
-mem0 is a black box.
-
-None of them let your agent LEARN from its own mistakes.
+github.com/sordi-ai/skill-everything
+```
 
 ---
 
-## Tweet 3 (Solution)
+## Tweet 2 (The actual loop)
 
-Skill-Everythink is dead simple:
-
-→ Plain Markdown files
-→ Git-versioned
-→ Zero infrastructure
-→ Agent-agnostic
-
-When your agent makes a mistake, it writes a rule. Commits it to Git. Never makes it again.
-
-That's it. No database. No embeddings. No setup.
-
----
-
-## Tweet 4 (How it works)
-
-The learning loop:
+```
+The loop:
 
 1. Agent makes a mistake
-2. Analyzes root cause
-3. Writes an action directive ("Never X without Y")
-4. Commits to the skill file
-5. Next session → rule is loaded automatically
+2. Writes a YAML entry → derives an action directive
+3. Opens a PR labelled `needs-rule-review`
+4. Human reviews + merges
+5. Next session, the fix is loaded automatically
 
-Every mistake makes the system permanently better.
-
----
-
-## Tweet 5 (Multi-platform)
-
-Works everywhere:
-
-✅ Claude Code (CLAUDE.md)
-✅ Gemini CLI (GEMINI.md)
-✅ OpenCode (SKILL.md)
-✅ Cursor (.cursorrules)
-
-Same knowledge base. Four entry points. Switch tools without losing memory.
+The repo IS the loop.
+```
 
 ---
 
-## Tweet 6 (What's included)
+## Tweet 3 (Why Markdown + Git, not vector DB)
 
-Ships with 8 production-ready sub-skills:
+```
+Why not a vector store?
 
-• 23 code quality rules
-• 15 git workflow rules
-• Python, TypeScript, React best practices
-• Deployment checklists
-• Error memory system
-• Self-extension workflow
+Because we want every rule to be:
+- `cat`-able by a human
+- `git diff`-able in a PR
+- revertable when wrong
+- portable across Cursor, Claude Code, Gemini CLI
 
-All from real projects. Zero boilerplate.
+A vector index is the right answer for >1k rules. Not for
+team conventions.
+```
 
 ---
 
-## Tweet 7 (Philosophy)
+## Tweet 4 (The honest token math)
 
-Fine-tuning taught models to speak.
-RAG gave them books.
-Rules gave them cheat sheets.
+```
+Token math, no hype:
 
-Skill-Everythink gives them experience.
+- vs. uncached monolithic prompts: 20–34% cheaper
+- vs. cached monolithic prompts: ~break-even
 
-Experience that compounds. That's versioned. That you can read, review, revert, or share with your entire team.
+We don't claim 84% savings. The README has the full table.
+The headline win is review + portability, not the cents.
+```
+
+---
+
+## Tweet 5 (Self-extension as supply-chain problem)
+
+```
+Self-extending memory is a supply-chain problem disguised as a
+magic feature.
+
+So we treat it like one:
+- JSON-Schema validation on every PR
+- Verb allow-list for `new_rule`
+- CODEOWNERS gating on references/errors/
+- Adversarial test suite docs every bypass we know
+
+Trust boundary = human PR review.
+```
+
+---
+
+## Tweet 6 (Honest about gaps)
+
+```
+Honest about what we don't have yet:
+
+- No published Re-Mistake-Rate. The eval skeleton documents the
+  methodology contract (n≥30, multi-model, prompt hash pinned).
+  Numbers come when Phase 2 produces them.
+- 12/20 documented prompt-injection bypasses caught by the
+  validator. The other 8 rely on human review.
+```
+
+---
+
+## Tweet 7 (Who built this)
+
+```
+Side project. Two engineers. Day jobs are AI engineering at
+large companies — this is independent open source, not endorsed
+by any employer. DISCLAIMER.md spells it out.
+
+We built it because we ran into agent-memory at scale and wanted
+something we could git-blame.
+```
 
 ---
 
 ## Tweet 8 (CTA)
 
-It's MIT licensed, zero setup, and free forever.
+```
+MIT licensed. Plain Markdown. `git clone` is the entire setup.
 
-⭐ github.com/sordi-ai/skill-everything
+If you've been hand-pasting conventions into your agent, this
+might save you an evening.
 
-If you think AI coding agents should learn from experience — not just training data — give it a star.
+Issues > stars. Honest critique > 🚀.
 
-PRs welcome. We're just getting started.
+github.com/sordi-ai/skill-everything
+```
 
 ---
 
-## Hashtags (add to Tweet 1 or 8)
+## Hashtags / mentions (Tweet 1 or 8 tail)
 
-#AI #LLM #CodingAgents #OpenSource #ClaudeCode #GeminiCLI #DevTools
+`#AI #LLM #DevTools #OpenSource`
+
+Don't tag company accounts of employers (BMW, Google) — DISCLAIMER policy.
+Don't tag Anthropic / Cursor / Google AI accounts in the launch tweet —
+they'll see it organically; tagging looks needy.
+
+---
+
+## Posting time
+
+Same window as HN: Tue/Wed/Thu, 14:00–16:00 UTC. Post the thread within
+30 minutes of the HN submission so the two amplify each other.

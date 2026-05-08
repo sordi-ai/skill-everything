@@ -1,63 +1,119 @@
-# Hacker News "Show HN" Post
+# Hacker News "Show HN" — copy-paste ready
 
-Copy-paste ready for https://news.ycombinator.com/submit
-
----
-
-## Title
-
-Show HN: Skill-Everythink – Git-versioned memory for AI coding agents (plain Markdown, zero infra)
+> Posting checklist at the bottom. Read it first. The reply templates
+> for the predictable top comments live in
+> [`hn-comment-templates.md`](./hn-comment-templates.md).
 
 ---
 
-## URL
+## Title (≤ 80 chars, plain, no hype)
 
+```
+Show HN: skill-everything – agent memory in plain Markdown, reviewed in PRs
+```
+
+Alternative if the above is taken:
+
+```
+Show HN: Git-versioned memory for AI coding agents (no DB, no embeddings)
+```
+
+We do not use:
+
+- "Battle-tested"
+- "AI engineers from BMW and Google"
+- "First skill system with X" (`dspy`, `promptfoo`, and `langgraph` have lockfile-equivalents — see Sven's review)
+- "84% fewer tokens"
+
+If we say any of the above on HN, we lose the front page.
+
+---
+
+## URL field
+
+```
 https://github.com/sordi-ai/skill-everything
+```
 
 ---
 
-## Text (paste into the text field if no URL, or as first comment)
+## First comment (post within 5 minutes of submission)
 
-I got tired of watching Claude/GPT make the same mistakes I'd already corrected. Every session starts fresh — the agent has no memory of what it learned yesterday.
+```
+Hi HN — author here.
 
-Fine-tuning is expensive and frozen. RAG needs infrastructure. Cursor Rules only work in Cursor. mem0/MemGPT are powerful but opaque.
+skill-everything is a side project. Two engineers, weekends, ~6 weeks.
+Day jobs are AI engineering at large companies (BMW and Google), but
+this is independent work — see DISCLAIMER.md, not endorsed by either
+employer.
 
-So I built Skill-Everythink: a memory system for AI coding agents made entirely of plain Markdown files, versioned with Git.
+The pitch in one paragraph: an agent makes a mistake. Instead of
+forgetting, it writes a YAML entry into references/errors/error-log.md,
+derives an action directive, and opens a PR labelled needs-rule-review.
+A maintainer reviews it. CI lints it against a JSON-Schema and a
+verb allow-list. After merge, the rule loads automatically next session.
 
-**How it works:**
+What's actually new (small, but real): a structured error schema with
+JSON-Schema validation, a `learn(errors): ERR-YYYY-NNN` PR convention
+that makes self-extension visible in `git log`, per-skill manifest
+frontmatter (id, version, tokens_target, triggers), and an honest
+adversarial test suite at tests/test_validate_rules_adversarial.py
+that documents every bypass we know about.
 
-- Agent makes a mistake → analyzes root cause → writes a rule ("Never X without Y") → commits it to a Markdown file
-- Next session, the rule is loaded automatically
-- Every mistake makes the system permanently better
+What's not new: agent memory in Markdown. AGENTS.md, aider conventions,
+Cursor Rules, Continue.dev all sit in the same neighbourhood. We sit
+on top of those formats — `CLAUDE.md`, `GEMINI.md`, `.cursorrules` are
+generated from references/_index.yml.
 
-**What makes it different:**
+Honest about what's not solved:
+- Token savings vs. cached monolithic prompts are roughly break-even.
+  The 20-34% number in the README is for uncached comparisons.
+- The validator catches 12/20 prompt-injection bypasses we've thought
+  of. The remaining 8 (homoglyphs, indirection, natural-language
+  nudges) rely on human PR review. SECURITY.md spells this out.
+- We don't claim a Re-Mistake-Rate yet. The eval skeleton at
+  tests/eval/ documents the methodology contract (n≥30 per cell,
+  multiple models, prompt hash pinned) and we'll publish numbers
+  when Phase 2 produces them. No vibe checks.
 
-- Plain Markdown — no database, no embeddings, no infrastructure
-- Git-versioned — every lesson is a commit you can diff, blame, revert, or cherry-pick
-- Agent-agnostic — works with Claude Code, Gemini CLI, OpenCode, Cursor
-- Transparent — you can read exactly what your agent knows and why
-- Self-extending — the agent grows its own skill system
-
-**Ships with 8 starter skills** (code quality, git conventions, Python/TypeScript/React best practices, deployment checklists, error memory) — all from real projects.
-
-The whole thing is ~50 Markdown files. No build step. No runtime dependencies. `git clone` and you're done.
-
-MIT licensed. Would love feedback from the HN community on the approach.
+Happy to answer questions. Most likely critiques and our honest
+answers are in the repo already (linked from README → SECURITY.md).
+```
 
 ---
 
-## Suggested posting times (HN best engagement)
+## Posting checklist
 
-- Tuesday–Thursday, 8-10 AM EST (1-3 PM UTC)
-- Avoid weekends and Monday mornings
-- Respond to every comment in the first 2 hours
+| When | What | Notes |
+|---|---|---|
+| **T-7 days** | Final READ-THROUGH of README and DISCLAIMER as a hostile reader | Sven's HN-comment simulation in `concept/04-review-sven.md` is your dress rehearsal |
+| **T-2 days** | Test all repo links from a logged-out browser | GitHub auth caches surprise people |
+| **T-2 days** | Confirm the 30-second `git clone` flow on a fresh machine | This is the first thing curious commenters try |
+| **T-1 day** | Make sure CI is fully green on `main` | A red badge in the readme is fatal |
+| **T-1 day** | Pre-load comment templates in `hn-comment-templates.md` into a draft window | You will not have time to compose them live |
+| **Post** | Tuesday–Thursday, 14:00–16:00 UTC (8–10 AM Eastern) | Avoid Mondays and weekends |
+| **0–15 min** | Submit + post the first comment within 5 minutes | Comment ordering rewards early authors |
+| **15 min – 4 h** | Reply to **every** top-level comment, even hostile ones | Take the bait politely; concede the ones we already know about |
+| **4 – 24 h** | Don't argue with bad-faith comments. Flag once and move on | HN's downvote economy handles them |
+| **24 h** | Post a follow-up to the discussion thread with anything you learned | Often becomes its own small attention spike |
+| **48 h** | Open issues for every legitimate critique that surfaced | This becomes the next sprint |
 
-## First comment to post immediately after submission
+## Suggested posting times
 
-Hey HN, author here. The core insight is embarrassingly simple: LLMs have no persistent memory across sessions. Every workaround (fine-tuning, RAG, vector DBs) adds complexity.
+- Tue / Wed / Thu, 14:00–16:00 UTC.
+- Avoid: Mon morning (catch-up flood), Fri afternoon (everyone's checked out), weekends (low signal).
 
-Markdown files in a Git repo are the simplest possible "memory" — and they're already the format every coding agent can read (CLAUDE.md, GEMINI.md, .cursorrules).
+## Time budget for launch day
 
-The interesting part is the self-extension: the agent doesn't just consume rules, it writes new ones when it makes mistakes. The human reviews the PR. The agent wrote it.
+Block **6 hours** continuous after submission. That's not flexibility — that's the floor.
 
-Happy to answer any questions about the architecture or trade-offs.
+- 0–2 h: heavy comment reply load.
+- 2–4 h: secondary commenters and questions arrive from US wake-up.
+- 4–6 h: discussion winds down, but a single late comment can re-spike it.
+
+## What we do NOT do
+
+- We do not edit the title or URL after posting (HN penalises this).
+- We do not delete comments (even hostile ones, even our own typos — reply with a correction).
+- We do not call in friends to upvote; HN penalises this aggressively.
+- We do not respond to "you should have used X" comments by defending. We say "yes, here's the trade-off we picked, and here's the issue tracking the alternative".
