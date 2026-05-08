@@ -17,6 +17,10 @@
 [![Made for Gemini CLI](https://img.shields.io/badge/Made%20for-Gemini%20CLI-4285F4?logo=google&logoColor=white)](https://github.com/google-gemini/gemini-cli)
 [![Made for Cursor](https://img.shields.io/badge/Made%20for-Cursor-000?logo=cursor&logoColor=white)](https://cursor.sh)
 
+<br>
+
+*Built and battle-tested by AI engineers from <b>BMW</b> and <b>Google</b>.*
+
 </div>
 
 ---
