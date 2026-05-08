@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'none';">
 <title>Skill-Everythink — Learning Analytics</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -14,25 +15,25 @@
   --sev-critical:#ff6b6b;--sev-high:#f78166;--sev-medium:#ffd93d;--sev-low:#3fb950;
 }
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;display:flex;flex-direction:column}
-.mono{font-family:'JetBrains Mono','Fira Code',monospace}
+.mono{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace}
 
-/* Top bar */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border)}
 .topbar h1{font-size:18px;font-weight:700}
 .topbar h1 span{color:var(--blue)}
 .topbar .meta{color:var(--muted);font-size:13px}
 
-/* Grid */
+.empty-state{padding:60px 32px;text-align:center;color:var(--muted);max-width:560px;margin:0 auto}
+.empty-state h2{color:var(--text);font-size:22px;margin-bottom:10px}
+.empty-state code{background:var(--card);border:1px solid var(--border);padding:2px 8px;border-radius:4px;color:var(--blue);font-family:ui-monospace,monospace}
+
 .grid{display:grid;gap:16px;padding:20px 32px;flex:1}
 .row-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .row-charts{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .row-bottom{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 
-/* Cards */
 .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 24px}
 .card h3{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:12px}
 
-/* Metric cards */
 .metric-card{position:relative;overflow:hidden;transition:border-color .2s}
 .metric-card:hover{border-color:var(--blue)}
 .metric-val{font-size:48px;font-weight:800;line-height:1}
@@ -44,17 +45,12 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .metric-card:nth-child(1)::after{background:var(--blue)}
 .metric-card:nth-child(2)::after{background:var(--green)}
 .metric-card:nth-child(3)::after{background:var(--purple)}
-.metric-card:nth-child(1){box-shadow:0 0 20px rgba(88,166,255,.06)}
-.metric-card:nth-child(2){box-shadow:0 0 20px rgba(63,185,80,.06)}
-.metric-card:nth-child(3){box-shadow:0 0 20px rgba(210,168,255,.06)}
 
-/* Timeline bars */
 .timeline-bar{display:flex;align-items:center;gap:10px;margin:6px 0}
 .timeline-label{width:60px;font-size:12px;color:var(--muted);text-align:right}
 .timeline-track{flex:1;height:24px;background:var(--bg);border-radius:4px;overflow:hidden;position:relative}
 .timeline-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--blue),var(--purple));transition:width .8s ease-out;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:11px;font-weight:600;min-width:28px}
 
-/* Donut chart */
 .donut-wrap{display:flex;align-items:center;gap:24px;justify-content:center;margin-top:8px}
 .donut{width:140px;height:140px;border-radius:50%;position:relative}
 .donut-hole{position:absolute;inset:30px;background:var(--card);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column}
@@ -64,15 +60,13 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .legend-item{display:flex;align-items:center;gap:8px;font-size:13px}
 .legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
 
-/* Severity bar */
-.sev-bar{height:32px;border-radius:6px;overflow:hidden;display:flex;margin:12px 0}
+.sev-bar{height:32px;border-radius:6px;overflow:hidden;display:flex;margin:12px 0;background:var(--bg)}
 .sev-seg{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#000;transition:width .8s ease-out}
 .sev-legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
 .sev-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
 .sev-legend-dot{width:8px;height:8px;border-radius:2px}
 
-/* Recent list */
-.recent-list{max-height:200px;overflow-y:auto}
+.recent-list{max-height:240px;overflow-y:auto}
 .recent-item{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
 .recent-item:last-child{border-bottom:none}
 .recent-id{font-size:12px;color:var(--orange);width:100px}
@@ -84,17 +78,14 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .badge-medium{background:rgba(255,217,61,.15);color:var(--yellow)}
 .badge-low{background:rgba(63,185,80,.15);color:var(--green)}
 
-/* Skills bar chart */
 .skill-bar{display:flex;align-items:center;gap:8px;margin:4px 0}
-.skill-name{width:110px;font-size:12px;color:var(--muted);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.skill-name{width:130px;font-size:12px;color:var(--muted);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .skill-track{flex:1;height:18px;background:var(--bg);border-radius:3px;overflow:hidden}
 .skill-fill{height:100%;border-radius:3px;transition:width .8s ease-out;display:flex;align-items:center;padding-left:6px;font-size:10px;font-weight:600;min-width:24px}
 
-/* Footer */
 .footer{padding:12px 32px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
 .footer a{color:var(--blue);text-decoration:none}
 
-/* Scrollbar */
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
@@ -104,76 +95,18 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 
 <script id="data" type="application/json">
 {
-  "generated_at": "2026-05-08T15:53:07.549785+00:00",
-  "date_range": {
-    "from": "2025-03-14",
-    "to": "2025-03-18"
-  },
+  "generated_at": null,
+  "date_range": { "from": "—", "to": "—" },
   "summary": {
-    "total_errors": 2,
-    "total_rules": 100,
+    "total_errors": 0,
+    "total_rules": 0,
     "errors_prevented": 0,
-    "categories": {
-      "deployment": 1,
-      "development": 1
-    },
-    "severity": {
-      "critical": 1,
-      "medium": 1
-    },
-    "monthly": [
-      {
-        "month": "2025-03",
-        "count": 2
-      }
-    ]
+    "categories": {},
+    "severity": {},
+    "monthly": []
   },
-  "recent": [
-    {
-      "id": "ERR-2025-002",
-      "date": "2025-03-18",
-      "severity": "medium",
-      "description": ""
-    },
-    {
-      "id": "ERR-2025-001",
-      "date": "2025-03-14",
-      "severity": "critical",
-      "description": ""
-    }
-  ],
-  "skills": [
-    {
-      "name": "Code Quality",
-      "rules": 23,
-      "tokens": 815
-    },
-    {
-      "name": "Python",
-      "rules": 20,
-      "tokens": 1562
-    },
-    {
-      "name": "TypeScript",
-      "rules": 17,
-      "tokens": 1824
-    },
-    {
-      "name": "React",
-      "rules": 17,
-      "tokens": 1857
-    },
-    {
-      "name": "Git Conventions",
-      "rules": 15,
-      "tokens": 486
-    },
-    {
-      "name": "Review & Deployment",
-      "rules": 8,
-      "tokens": 639
-    }
-  ]
+  "recent": [],
+  "skills": []
 }
 </script>
 
@@ -182,7 +115,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   <div class="meta mono" id="dateRange"></div>
 </div>
 
-<div class="grid">
+<div id="grid" class="grid" style="display:none">
   <div class="row-metrics">
     <div class="card metric-card">
       <h3>Errors Captured</h3>
@@ -232,101 +165,182 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   </div>
 </div>
 
+<div id="empty" class="empty-state">
+  <h2>No errors logged yet</h2>
+  <p style="margin-bottom:14px">This dashboard renders real data from <code>references/errors/error-log.md</code> after you run the generator.</p>
+  <p>Run <code>python tools/generate-dashboard.py</code> to populate.</p>
+  <p style="margin-top:14px;font-size:13px">Honest empty state. We do not ship demo data — the first error you commit is the first thing you see here.</p>
+</div>
+
 <div class="footer">
-  <span>Generated by <a href="https://github.com/sordi-ai/skill-everything">skill-everythink</a></span>
-  <span class="mono">python3 tools/generate-dashboard.py</span>
+  <span>Generated by <a href="https://github.com/sordi-ai/skill-everything">skill-everything</a></span>
+  <span class="mono">python tools/generate-dashboard.py</span>
 </div>
 
 <script>
-const D = JSON.parse(document.getElementById('data').textContent);
-const S = D.summary;
-
-document.getElementById('dateRange').textContent = D.date_range.from + ' → ' + D.date_range.to;
-
-function animateNum(el, target, dur) {
-  const start = performance.now();
-  function tick(now) {
-    const p = Math.min((now - start) / dur, 1);
-    const ease = 1 - Math.pow(1 - p, 3);
-    el.textContent = Math.round(target * ease);
-    if (p < 1) requestAnimationFrame(tick);
+(function(){
+  // ---------- DOM helper ----------
+  // textContent everywhere; never innerHTML on user data.
+  function el(tag, opts) {
+    var e = document.createElement(tag);
+    if (!opts) return e;
+    if (opts.cls) e.className = opts.cls;
+    if (opts.text != null) e.textContent = String(opts.text);
+    if (opts.style) Object.assign(e.style, opts.style);
+    if (opts.attrs) Object.entries(opts.attrs).forEach(function(kv){ e.setAttribute(kv[0], kv[1]); });
+    return e;
   }
-  requestAnimationFrame(tick);
-}
+  function $(id) { return document.getElementById(id); }
 
-animateNum(document.getElementById('mErrors'), S.total_errors, 1000);
-animateNum(document.getElementById('mRules'), S.total_rules, 1000);
-animateNum(document.getElementById('mPrevented'), S.errors_prevented, 1200);
+  // ---------- Parse data ----------
+  var D;
+  try {
+    D = JSON.parse($('data').textContent);
+  } catch (e) {
+    console.error('Invalid dashboard data', e);
+    D = { summary: {total_errors:0,total_rules:0,errors_prevented:0,categories:{},severity:{},monthly:[]}, recent: [], skills: [], date_range: {from:'—', to:'—'} };
+  }
+  var S = D.summary || {};
 
-// Timeline
-const maxCount = Math.max(...S.monthly.map(m => m.count));
-const tl = document.getElementById('timeline');
-S.monthly.forEach(m => {
-  const pct = (m.count / maxCount * 100).toFixed(0);
-  const label = m.month.split('-').slice(1).join('/') + '/' + m.month.split('-')[0].slice(2);
-  tl.innerHTML += `<div class="timeline-bar">
-    <div class="timeline-label mono">${m.month}</div>
-    <div class="timeline-track"><div class="timeline-fill" style="width:0%" data-w="${pct}%">${m.count}</div></div>
-  </div>`;
-});
+  // Empty state if nothing logged
+  if (!D.recent.length && !S.total_errors) {
+    $('grid').style.display = 'none';
+    $('empty').style.display = 'block';
+    $('dateRange').textContent = '';
+    return;
+  }
+  $('grid').style.display = 'grid';
+  $('empty').style.display = 'none';
 
-// Donut
-const catColors = {development:'var(--cat-development)',deployment:'var(--cat-deployment)',security:'var(--cat-security)',git:'var(--cat-git)',performance:'var(--cat-performance)',domain:'var(--cat-domain)'};
-const cats = Object.entries(S.categories).sort((a,b) => b[1] - a[1]);
-const total = cats.reduce((s,c) => s + c[1], 0);
-let gradParts = [], angle = 0;
-cats.forEach(([name, count]) => {
-  const deg = (count / total) * 360;
-  gradParts.push(`${catColors[name]} ${angle}deg ${angle + deg}deg`);
-  angle += deg;
-});
-document.getElementById('donut').style.background = `conic-gradient(${gradParts.join(',')})`;
-document.getElementById('donut').innerHTML = `<div class="donut-hole"><div class="num">${total}</div><div class="lbl">total</div></div>`;
+  $('dateRange').textContent = (D.date_range && D.date_range.from || '—') + ' → ' + (D.date_range && D.date_range.to || '—');
 
-const leg = document.getElementById('legend');
-cats.forEach(([name, count]) => {
-  const pct = ((count / total) * 100).toFixed(0);
-  leg.innerHTML += `<div class="legend-item"><div class="legend-dot" style="background:${catColors[name]}"></div>${name} <span style="color:var(--muted)">${count} (${pct}%)</span></div>`;
-});
+  // ---------- Animated metrics ----------
+  function animateNum(elt, target, dur) {
+    var start = performance.now();
+    function tick(now) {
+      var p = Math.min((now - start) / dur, 1);
+      var ease = 1 - Math.pow(1 - p, 3);
+      elt.textContent = String(Math.round(target * ease));
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+  animateNum($('mErrors'), Number(S.total_errors) || 0, 1000);
+  animateNum($('mRules'), Number(S.total_rules) || 0, 1000);
+  animateNum($('mPrevented'), Number(S.errors_prevented) || 0, 1200);
 
-// Severity
-const sevColors = {critical:'var(--sev-critical)',high:'var(--sev-high)',medium:'var(--sev-medium)',low:'var(--sev-low)'};
-const sevTotal = Object.values(S.severity).reduce((s,v) => s + v, 0);
-const sevBar = document.getElementById('sevBar');
-const sevLeg = document.getElementById('sevLegend');
-Object.entries(S.severity).forEach(([name, count]) => {
-  const pct = ((count / sevTotal) * 100).toFixed(0);
-  sevBar.innerHTML += `<div class="sev-seg" style="width:${pct}%;background:${sevColors[name]}">${count}</div>`;
-  sevLeg.innerHTML += `<div class="sev-legend-item"><div class="sev-legend-dot" style="background:${sevColors[name]}"></div>${name} (${count})</div>`;
-});
+  // ---------- Timeline ----------
+  var monthly = Array.isArray(S.monthly) ? S.monthly : [];
+  var maxCount = monthly.length ? Math.max.apply(null, monthly.map(function(m){return Number(m.count)||0;})) : 0;
+  var tl = $('timeline');
+  if (!monthly.length || maxCount === 0) {
+    tl.appendChild(el('div', {cls:'metric-sub', text:'No timeline data yet.'}));
+  } else {
+    monthly.forEach(function(m){
+      var pct = ((Number(m.count)||0) / maxCount) * 100;
+      var row = el('div', {cls:'timeline-bar'});
+      row.appendChild(el('div', {cls:'timeline-label mono', text:m.month}));
+      var track = el('div', {cls:'timeline-track'});
+      var fill = el('div', {cls:'timeline-fill', text:String(m.count), attrs:{'data-w': pct.toFixed(0) + '%'}, style:{width:'0%'}});
+      track.appendChild(fill);
+      row.appendChild(track);
+      tl.appendChild(row);
+    });
+  }
 
-// Skill bars
-const maxTok = Math.max(...D.skills.map(s => s.tokens));
-const sb = document.getElementById('skillBars');
-const skillColors = ['var(--blue)','var(--green)','var(--orange)','var(--purple)','var(--yellow)'];
-D.skills.forEach((s, i) => {
-  const pct = ((s.tokens / maxTok) * 100).toFixed(0);
-  sb.innerHTML += `<div class="skill-bar">
-    <div class="skill-name">${s.name}</div>
-    <div class="skill-track"><div class="skill-fill" style="width:0%;background:${skillColors[i % skillColors.length]}" data-w="${pct}%">${s.rules} rules · ${s.tokens} tok</div></div>
-  </div>`;
-});
+  // ---------- Donut by category ----------
+  var catColors = {development:'var(--cat-development)',deployment:'var(--cat-deployment)',security:'var(--cat-security)',git:'var(--cat-git)',performance:'var(--cat-performance)',domain:'var(--cat-domain)'};
+  var cats = Object.entries(S.categories || {}).sort(function(a,b){ return b[1] - a[1]; });
+  var total = cats.reduce(function(s,c){ return s + (Number(c[1])||0); }, 0);
 
-// Recent
-const rl = document.getElementById('recentList');
-D.recent.forEach(r => {
-  rl.innerHTML += `<div class="recent-item">
-    <div class="recent-id mono">${r.id}</div>
-    <div class="recent-date mono">${r.date}</div>
-    <div class="recent-desc">${r.description}</div>
-    <div class="badge badge-${r.severity}">${r.severity}</div>
-  </div>`;
-});
+  var donut = $('donut');
+  var hole = el('div', {cls:'donut-hole'});
+  hole.appendChild(el('div', {cls:'num', text:String(total)}));
+  hole.appendChild(el('div', {cls:'lbl', text:'total'}));
+  donut.appendChild(hole);
 
-// Animate bars after render
-setTimeout(() => {
-  document.querySelectorAll('[data-w]').forEach(el => { el.style.width = el.dataset.w; });
-}, 100);
+  if (total > 0) {
+    var gradParts = [], angle = 0;
+    cats.forEach(function(c){
+      var name = c[0], count = Number(c[1]) || 0;
+      var deg = (count / total) * 360;
+      gradParts.push((catColors[name] || 'var(--muted)') + ' ' + angle + 'deg ' + (angle + deg) + 'deg');
+      angle += deg;
+    });
+    donut.style.background = 'conic-gradient(' + gradParts.join(',') + ')';
+  } else {
+    donut.style.background = 'var(--bg)';
+  }
+
+  var leg = $('legend');
+  cats.forEach(function(c){
+    var name = c[0], count = Number(c[1]) || 0;
+    var pct = total ? ((count / total) * 100).toFixed(0) : '0';
+    var item = el('div', {cls:'legend-item'});
+    item.appendChild(el('div', {cls:'legend-dot', style:{background: catColors[name] || 'var(--muted)'}}));
+    item.appendChild(document.createTextNode(name + ' '));
+    item.appendChild(el('span', {style:{color:'var(--muted)'}, text: count + ' (' + pct + '%)'}));
+    leg.appendChild(item);
+  });
+
+  // ---------- Severity ----------
+  var sevColors = {critical:'var(--sev-critical)',high:'var(--sev-high)',medium:'var(--sev-medium)',low:'var(--sev-low)'};
+  var sevTotal = Object.values(S.severity || {}).reduce(function(s,v){ return s + (Number(v)||0); }, 0);
+  var sevBar = $('sevBar');
+  var sevLeg = $('sevLegend');
+  Object.entries(S.severity || {}).forEach(function(kv){
+    var name = kv[0], count = Number(kv[1]) || 0;
+    var pct = sevTotal ? ((count / sevTotal) * 100).toFixed(0) : '0';
+    sevBar.appendChild(el('div', {cls:'sev-seg', text:String(count), style:{width: pct+'%', background: sevColors[name] || 'var(--muted)'}}));
+    var li = el('div', {cls:'sev-legend-item'});
+    li.appendChild(el('div', {cls:'sev-legend-dot', style:{background: sevColors[name] || 'var(--muted)'}}));
+    li.appendChild(document.createTextNode(name + ' (' + count + ')'));
+    sevLeg.appendChild(li);
+  });
+
+  // ---------- Skill bars ----------
+  var skills = Array.isArray(D.skills) ? D.skills : [];
+  var maxTok = skills.length ? Math.max.apply(null, skills.map(function(s){ return Number(s.tokens)||0; })) : 0;
+  var sb = $('skillBars');
+  var skillColors = ['var(--blue)','var(--green)','var(--orange)','var(--purple)','var(--yellow)'];
+  if (!skills.length || maxTok === 0) {
+    sb.appendChild(el('div', {cls:'metric-sub', text:'No sub-skill data yet.'}));
+  } else {
+    skills.forEach(function(s, i){
+      var pct = ((Number(s.tokens)||0) / maxTok) * 100;
+      var row = el('div', {cls:'skill-bar'});
+      row.appendChild(el('div', {cls:'skill-name', text: s.name}));
+      var track = el('div', {cls:'skill-track'});
+      var fill = el('div', {
+        cls:'skill-fill',
+        text: (s.rules || 0) + ' rules · ' + (s.tokens || 0) + ' tok',
+        attrs: {'data-w': pct.toFixed(0) + '%'},
+        style: {width:'0%', background: skillColors[i % skillColors.length]}
+      });
+      track.appendChild(fill);
+      row.appendChild(track);
+      sb.appendChild(row);
+    });
+  }
+
+  // ---------- Recent list (the XSS-relevant rendering) ----------
+  var rl = $('recentList');
+  (D.recent || []).forEach(function(r){
+    var item = el('div', {cls:'recent-item'});
+    item.appendChild(el('div', {cls:'recent-id mono', text: r.id || '?'}));
+    item.appendChild(el('div', {cls:'recent-date mono', text: r.date || '?'}));
+    item.appendChild(el('div', {cls:'recent-desc', text: r.description || ''}));
+    item.appendChild(el('div', {cls:'badge badge-' + (r.severity || 'medium'), text: r.severity || 'medium'}));
+    rl.appendChild(item);
+  });
+
+  // ---------- Animate bars ----------
+  setTimeout(function(){
+    document.querySelectorAll('[data-w]').forEach(function(elt){
+      elt.style.width = elt.getAttribute('data-w');
+    });
+  }, 100);
+})();
 </script>
 </body>
 </html>
