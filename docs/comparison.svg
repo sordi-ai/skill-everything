@@ -17,7 +17,6 @@
       --human-fill:#fbeed1;
       --git:       #2b2f33;
       --git-fill:  #eef0f2;
-      --loop:      #7c3aed;
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -34,7 +33,6 @@
         --human-fill:#2a2014;
         --git:       #c8cdd4;
         --git-fill:  #181c22;
-        --loop:      #b794ff;
       }
     }
 
@@ -48,7 +46,7 @@
     .col-hero      { fill: var(--agent-fill); stroke: var(--agent); stroke-width: 1.5; }
     .row-hairline  { stroke: var(--hairline); stroke-width: 0.6; }
 
-    .col-header-hero      { font: 800 16px -apple-system, system-ui, sans-serif; letter-spacing: -0.3px; fill: var(--loop); }
+    .col-header-hero      { font: 800 16px -apple-system, system-ui, sans-serif; letter-spacing: -0.3px; fill: var(--agent); }
     .col-header-hero-sub  { font: 600 10px ui-monospace, Consolas, monospace; letter-spacing: 0.8px; fill: var(--agent); }
     .col-header-other     { font: 700 11px ui-monospace, Consolas, monospace; letter-spacing: 0.5px; fill: var(--muted); }
 
@@ -81,7 +79,7 @@
     .vs-meta      { font: 400 9px -apple-system, system-ui, sans-serif; fill: var(--muted); font-style: italic; }
 
     /* hero column header band */
-    .hero-bar     { fill: var(--loop); opacity: 0.10; }
+    .hero-bar     { fill: var(--agent); opacity: 0.10; }
 
     .legend-t   { font: 500 10px -apple-system, system-ui, sans-serif; fill: var(--ink); }
     .footer     { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
@@ -124,7 +122,7 @@
   <!-- HERO column background spanning header + rows -->
   <rect class="col-hero" x="380" y="110" width="440" height="490" rx="6"/>
 
-  <!-- header band (loop accent) inside hero column -->
+  <!-- header band (brand accent) inside hero column -->
   <rect class="hero-bar" x="380" y="110" width="440" height="50" rx="6"/>
 
   <!-- ============== HEADER ROW ============== -->

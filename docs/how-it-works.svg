@@ -3,24 +3,21 @@
   <desc id="desc">A six-step self-extension pipeline: an agent error becomes a merged rule via three serial CI gates (lint-rules, auto-approve-rule-pr, auto-merge). Every commit means the next session inherits the fix. Human review is detailed in pr-flow.svg.</desc>
 
   <style>
-    /* Semantic palette — three roles, one substrate */
+    /* Canonical palette — full 13-variable Bo design system */
     :root {
       --bg:        #fbfbfa;
       --ink:       #1a1d21;
       --muted:     #5a6470;
       --hairline:  #cfd5dc;
       --rule:      #8b95a0;
-
       --agent:     #3a5a7a;
       --agent-fill:#eaf0f5;
-
       --ci:        #1f7a4a;
       --ci-fill:   #e6f3ec;
-
+      --human:     #b46a00;
+      --human-fill:#fbeed1;
       --git:       #2b2f33;
       --git-fill:  #eef0f2;
-
-      --loop:      #7c3aed;
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -29,17 +26,14 @@
         --muted:     #8a93a0;
         --hairline:  #3a424d;
         --rule:      #5a6470;
-
         --agent:     #88aed3;
         --agent-fill:#1a2330;
-
         --ci:        #6fc093;
         --ci-fill:   #14241c;
-
+        --human:     #e3a154;
+        --human-fill:#2a2014;
         --git:       #c8cdd4;
         --git-fill:  #181c22;
-
-        --loop:      #b794ff;
       }
     }
 
@@ -61,7 +55,7 @@
     .mono-dim   { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
 
     .arrow      { stroke: var(--rule); stroke-width: 1.5; fill: none; }
-    .arrow.loop { stroke: var(--loop); stroke-width: 2; stroke-dasharray: 5 4; }
+    .arrow.loop { stroke: var(--ci); stroke-width: 2; stroke-dasharray: 5 4; }
 
     .gate       { fill: none; stroke: var(--ci); stroke-width: 1.2; stroke-dasharray: 4 3; }
     .gate-label { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.5px; }
@@ -75,7 +69,7 @@
     .git-label  { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--git); }
     .git-meta   { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
 
-    .loop-label { font: 600 11px ui-monospace, Consolas, monospace; fill: var(--loop); }
+    .loop-label { font: 600 11px ui-monospace, Consolas, monospace; fill: var(--ci); }
     .legend-t   { font: 500 10px -apple-system, system-ui, sans-serif; fill: var(--ink); }
     .tagline    { font: 600 11px -apple-system, system-ui, sans-serif; fill: var(--ink); }
     .annot      { font: 400 10px -apple-system, system-ui, sans-serif; fill: var(--muted); font-style: italic; }
@@ -86,7 +80,7 @@
       <path d="M0,0 L10,4 L0,8 z" fill="var(--rule)"/>
     </marker>
     <marker id="a-loop" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
-      <path d="M0,0 L10,4 L0,8 z" fill="var(--loop)"/>
+      <path d="M0,0 L10,4 L0,8 z" fill="var(--ci)"/>
     </marker>
     <marker id="a-ci" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
       <path d="M0,0 L10,4 L0,8 z" fill="var(--ci)"/>

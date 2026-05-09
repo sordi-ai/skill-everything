@@ -17,7 +17,6 @@
       --human-fill:#fbeed1;
       --git:       #2b2f33;
       --git-fill:  #eef0f2;
-      --loop:      #7c3aed;
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -34,7 +33,6 @@
         --human-fill:#2a2014;
         --git:       #c8cdd4;
         --git-fill:  #181c22;
-        --loop:      #b794ff;
       }
     }
 
@@ -61,7 +59,7 @@
     .bar-skill        { fill: var(--ci); fill-opacity: 0.18; stroke: var(--ci); stroke-width: 1.5; }
     .bar-skill-accent { fill: var(--ci); }
     .bar-winner       { fill: var(--ci); stroke: var(--ci); stroke-width: 1.2; }
-    .bar-winner-accent{ fill: var(--loop); }
+    .bar-winner-accent{ fill: var(--ci); }
 
     /* Cost labels */
     .cost-pain     { font: 700 22px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--human); }
@@ -78,7 +76,7 @@
     .delta-text     { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.5px; }
 
     /* Winner badge */
-    .winner-pill      { fill: var(--loop); stroke: var(--bg); stroke-width: 1.5; }
+    .winner-pill      { fill: var(--ci); stroke: var(--bg); stroke-width: 1.5; }
     .winner-pill-text { font: 800 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: #ffffff; letter-spacing: 1.8px; }
 
     /* Bottom highlight strap */

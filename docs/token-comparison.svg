@@ -17,7 +17,6 @@
       --human-fill:#fbeed1;
       --git:       #2b2f33;
       --git-fill:  #eef0f2;
-      --loop:      #7c3aed;
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -34,7 +33,6 @@
         --human-fill:#2a2014;
         --git:       #c8cdd4;
         --git-fill:  #181c22;
-        --loop:      #b794ff;
       }
     }
 

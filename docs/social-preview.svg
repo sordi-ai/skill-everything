@@ -17,8 +17,7 @@
       --human:     #b46a00;
       --human-fill:#fbeed1;
       --git:       #2b2f33;
-      --git-fill:  #eef0f3;
-      --loop:      #7c3aed;
+      --git-fill:  #eef0f2;
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -34,8 +33,7 @@
         --human:     #e3a154;
         --human-fill:#2a2014;
         --git:       #c8cdd4;
-        --git-fill:  #1c1f25;
-        --loop:      #b794ff;
+        --git-fill:  #181c22;
       }
     }
     .frame      { fill: var(--bg); stroke: var(--hairline); }

@@ -13,8 +13,10 @@
       --agent-fill:#eaf0f5;
       --ci:        #1f7a4a;
       --ci-fill:   #e6f3ec;
+      --human:     #b46a00;
+      --human-fill:#fbeed1;
       --git:       #2b2f33;
-      --loop:      #7c3aed;
+      --git-fill:  #eef0f2;
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -27,8 +29,10 @@
         --agent-fill:#1a2330;
         --ci:        #6fc093;
         --ci-fill:   #14241c;
+        --human:     #e3a154;
+        --human-fill:#2a2014;
         --git:       #c8cdd4;
-        --loop:      #b794ff;
+        --git-fill:  #181c22;
       }
     }
 
@@ -49,13 +53,13 @@
     .mono-dim   { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
 
     .arrow      { stroke: var(--rule); stroke-width: 1.5; fill: none; }
-    .arrow.loop { stroke: var(--loop); stroke-width: 2; stroke-dasharray: 5 4; }
+    .arrow.loop { stroke: var(--ci); stroke-width: 2; stroke-dasharray: 5 4; }
 
     .gate       { fill: none; stroke: var(--ci); stroke-width: 1.2; stroke-dasharray: 4 3; }
     .gate-label { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.5px; }
     .gate-fill  { fill: var(--ci-fill); opacity: 0.55; }
 
-    .loop-label { font: 600 11px ui-monospace, Consolas, monospace; fill: var(--loop); }
+    .loop-label { font: 600 11px ui-monospace, Consolas, monospace; fill: var(--ci); }
     .tagline    { font: 600 11px -apple-system, system-ui, sans-serif; fill: var(--ink); }
   </style>
 
@@ -64,7 +68,7 @@
       <path d="M0,0 L10,4 L0,8 z" fill="var(--rule)"/>
     </marker>
     <marker id="a-loop" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
-      <path d="M0,0 L10,4 L0,8 z" fill="var(--loop)"/>
+      <path d="M0,0 L10,4 L0,8 z" fill="var(--ci)"/>
     </marker>
     <marker id="a-ci" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
       <path d="M0,0 L10,4 L0,8 z" fill="var(--ci)"/>
