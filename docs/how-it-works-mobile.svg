@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 760" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
   <title id="title">How skill-everything self-extends — mobile pipeline</title>
-  <desc id="desc">A vertically stacked six-step pipeline showing how an agent error becomes a merged rule via PR-flow with two CI gates and human approval. Mobile-optimised with no callouts.</desc>
+  <desc id="desc">A vertically stacked pipeline showing how an agent error becomes a merged rule via three serial CI gates: lint-rules, auto-approve, auto-merge. Mobile-optimised. Human review is detailed in pr-flow.svg.</desc>
 
   <style>
     :root {
@@ -13,8 +13,6 @@
       --agent-fill:#eaf0f5;
       --ci:        #1f7a4a;
       --ci-fill:   #e6f3ec;
-      --human:     #b46a00;
-      --human-fill:#fbeed1;
       --git:       #2b2f33;
       --loop:      #7c3aed;
     }
@@ -29,8 +27,6 @@
         --agent-fill:#1a2330;
         --ci:        #6fc093;
         --ci-fill:   #14241c;
-        --human:     #e3a154;
-        --human-fill:#2a2014;
         --git:       #c8cdd4;
         --loop:      #b794ff;
       }
@@ -38,27 +34,29 @@
 
     .frame      { fill: var(--bg); stroke: var(--hairline); }
     .lane       { fill: var(--bg); stroke: var(--hairline); stroke-dasharray: 2 3; }
-    .lane-label { font: 700 11px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 0.8px; fill: var(--muted); }
+    .lane-label { font: 700 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 0.8px; fill: var(--muted); }
 
-    .h-title    { font: 700 14px -apple-system, system-ui, sans-serif; letter-spacing: 2px; fill: var(--ink); }
-    .h-sub      { font: 400 12px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+    .h-title    { font: 700 13px -apple-system, system-ui, sans-serif; letter-spacing: 2px; fill: var(--ink); }
+    .h-sub      { font: 400 11px -apple-system, system-ui, sans-serif; fill: var(--muted); }
 
     .node       { fill: var(--agent-fill); stroke: var(--agent); stroke-width: 1.5; }
     .node.ci    { fill: var(--ci-fill);    stroke: var(--ci); }
-    .node.human { fill: var(--human-fill); stroke: var(--human); }
 
-    .step-num   { font: 700 11px ui-monospace, Consolas, monospace; fill: var(--muted); letter-spacing: 0.5px; }
-    .node-title { font: 600 14px -apple-system, system-ui, sans-serif; fill: var(--ink); }
-    .node-sub   { font: 400 12px -apple-system, system-ui, sans-serif; fill: var(--muted); }
-    .mono-tag   { font: 500 12px ui-monospace, Consolas, monospace; fill: var(--ink); }
+    .step-num   { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--muted); letter-spacing: 0.5px; }
+    .node-title { font: 600 12px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .node-sub   { font: 400 11px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+    .mono-tag   { font: 500 11px ui-monospace, Consolas, monospace; fill: var(--ink); }
+    .mono-dim   { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
 
     .arrow      { stroke: var(--rule); stroke-width: 1.5; fill: none; }
     .arrow.loop { stroke: var(--loop); stroke-width: 2; stroke-dasharray: 5 4; }
 
-    .gate-label { font: 700 11px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.5px; }
+    .gate       { fill: none; stroke: var(--ci); stroke-width: 1.2; stroke-dasharray: 4 3; }
+    .gate-label { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.5px; }
+    .gate-fill  { fill: var(--ci-fill); opacity: 0.55; }
 
-    .loop-label { font: 600 12px ui-monospace, Consolas, monospace; fill: var(--loop); }
-    .tagline    { font: 600 12px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .loop-label { font: 600 11px ui-monospace, Consolas, monospace; fill: var(--loop); }
+    .tagline    { font: 600 11px -apple-system, system-ui, sans-serif; fill: var(--ink); }
   </style>
 
   <defs>
@@ -73,79 +71,107 @@
     </marker>
   </defs>
 
-  <rect class="frame" x="0.5" y="0.5" width="799" height="599" rx="6"/>
+  <rect class="frame" x="0.5" y="0.5" width="799" height="759" rx="6"/>
 
-  <!-- HEADER -->
+  <!-- HEADER (y 0–60) -->
   <text class="h-title" x="24" y="32">SELF-EXTENSION PIPELINE</text>
-  <text class="h-sub"   x="24" y="52">Every commit means the next session inherits the fix.</text>
+  <text class="h-sub"   x="24" y="50">Five agent steps, three CI gates, zero manual hops.</text>
 
-  <!-- Lane labels (left rail) -->
-  <text class="lane-label" x="24"  y="86">AGENT</text>
-  <text class="lane-label" x="24"  y="358">CI / CHECKS</text>
-  <text class="lane-label" x="24"  y="438">HUMAN</text>
+  <!-- ===== AGENT LANE (y 64 .. 478) ===== -->
+  <line x1="24" y1="64" x2="776" y2="64" class="lane"/>
+  <text class="lane-label" x="30"  y="80">AGENT</text>
 
-  <!-- ===== Stack of steps ===== -->
-  <!-- Step 1 -->
-  <g transform="translate(220 90)">
-    <rect class="node" x="0" y="0" width="360" height="56" rx="6"/>
+  <!-- STEP 1 — TRIGGER (y 92..148) -->
+  <g transform="translate(180 92)">
+    <rect class="node" x="0" y="0" width="440" height="56" rx="6"/>
     <text class="step-num" x="12" y="18">STEP&#8201;1</text>
     <text class="node-title" x="12" y="36">Trigger</text>
-    <text class="node-sub"   x="12" y="50">test fails · user correction · realisation</text>
+    <text class="node-sub"   x="12" y="50">test fails  ·  user correction  ·  deploy issue  ·  realisation</text>
   </g>
-  <line x1="400" y1="148" x2="400" y2="170" class="arrow" marker-end="url(#a-rule)"/>
+  <line x1="400" y1="148" x2="400" y2="166" class="arrow" marker-end="url(#a-rule)"/>
 
-  <!-- Step 2 -->
-  <g transform="translate(220 174)">
-    <rect class="node" x="0" y="0" width="360" height="56" rx="6"/>
+  <!-- STEP 2 (y 170..226) -->
+  <g transform="translate(180 170)">
+    <rect class="node" x="0" y="0" width="440" height="56" rx="6"/>
     <text class="step-num" x="12" y="18">STEP&#8201;2</text>
     <text class="node-title" x="12" y="36">Search before write</text>
     <text class="mono-tag"   x="12" y="50">grep ERR- error-log.md</text>
   </g>
-  <line x1="400" y1="232" x2="400" y2="254" class="arrow" marker-end="url(#a-rule)"/>
+  <line x1="400" y1="226" x2="400" y2="244" class="arrow" marker-end="url(#a-rule)"/>
 
-  <!-- Step 3 + 4 (combined for vertical compactness) -->
-  <g transform="translate(220 258)">
-    <rect class="node" x="0" y="0" width="360" height="56" rx="6"/>
-    <text class="step-num" x="12" y="18">STEP&#8201;3 – 4</text>
-    <text class="node-title" x="12" y="36">Analyse · formulate new_rule</text>
-    <text class="node-sub"   x="12" y="50">verb &#8712; {Always, Never, Before, …}</text>
+  <!-- STEP 3 (y 248..304) -->
+  <g transform="translate(180 248)">
+    <rect class="node" x="0" y="0" width="440" height="56" rx="6"/>
+    <text class="step-num" x="12" y="18">STEP&#8201;3</text>
+    <text class="node-title" x="12" y="36">Analyse</text>
+    <text class="node-sub"   x="12" y="50">category  ·  severity  ·  cause</text>
   </g>
-  <line x1="400" y1="316" x2="400" y2="338" class="arrow" marker-end="url(#a-rule)"/>
+  <line x1="400" y1="304" x2="400" y2="322" class="arrow" marker-end="url(#a-rule)"/>
 
-  <!-- Step 5 -->
-  <g transform="translate(220 342)">
-    <rect class="node" x="0" y="0" width="360" height="56" rx="6"/>
+  <!-- STEP 4 (y 326..382) -->
+  <g transform="translate(180 326)">
+    <rect class="node" x="0" y="0" width="440" height="56" rx="6"/>
+    <text class="step-num" x="12" y="18">STEP&#8201;4</text>
+    <text class="node-title" x="12" y="36">Formulate new_rule</text>
+    <text class="mono-tag"   x="12" y="50">verb &#8712; {Always, Never, Before, …}</text>
+  </g>
+  <line x1="400" y1="382" x2="400" y2="400" class="arrow" marker-end="url(#a-rule)"/>
+
+  <!-- STEP 5 (y 404..460) -->
+  <g transform="translate(180 404)">
+    <rect class="node" x="0" y="0" width="440" height="56" rx="6"/>
     <text class="step-num" x="12" y="18">STEP&#8201;5</text>
     <text class="node-title" x="12" y="36">Open PR</text>
     <text class="mono-tag"   x="12" y="50">learn/ERR-2026-014  ·  needs-rule-review</text>
   </g>
-  <line x1="400" y1="400" x2="400" y2="422" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
 
-  <!-- CI gates (combined into one band for mobile) -->
-  <g transform="translate(220 426)">
-    <rect class="node ci" x="0" y="0" width="360" height="56" rx="6"/>
-    <text class="gate-label" x="12" y="18">CI GATE  ·  lint-rules + auto-approve</text>
-    <text class="node-sub"   x="12" y="36">schemas/error-entry.json + verb allow-list</text>
-    <text class="node-sub"   x="12" y="50">scope: references/errors/**</text>
+  <!-- ===== CI LANE (y 478 .. 736) ===== -->
+  <line x1="24" y1="478" x2="776" y2="478" class="lane"/>
+  <text class="lane-label" x="30"  y="494">CI / AUTOMATED CHECKS</text>
+
+  <!-- transition Step 5 → Gate A: bridges agent→CI lane -->
+  <line x1="400" y1="460" x2="400" y2="506" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
+
+  <!-- CI GATE A — lint-rules (y 510..566) -->
+  <g transform="translate(180 510)">
+    <rect class="gate-fill" x="0" y="0" width="440" height="56" rx="6"/>
+    <rect class="gate"      x="0" y="0" width="440" height="56" rx="6"/>
+    <text class="gate-label" x="12" y="18">CI GATE  ·  lint-rules</text>
+    <text class="mono-tag"   x="12" y="36">schemas/error-entry.json  ·  verb allow-list</text>
+    <text class="mono-dim"   x="12" y="50">fails build on schema drift</text>
   </g>
-  <line x1="400" y1="484" x2="400" y2="506" class="arrow" marker-end="url(#a-rule)"/>
+  <line x1="400" y1="566" x2="400" y2="584" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
 
-  <!-- Step 6 (human) -->
-  <g transform="translate(220 510)">
-    <rect class="node human" x="0" y="0" width="360" height="56" rx="6"/>
-    <text class="step-num" x="12" y="18">STEP&#8201;6</text>
-    <text class="node-title" x="12" y="36">Reviewer merges</text>
-    <text class="mono-tag"   x="12" y="50">CODEOWNERS · @maintainers</text>
+  <!-- CI GATE B — auto-approve (y 588..644) -->
+  <g transform="translate(180 588)">
+    <rect class="gate-fill" x="0" y="0" width="440" height="56" rx="6"/>
+    <rect class="gate"      x="0" y="0" width="440" height="56" rx="6"/>
+    <text class="gate-label" x="12" y="18">CI GATE  ·  auto-approve-rule-pr</text>
+    <text class="mono-tag"   x="12" y="36">scope: references/errors/**</text>
+    <text class="mono-dim"   x="12" y="50">requires Co-Authored-By trailer</text>
+  </g>
+  <line x1="400" y1="644" x2="400" y2="662" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
+
+  <!-- CI GATE C — auto-merge (y 666..722) -->
+  <g transform="translate(180 666)">
+    <rect class="gate-fill" x="0" y="0" width="440" height="56" rx="6"/>
+    <rect class="gate"      x="0" y="0" width="440" height="56" rx="6"/>
+    <text class="gate-label" x="12" y="18">CI GATE  ·  auto-merge</text>
+    <text class="mono-tag"   x="12" y="36">squash → refs/heads/main</text>
+    <text class="mono-dim"   x="12" y="50">human review: see pr-flow.svg</text>
   </g>
 
-  <!-- ============= FEEDBACK LOOP ============= -->
-  <!-- Out the right side of Step 6, up the right rail, back into Step 1 -->
-  <path d="M 580 538 C 660 538, 700 538, 700 480 C 700 200, 700 118, 620 118"
+  <!-- ============= FEEDBACK LOOP =============
+       From right edge of Gate C (x=620, y=694 = mid-vertical), out around the right
+       rail at x=748, up to Step 1 right edge (x=620, y=120 = mid-vertical).
+       Right gutter span: gate right edge x=620, riser x=748 (28 px clear of frame at 776).
+       Loop label rotated -90° centred between agent & CI lanes. -->
+  <path d="M 620 694 C 720 694, 748 680, 748 620 C 748 200, 748 120, 620 120"
         class="arrow loop" marker-end="url(#a-loop)" fill="none"/>
-  <text class="loop-label" x="710" y="328" transform="rotate(-90 710 328)" text-anchor="middle">
+  <text class="loop-label" x="762" y="408" transform="rotate(-90 762 408)" text-anchor="middle">
     next session inherits the fix
   </text>
 
-  <!-- TAGLINE -->
-  <text class="tagline" x="400" y="586" text-anchor="middle">plain Markdown  ·  Git  ·  human reviewed</text>
+  <!-- TAGLINE (y 748) -->
+  <text class="tagline" x="400" y="748" text-anchor="middle">plain Markdown  ·  versioned in Git  ·  auto-merged when gates pass</text>
 </svg>

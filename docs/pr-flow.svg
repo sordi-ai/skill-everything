@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 550" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
   <title id="title">Self-extension PR flow — branch, two CI gates, CODEOWNERS, squash-merge</title>
   <desc id="desc">Detail of how a self-extension reaches main: agent opens a learn/ERR-YYYY-NNN branch with a Co-Authored-By trailer, opens a PR labelled needs-rule-review, two CI gates run in parallel (lint-rules and auto-approve-rule-pr), CODEOWNERS approval is required on references/errors/, then the PR is squash-merged onto main under branch protection.</desc>
 
@@ -89,7 +89,7 @@
   </defs>
 
   <!-- ============== FRAME ============== -->
-  <rect class="frame" x="0.5" y="0.5" width="1199" height="549" rx="6"/>
+  <rect class="frame" x="0.5" y="0.5" width="1199" height="679" rx="6"/>
 
   <!-- ============== HEADER ============== -->
   <text class="h-title" x="24" y="30">PR FLOW  /  SELF-EXTENSION DETAIL</text>
@@ -107,18 +107,31 @@
     <text class="legend-t"   x="380" y="9">main / substrate</text>
   </g>
 
-  <!-- ============== SWIMLANES ============== -->
+  <!-- ============== SWIMLANES ==============
+       Layout (viewBox 1200×680):
+         Header   y=0..60
+         AGENT    y=70..345  (boxes 100..180, chips 235..315, chip-annot y=330)
+         CI       y=345..495 (label y=360, gates 380..480, separator at
+                              y=495 gives the gate bottom 15 px clearance
+                              to the next lane — matches the agent chip→
+                              separator gap.)
+         HUMAN    y=495..580 (label y=508, codeowners 515..571, separator
+                              at y=580 gives the human box bottom 9 px
+                              clearance — was 4 px, below the 4-px-floor.)
+         SUBSTR.  y=580..655 (frame 590..654, squash 600..644)
+         Footer   y=655..680 (tagline + caption y=668)
+  -->
   <line x1="24"   y1="70"  x2="1176" y2="70"  class="lane"/>
-  <line x1="24"   y1="200" x2="1176" y2="200" class="lane"/>
-  <line x1="24"   y1="350" x2="1176" y2="350" class="lane"/>
-  <line x1="24"   y1="430" x2="1176" y2="430" class="lane"/>
+  <line x1="24"   y1="345" x2="1176" y2="345" class="lane"/>
+  <line x1="24"   y1="495" x2="1176" y2="495" class="lane"/>
+  <line x1="24"   y1="580" x2="1176" y2="580" class="lane"/>
 
-  <text class="lane-label" x="30"  y="85">AGENT  ·  branch + commit + push + PR</text>
-  <text class="lane-label" x="30"  y="215">CI&#8201;/&#8201;AUTOMATED CHECKS  ·  parallel</text>
-  <text class="lane-label" x="30"  y="365">HUMAN-IN-THE-LOOP  ·  CODEOWNERS approval</text>
-  <text class="lane-label" x="30"  y="445">REPO SUBSTRATE  ·  refs/heads/main</text>
+  <text class="lane-label" x="30"  y="85">AGENT  ·  branch + commit + push + PR  ·  artefacts beneath</text>
+  <text class="lane-label" x="30"  y="360">CI&#8201;/&#8201;AUTOMATED CHECKS  ·  parallel</text>
+  <text class="lane-label" x="30"  y="508">HUMAN-IN-THE-LOOP  ·  CODEOWNERS approval</text>
+  <text class="lane-label" x="30"  y="595">REPO SUBSTRATE  ·  refs/heads/main</text>
 
-  <!-- ============== AGENT LANE: 4 sub-steps ============== -->
+  <!-- ============== AGENT LANE: 4 sub-steps + 2 artefact chips ============== -->
 
   <!-- A.1 Branch -->
   <g transform="translate(80 100)">
@@ -164,22 +177,50 @@
   <line x1="530" y1="140" x2="560" y2="140" class="arrow" marker-end="url(#a-rule)"/>
   <line x1="740" y1="140" x2="770" y2="140" class="arrow" marker-end="url(#a-rule)"/>
 
+  <!-- artefact chip: gh pr create command (annotates A.4 conceptually,
+       placed under A.1 because A.4 column already has the box; chip
+       replicates the command literally so a reader looking at the PR-
+       creation step has the exact CLI). Annotation y=325 sits 20 px above
+       the lane separator at y=345 — cleanly inside the agent lane. -->
+  <g transform="translate(80 235)">
+    <rect class="chip" x="0" y="0" width="220" height="80" rx="3"/>
+    <text class="chip-text" x="8" y="14">gh pr create \</text>
+    <text class="chip-text" x="8" y="30">  --label needs-rule-review \</text>
+    <text class="chip-text" x="8" y="46">  --title "learn(errors): …" \</text>
+    <text class="chip-text" x="8" y="62">  --body "auto-generated rule …"</text>
+    <text class="chip-text" x="8" y="78"></text>
+  </g>
+  <text class="annot" x="80" y="330">A.4 creation command  ·  literal CLI</text>
+
+  <!-- artefact chip: commit body (annotates A.2). -->
+  <g transform="translate(310 235)">
+    <rect class="chip" x="0" y="0" width="220" height="80" rx="3"/>
+    <text class="chip-text" x="8" y="14">learn(errors): ERR-2026-014</text>
+    <text class="chip-text" x="8" y="30"></text>
+    <text class="chip-text" x="8" y="46">  &#8230; rule wording &#8230;</text>
+    <text class="chip-text" x="8" y="62"></text>
+    <text class="chip-text" x="8" y="76">Co-Authored-By: maintainer &lt;…&gt;</text>
+  </g>
+  <text class="annot" x="310" y="330">A.2 commit body  ·  trailer required</text>
+
   <!-- ============== CI LANE: two parallel gates ============== -->
 
-  <!-- Gate B.1: lint-rules -->
-  <g transform="translate(560 230)">
+  <!-- Gate B.1: lint-rules. Box at y=380..480. Verb list reformatted
+       so it fits inside the 220-px box: split into 3 short lines instead
+       of 2 long lines that overran the right edge by ~30 px. -->
+  <g transform="translate(560 380)">
     <rect class="gate-fill" x="0" y="0" width="220" height="100" rx="6"/>
     <rect class="gate"      x="0" y="0" width="220" height="100" rx="6"/>
     <text class="gate-label" x="10" y="15">CI GATE  ·  lint-rules</text>
     <text class="mono-tag"   x="10" y="34">schemas/error-entry.json</text>
     <text class="mono-dim"   x="10" y="50">verb &#8712; {Always, Never, Before,</text>
-    <text class="mono-dim"   x="10" y="64">  After, Prefer, Avoid, Use, Do, Ensure}</text>
-    <text class="mono-dim"   x="10" y="80">forbidden-pattern set  ·  pytest</text>
-    <text class="mono-dim"   x="10" y="94">exceptions.yml may bypass</text>
+    <text class="mono-dim"   x="10" y="64">  After, Prefer, Avoid, Use,</text>
+    <text class="mono-dim"   x="10" y="78">  Do, Ensure}  ·  forbidden-pattern</text>
+    <text class="mono-dim"   x="10" y="92">pytest  ·  exceptions.yml may bypass</text>
   </g>
 
   <!-- Gate B.2: auto-approve-rule-pr -->
-  <g transform="translate(810 230)">
+  <g transform="translate(810 380)">
     <rect class="gate-fill" x="0" y="0" width="240" height="100" rx="6"/>
     <rect class="gate"      x="0" y="0" width="240" height="100" rx="6"/>
     <text class="gate-label" x="10" y="15">CI GATE  ·  auto-approve-rule-pr</text>
@@ -190,18 +231,24 @@
     <text class="mono-dim"   x="10" y="94">marker only — does not bypass humans</text>
   </g>
 
-  <!-- arrow A.4 → both gates fan out -->
-  <path d="M 890 180 V 215 V 230" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
-  <path d="M 890 215 H 670 V 230" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
-  <path d="M 890 215 H 930 V 230" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>
-  <text class="annot" x="895" y="208">PR opened  ·  both gates run in parallel</text>
+  <!-- arrow A.4 → both gates fan out. From A.4 bottom-center (x=890,
+       y=180) we drop into the agent-lane gutter at y=215 (35 px below
+       A.4 bottom), shift left to the symmetric fan-out point at x=800,
+       drop through the lane separator y=345 to the CI corridor y=355,
+       then fork symmetrically to both gate centers (670 and 930) and
+       into gate tops at y=380. The detour shift (890→800) happens above
+       the chip area at y=215, well clear of the chips at y=235..315.
+       Annotation y=372 sits in the inter-arrow corridor inside the CI
+       lane, centered between the two arrowheads at x=800. -->
+  <text class="annot" x="800" y="372" text-anchor="middle">PR opened  ·  both gates run in parallel</text>
+  <path d="M 890 180 V 215 H 800 V 355 H 670 V 380" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)" fill="none"/>
+  <path d="M 800 355 H 930 V 380"                    class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)" fill="none"/>
 
-  <!-- ============== HUMAN LANE: CODEOWNERS approval ============== -->
-  <!-- Box raised (y=380 → 370) and grown (height 40 → 56) so the long
-       'required reviewer …' line can wrap into two lines instead of
-       overrunning the right edge by ~170 px. Lane separators y=350 / y=430
-       still bracket it; arrows updated below. -->
-  <g transform="translate(560 370)">
+  <!-- ============== HUMAN LANE: CODEOWNERS approval ==============
+       Band y=490..575 (85 px). Lane label y=503. Box y=515..571 (56 px).
+       Gap above box: 12 px (label y=503 → box y=515). Gap below box:
+       4 px (box bottom y=571 → lane separator y=575). Tight but ok. -->
+  <g transform="translate(560 515)">
     <rect class="node human" x="0" y="0" width="490" height="56" rx="6"/>
     <text class="step-num" x="10" y="15">HUMAN  ·  CODEOWNERS</text>
     <text class="mono-tag"   x="180" y="15">@sordi-ai/maintainers</text>
@@ -210,59 +257,39 @@
     <text class="mono-dim"   x="180" y="44">enforced by branch protection on main</text>
   </g>
 
-  <!-- arrow gates → human (end y was 380, new HUMAN top is y=370) -->
-  <path d="M 670 330 V 370" class="arrow" marker-end="url(#a-rule)"/>
-  <path d="M 930 330 V 370" class="arrow" marker-end="url(#a-rule)"/>
-  <text class="annot" x="800" y="350" text-anchor="middle">both gates green</text>
+  <!-- arrow gates → human. Gate bottoms at y=480. Human top at y=515.
+       Annotation y=505 sits between them, on the same baseline as the
+       lane label (y=503) but x=800 vs label x=30..~330 — no overlap. -->
+  <path d="M 670 480 V 515" class="arrow" marker-end="url(#a-rule)"/>
+  <path d="M 930 480 V 515" class="arrow" marker-end="url(#a-rule)"/>
+  <text class="annot" x="800" y="505" text-anchor="middle">both gates green</text>
 
   <!-- ============== SUBSTRATE: squash-merge & branch protection frame ============== -->
-  <!-- Branch protection frame label shortened from
-       'BRANCH PROTECTION  ·  refs/heads/main  ·  required CI + CODEOWNERS'
-       to '… refs/heads/main' so the human→squash arrow at x=800 no longer
-       runs through the middle of the label. The 'CI + CODEOWNERS' detail
-       is already encoded by the frame surrounding both gates and the
-       human node. -->
-  <rect class="human-gate" x="540" y="455" width="540" height="64" rx="8"/>
-  <text class="human-gate-label" x="544" y="450">BRANCH PROTECTION  ·  refs/heads/main</text>
+  <!-- Substrate band y=580..655 (75 px). Frame y=590..654 (height 64),
+       squash-merge node y=600..644 (height 44 inside frame). The
+       BRANCH PROTECTION label sits at y=585 (5 px below lane separator
+       y=580, 5 px above frame top y=590). REPO SUBSTRATE lane label is
+       at x=30 y=595 — clear horizontally (lane label x=30..~280, frame
+       starts at x=540, gap ~260 px). -->
+  <rect class="human-gate" x="540" y="590" width="540" height="64" rx="8"/>
+  <text class="human-gate-label" x="544" y="585">BRANCH PROTECTION  ·  refs/heads/main</text>
 
-  <!-- squash-merge node (inside frame) -->
-  <g transform="translate(560 465)">
+  <!-- squash-merge node (inside frame). -->
+  <g transform="translate(560 600)">
     <rect class="node git" x="0" y="0" width="500" height="44" rx="6"/>
     <text class="step-num" x="10" y="15">SUBSTRATE  ·  merge</text>
     <text class="mono-tag"   x="180" y="18">squash-merge → refs/heads/main</text>
     <text class="mono-dim"   x="180" y="34">commit: e8aa…  learn(errors): ERR-2026-014</text>
   </g>
 
-  <!-- arrow human → squash-merge (start y was 420 = old HUMAN bottom;
-       new HUMAN bottom is y=426 so the arrow tightens up) -->
-  <path d="M 800 426 V 465" class="arrow" marker-end="url(#a-rule)"/>
-  <text class="annot" x="808" y="450">approve + squash</text>
-
-  <!-- ============== ARTEFACT CALLOUTS (left margin) ============== -->
-
-  <!-- Commit message artefact below A.2 -->
-  <g transform="translate(310 240)">
-    <rect class="chip" x="0" y="0" width="220" height="80" rx="3"/>
-    <text class="chip-text" x="8" y="14">learn(errors): ERR-2026-014</text>
-    <text class="chip-text" x="8" y="30"></text>
-    <text class="chip-text" x="8" y="46">  &#8230; rule wording &#8230;</text>
-    <text class="chip-text" x="8" y="62"></text>
-    <text class="chip-text" x="8" y="76">Co-Authored-By: maintainer &lt;…&gt;</text>
-  </g>
-  <text class="annot" x="310" y="335">commit body  ·  trailer required</text>
-
-  <!-- gh pr create snippet artefact left side -->
-  <g transform="translate(80 240)">
-    <rect class="chip" x="0" y="0" width="220" height="80" rx="3"/>
-    <text class="chip-text" x="8" y="14">gh pr create \</text>
-    <text class="chip-text" x="8" y="30">  --label needs-rule-review \</text>
-    <text class="chip-text" x="8" y="46">  --title "learn(errors): …" \</text>
-    <text class="chip-text" x="8" y="62">  --body "auto-generated rule …"</text>
-    <text class="chip-text" x="8" y="78"></text>
-  </g>
-  <text class="annot" x="80" y="335">creation command</text>
+  <!-- arrow human → squash-merge. Human bottom at y=571, squash-node top
+       at y=600. Arrow runs at x=800 from y=571 to y=600 (29 px corridor).
+       Annotation x=808 y=585 sits to the RIGHT of the arrow on the same
+       baseline as BRANCH PROTECTION (x=544..~771). 37 px gap to label. -->
+  <path d="M 800 571 V 600" class="arrow" marker-end="url(#a-rule)"/>
+  <text class="annot" x="808" y="585">approve + squash</text>
 
   <!-- ============== TAGLINE ============== -->
-  <text class="tagline" x="1176" y="538" text-anchor="end">no path to main without lint-rules + CODEOWNERS</text>
-  <text class="mono-dim" x="24"   y="538">skill-everything  /  references/errors/self-extension-workflow.md</text>
+  <text class="tagline" x="1176" y="668" text-anchor="end">no path to main without lint-rules + CODEOWNERS</text>
+  <text class="mono-dim" x="24"   y="668">skill-everything  /  references/errors/self-extension-workflow.md</text>
 </svg>
