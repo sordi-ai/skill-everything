@@ -10,6 +10,7 @@
 
 **Self-extending skills in plain Markdown. Save tokens. Enhance quality. Ship smarter agents — across Claude Code, Cursor, Gemini CLI, and OpenCode.**
 
+[![Release v1.0 STABLE](https://img.shields.io/badge/Release-v1.0_STABLE-success?style=for-the-badge&logo=git&logoColor=white)](./ROADMAP.md)
 [![GitHub stars](https://img.shields.io/github/stars/sordi-ai/skill-everything?style=for-the-badge&logo=github&color=gold)](https://github.com/sordi-ai/skill-everything/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](./LICENSE)
 [![Last Commit](https://img.shields.io/github/last-commit/sordi-ai/skill-everything?style=for-the-badge&color=green)](https://github.com/sordi-ai/skill-everything/commits/main)
@@ -319,17 +320,18 @@ Each sub-skill has a [skill-manifest frontmatter block](./schemas/skill-manifest
 
 ---
 
-## ROADMAP
-*We're shipping, not pitching. Star the repo to track Phase 2 → 3 → 4.*
+## VERSIONS
 
-| Phase | When | What |
-|---|---|---|
-| **`phase-1` — Foundation** | this repo, today | `lint-rules` CI · schema validator · XSS hardening · honest token table · single-source-of-truth loader sync · CODEOWNERS + branch protection. **You're looking at it.** |
-| **`phase-2` — Eval that earns the claim** | weeks 3–6 | 30 days of real errors logged · eval-framework MVP for re-mistake rate · methodology contract published (n≥30, multi-model, prompt hash pinned). **No vibe-check numbers ship before this lands.** |
-| **`phase-3` — Soft launch** | weeks 7–10 | Targeted Show HN posts (eval-tool + skill-repo) · Twitter thread with the real numbers · first community PRs landing — `learn(errors):` going wild on a public commit graph. |
-| **`phase-4` — Community + ecosystem** | weeks 11–24 | Big launch · first external sub-skills (Go, Rust, Java) merged · sub-skill PR template institutionalised. The skill library starts looking like a public dataset. |
+> **`v1.0` is stable and released.** New features land in `main` via PR — watch the repo to see them ship.
 
-*Vision (not on a 2026 roadmap): a skill-marketplace with trust layer (signing + reputation), sandboxing, versioning, license management. That's a 6–12 month team-effort, **not something a side project ships next year**. We say it out loud so you know what we're not promising.*
+| Version | Status | What |
+|---|:---:|---|
+| **`v1.0` — Foundation** | 🟢 **STABLE** | `lint-rules` CI · JSON-Schema validator · XSS hardening · single-source-of-truth loader sync · `learn(errors):` PR convention · CODEOWNERS + branch protection · 9 sub-skills shipped · 5 production diagrams · adversarial test suite. **You're using it now.** |
+| **`v1.1` — Eval that earns the claim** | 🟡 In development | Eval-framework MVP for re-mistake rate · methodology contract (n ≥ 30, multi-model, prompt hash pinned) · 30 days of real errors logged from production usage · published benchmark numbers. |
+| **`v1.2` — Community ecosystem** | 🔵 Planned | First external sub-skills merged (Go, Rust, Java, TypeScript) · sub-skill PR template institutionalised · public skill catalogue with usage stats · `learn(errors):` going wild on a public commit graph. |
+| **`v2.0` — Marketplace + trust layer** | ⚪ Vision | Signed skills with reputation graph · sandboxed execution · semantic versioning · license management · cross-repo skill imports. The skill library becomes a public dataset others ship on top of. |
+
+*Feature requests and roadmap updates land as PRs against [`ROADMAP.md`](./ROADMAP.md) in `main` — same loop as the rest of the repo: every change is a commit, every commit is reviewed, every release is auditable.*
 
 ---
 
