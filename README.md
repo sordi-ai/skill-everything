@@ -1,21 +1,37 @@
 <div align="center">
 
-<sub>SKILL · ERRORS · GIT</sub>
+<sub>🧠 SELF-LEARNING · ⚡ TOKEN-EFFICIENT · 🚀 MULTI-AGENT</sub>
 
 # skill-everything
 
-### Your agent forgets every mistake. This one commits the fix.
+### Never make the same mistake twice.
 
-**Self-improving agent memory in plain Markdown — reviewed in PRs, versioned in Git, portable across four tools.** *The library grows; your per-message cost doesn't.*
+### The self-learning memory layer for AI agents — beyond fine-tuning.
 
-[![CI](https://img.shields.io/github/actions/workflow/status/sordi-ai/skill-everything/ci.yml?label=ci&style=flat-square&color=1f7a4a)](./.github/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-555?style=flat-square)](./LICENSE)
-[![per-skill cap](https://img.shields.io/badge/per--skill_cap-3k_tok-1f7a4a?style=flat-square)](./schemas/skill-manifest.json)
-[![bypass-rate](https://img.shields.io/badge/bypass--rate-12%2F20_caught-555?style=flat-square)](./tests/test_validate_rules_adversarial.py)
+**Self-extending skills in plain Markdown. Save tokens. Enhance quality. Ship smarter agents — across Claude Code, Cursor, Gemini CLI, and OpenCode.**
 
-`Claude Code` · `Cursor` · `Gemini CLI` · `OpenCode`
+[![GitHub stars](https://img.shields.io/github/stars/sordi-ai/skill-everything?style=for-the-badge&logo=github&color=gold)](https://github.com/sordi-ai/skill-everything/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](./LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/sordi-ai/skill-everything?style=for-the-badge&color=green)](https://github.com/sordi-ai/skill-everything/commits/main)
+[![Commit Activity](https://img.shields.io/github/commit-activity/m/sordi-ai/skill-everything?style=for-the-badge&color=brightgreen)](https://github.com/sordi-ai/skill-everything/commits/main)
 
-*One source of truth. Four loaders. Zero re-authoring. The [error log](./references/errors/error-log.md) is public.*
+[![Self-Learning](https://img.shields.io/badge/AI_Memory-Self--Learning-gold?style=for-the-badge&logo=brain)](./docs/how-it-works.svg)
+[![Beyond Fine-Tuning](https://img.shields.io/badge/Beyond-Fine--Tuning-purple?style=for-the-badge&logo=anthropic)](./docs/architecture.svg)
+[![Token Efficient](https://img.shields.io/badge/Tokens-20--34%25_Lower-1f7a4a?style=for-the-badge&logo=lightning)](./docs/token-math.svg)
+[![Quality Compounds](https://img.shields.io/badge/Quality-Compounds-ff6b35?style=for-the-badge&logo=trendingup)](./references/errors/error-log.md)
+
+[![CI](https://img.shields.io/github/actions/workflow/status/sordi-ai/skill-everything/ci.yml?style=for-the-badge&label=CI&logo=githubactions&logoColor=white)](./.github/workflows/ci.yml)
+[![Schemas](https://img.shields.io/badge/Schemas-JSON_Validated-blue?style=for-the-badge&logo=json)](./schemas/skill-manifest.json)
+[![PR Reviewed](https://img.shields.io/badge/Updates-PR_Reviewed-darkblue?style=for-the-badge&logo=git)](./CONTRIBUTING.md)
+[![Per-Skill Cap](https://img.shields.io/badge/Per--Skill_Cap-3K_Tokens-1f7a4a?style=for-the-badge)](./schemas/skill-manifest.json)
+
+[![Claude Code](https://img.shields.io/badge/Works_With-Claude_Code-CC785C?style=for-the-badge&logo=anthropic&logoColor=white)](./CLAUDE.md)
+[![Cursor](https://img.shields.io/badge/Works_With-Cursor-000000?style=for-the-badge&logo=cursor&logoColor=white)](./.cursorrules)
+[![Gemini CLI](https://img.shields.io/badge/Works_With-Gemini_CLI-4285F4?style=for-the-badge&logo=google&logoColor=white)](./GEMINI.md)
+[![OpenCode](https://img.shields.io/badge/Works_With-OpenCode-9333EA?style=for-the-badge&logo=opensourceinitiative&logoColor=white)](./AGENTS.md)
+
+🚀 **One source of truth · Four agent runtimes · Zero re-authoring**
+♻️ **Errors become commits · Commits become skills · Skills make agents smarter**
 
 </div>
 
