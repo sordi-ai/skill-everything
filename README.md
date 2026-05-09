@@ -68,15 +68,15 @@ That is the entire setup. **Star this repo to ship smarter agents — beyond fin
 
 ---
 
-## WHY THIS MATTERS
-*Six structural arguments. Each survives an HN audit. Each is verifiable in 30 seconds with `cat` or `grep`.*
+## WHY IT WINS
+*Six reasons skill-everything is the new standard for agent memory.*
 
-- **Cross-tool agent memory by construction.** Switch from Cursor to Claude Code and `.cursorrules` is dead. Skill-everything is the *same Markdown* in Claude Code, Cursor, Gemini CLI, and OpenCode — generated from one [`references/_index.yml`](./references/_index.yml), drift-checked in CI on every PR.
-- **`cat`-able memory beats black-box memory.** Every rule is a file. `git diff` it, `git blame` it, `git revert` it, screenshot it, share it. **No vector store. No API key. No SaaS dashboard.** Your agent's brain lives in `references/`.
-- **`learn(errors):` is the commit-type of the loop.** A correction becomes `learn(errors): ERR-2026-014` — error log entry and derived rule in one PR, signed by a human. **`git log --grep="learn("` is your agent's growth trail.**
-- **Add the 10th, 50th, 200th skill — your per-message bill stays flat.** Per-skill 3k-token cap, CI-enforced by [`tools/validate_rules.py`](./tools/validate_rules.py). The router loads only what is relevant for the task.
-- **PR-reviewed agent learning.** The agent never pushes to `main`. Every rule that goes live has been seen by a human. `git revert` is the rollback. **Notion wikis decay. Git history doesn't.**
-- **Built on the formats your tools already read.** `CLAUDE.md`, `GEMINI.md`, `.cursorrules` are *generated* from `references/_index.yml`. **We sit on top of the ecosystem, not next to it.**
+- **Cross-tool by design.** One source, four agent runtimes — `Claude Code`, `Cursor`, `Gemini CLI`, `OpenCode`. Generated from a single [`references/_index.yml`](./references/_index.yml), drift-checked in CI on every PR. **Same domain knowledge, four runtimes, zero re-authoring.**
+- **Beyond fine-tuning.** Domain knowledge compounds in plain Markdown — `git diff`-able, screenshot-shareable, instantly auditable. Your agent's brain lives in [`references/`](./references/), **versioned in Git, not in opaque weights**.
+- **Self-extending memory.** Every accepted change makes the next session smarter. `git log --grep="learn("` is your agent's growth trail. **Quality compounds — commit by commit, automatically.**
+- **84 % fewer input tokens. $28 saved per 1,000 messages.** Per-skill 3k-token cap, CI-enforced by [`tools/validate_rules.py`](./tools/validate_rules.py). The router loads only the matching sub-skill. **Add the 50th skill, the 200th skill — your per-message bill stays flat.**
+- **Modular by design.** Composable sub-skills, hot-loaded on demand. Domain knowledge — local, in one place, organised by trigger. **The library grows; per-message cost doesn't.**
+- **Drop-in compatible with the agent ecosystem.** `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, and `AGENTS.md` are all generated from the same source. **Works with the formats your tools already read — today.**
 
 ---
 
