@@ -1,0 +1,241 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
+  <title id="title">Error log — the first three mistakes the system caught and turned into rules</title>
+  <desc id="desc">Three real error-log entries committed during dogfooding. ERR-2026-001: TypeScript strictNullChecks disabled to make a demo green; derived rule: never disable strict checks for convenience. ERR-2026-007: a refactor missed four imports after a rename; derived rule: after any rename, run a project-wide grep before claiming done. This entry is highlighted because its count jumped from 1 to 2 on a second occurrence — the system caught the repeat automatically. ERR-2026-012: a database migration ran after the backend deploy and broke prod; derived rule: always order migrations before backend deploy in domain runbooks. Bottom strap: the system catches repeats. Quality compounds, automatically.</desc>
+
+  <style>
+    :root {
+      --bg:        #fbfbfa;
+      --ink:       #1a1d21;
+      --muted:     #5a6470;
+      --hairline:  #cfd5dc;
+      --rule:      #8b95a0;
+      --agent:     #3a5a7a;
+      --agent-fill:#eaf0f5;
+      --ci:        #1f7a4a;
+      --ci-fill:   #e6f3ec;
+      --human:     #b46a00;
+      --human-fill:#fbeed1;
+      --git:       #2b2f33;
+      --git-fill:  #eef0f2;
+      --loop:      #7c3aed;
+      --loop-fill: #f1ebff;
+      --loop-fill-strong: #e6dafd;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:        #11141a;
+        --ink:       #e6e9ee;
+        --muted:     #8a93a0;
+        --hairline:  #3a424d;
+        --rule:      #5a6470;
+        --agent:     #88aed3;
+        --agent-fill:#1a2330;
+        --ci:        #6fc093;
+        --ci-fill:   #14241c;
+        --human:     #e3a154;
+        --human-fill:#2a2014;
+        --git:       #c8cdd4;
+        --git-fill:  #181c22;
+        --loop:      #b794ff;
+        --loop-fill: #1f1730;
+        --loop-fill-strong: #2a1f44;
+      }
+    }
+
+    .frame      { fill: var(--bg); stroke: var(--hairline); }
+    .lane-label { font: 700 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 0.8px; fill: var(--muted); }
+
+    .hero       { font: 700 26px -apple-system, system-ui, sans-serif; letter-spacing: -0.4px; fill: var(--ink); }
+    .hero-sub   { font: 400 13px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+
+    /* Table header */
+    .col-head      { font: 700 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 1.2px; fill: var(--muted); }
+
+    /* ID column */
+    .id-cell-bg    { fill: var(--git-fill); stroke: var(--hairline); stroke-width: 0.6; }
+    .id-cell-bg-hi { fill: var(--loop-fill-strong); stroke: var(--loop); stroke-width: 1.2; }
+    .id-text       { font: 800 14px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--ink); letter-spacing: 0.3px; }
+    .id-meta       { font: 500 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--muted); }
+    .id-cat        { font: 700 9px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 0.8px; fill: var(--agent); }
+    .id-cat-hi     { font: 700 9px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 0.8px; fill: var(--loop); }
+    .id-meta-hi    { font: 700 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--loop); }
+    .sha-pill      { fill: var(--bg); stroke: var(--hairline); stroke-width: 0.8; }
+    .sha-text      { font: 600 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--muted); }
+
+    /* Mistake column */
+    .mistake-bg    { fill: var(--human-fill); stroke: var(--human); stroke-width: 1.0; }
+    .mistake-tag   { font: 700 10px ui-monospace, Consolas, monospace; letter-spacing: 1px; fill: var(--human); }
+    .mistake-text  { font: 600 14px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .mistake-meta  { font: 400 11px -apple-system, system-ui, sans-serif; fill: var(--muted); font-style: italic; }
+
+    /* Derived rule column */
+    .rule-bg       { fill: var(--ci-fill); stroke: var(--ci); stroke-width: 1.0; }
+    .rule-tag      { font: 700 10px ui-monospace, Consolas, monospace; letter-spacing: 1px; fill: var(--ci); }
+    .rule-text     { font: 700 14px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .rule-meta     { font: 400 11px ui-monospace, Consolas, monospace; fill: var(--ci); }
+    .rule-meta-dim { font: 400 11px ui-monospace, Consolas, monospace; fill: var(--muted); }
+
+    /* Arrow between columns */
+    .arrow         { stroke: var(--rule); stroke-width: 1.5; fill: none; }
+    .arrow-loop    { stroke: var(--loop); stroke-width: 1.8; fill: none; }
+    .arrow-text    { font: 700 9px ui-monospace, Consolas, monospace; letter-spacing: 0.8px; fill: var(--muted); }
+    .arrow-text-hi { font: 800 9px ui-monospace, Consolas, monospace; letter-spacing: 0.8px; fill: var(--loop); }
+
+    /* ERR-007 highlight */
+    .row-highlight     { fill: var(--loop-fill); stroke: var(--loop); stroke-width: 1.8; }
+    .repeat-banner-bg  { fill: var(--loop); }
+    .repeat-banner-txt { font: 800 11px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 1.5px; fill: #ffffff; }
+
+    /* Count hero on right */
+    .count-hero-bg    { fill: var(--loop); }
+    .count-hero-label { font: 800 8px ui-monospace, Consolas, monospace; letter-spacing: 1.4px; fill: #ffffff; }
+    .count-hero-num   { font: 800 22px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: #ffffff; letter-spacing: -0.5px; }
+
+    /* Bottom strap */
+    .strap-bg      { fill: var(--loop-fill); stroke: var(--loop); stroke-width: 1.5; }
+    .strap-headline{ font: 800 22px -apple-system, system-ui, sans-serif; letter-spacing: -0.3px; fill: var(--ink); }
+    .strap-accent  { font: 800 22px -apple-system, system-ui, sans-serif; letter-spacing: -0.3px; fill: var(--loop); }
+    .strap-meta    { font: 500 12px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+    .strap-mono    { font: 700 12px ui-monospace, Consolas, monospace; fill: var(--ink); }
+
+    .footer        { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
+  </style>
+
+  <defs>
+    <marker id="a-rule" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 z" fill="var(--rule)"/>
+    </marker>
+    <marker id="a-loop" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 z" fill="var(--loop)"/>
+    </marker>
+  </defs>
+
+  <rect class="frame" x="0.5" y="0.5" width="1199" height="719" rx="6"/>
+
+  <!-- ============== HEADER ============== -->
+  <text class="lane-label" x="24" y="28">THE FIRST THREE COMMITTED  ·  ERROR LOG  ·  DOGFOODING</text>
+  <text class="hero"       x="24" y="64">Real mistakes. Real commits. Compounding rules.</text>
+  <text class="hero-sub"   x="24" y="86">Every entry links a real commit SHA. The system catches repeats — automatically.</text>
+
+  <!-- ============== COLUMN HEADERS ============== -->
+  <text class="col-head" x="36"  y="142">ID  ·  CATEGORY  ·  COMMIT</text>
+  <text class="col-head" x="252" y="142">MISTAKE</text>
+  <text class="col-head" x="692" y="142">DERIVED RULE</text>
+
+  <line x1="24" y1="148" x2="1176" y2="148" stroke="var(--rule)" stroke-width="1"/>
+
+  <!-- ============== ROW 1 — ERR-2026-001 ============== -->
+
+  <rect class="id-cell-bg" x="24" y="160" width="196" height="120" rx="4"/>
+  <text class="id-text"  x="36" y="188">ERR-2026-001</text>
+  <text class="id-cat"   x="36" y="206">DEVELOPMENT  ·  HIGH</text>
+  <text class="id-meta"  x="36" y="224">2026-04-12</text>
+  <rect class="sha-pill" x="36" y="238" width="118" height="20" rx="3"/>
+  <text class="sha-text" x="44" y="252">commit 3a8e71f</text>
+  <text class="id-meta"  x="36" y="272">count: 1</text>
+
+  <rect class="mistake-bg" x="240" y="160" width="400" height="120" rx="4"/>
+  <text class="mistake-tag"  x="252" y="180">MISTAKE</text>
+  <text class="mistake-text" x="252" y="208">TS strictNullChecks disabled</text>
+  <text class="mistake-text" x="252" y="226">to make a demo green.</text>
+  <text class="mistake-meta" x="252" y="252">Per-file directive bled into a downstream</text>
+  <text class="mistake-meta" x="252" y="266">import. CI failed on untouched code.</text>
+
+  <line class="arrow" x1="650" y1="220" x2="670" y2="220" marker-end="url(#a-rule)"/>
+  <text class="arrow-text" x="660" y="208" text-anchor="middle">CAUGHT</text>
+
+  <rect class="rule-bg" x="680" y="160" width="400" height="120" rx="4"/>
+  <text class="rule-tag"  x="692" y="180">DERIVED RULE</text>
+  <text class="rule-text" x="692" y="208">Never disable strict checks</text>
+  <text class="rule-text" x="692" y="226">for convenience.</text>
+  <text class="rule-meta" x="692" y="252">references/development/typescript.md</text>
+  <text class="rule-meta-dim" x="692" y="268">schema-validated · pinned in code-quality skill</text>
+
+  <!-- ============== ROW 2 — ERR-2026-007 (HIGHLIGHTED) ============== -->
+
+  <!-- Wrap-around purple background spanning the WHOLE row including banner column -->
+  <rect class="row-highlight" x="20" y="296" width="1160" height="148" rx="6"/>
+
+  <!-- Top banner across the entire row width: rounded top corners only -->
+  <path class="repeat-banner-bg" d="M 26 296 L 1174 296 Q 1180 296 1180 302 L 1180 322 L 20 322 L 20 302 Q 20 296 26 296 Z"/>
+  <text class="repeat-banner-txt" x="36" y="313">REPEAT CAUGHT  ·  COUNT 1 → 2  ·  AUTO-MERGED INTO EXISTING ENTRY  ·  SELF-EXTENSION TRUST PROOF</text>
+
+  <!-- ID cell — purple-tinted -->
+  <rect class="id-cell-bg-hi" x="32" y="332" width="196" height="100" rx="4"/>
+  <text class="id-text"  x="44" y="356">ERR-2026-007</text>
+  <text class="id-cat-hi"   x="44" y="372">DEVELOPMENT  ·  MEDIUM</text>
+  <text class="id-meta"  x="44" y="388">2026-04-21</text>
+  <text class="id-meta-hi" x="44" y="402">last_seen: 2026-04-29</text>
+  <rect class="sha-pill" x="44" y="412" width="118" height="18" rx="3"/>
+  <text class="sha-text" x="52" y="425">commit b91c4d2</text>
+
+  <!-- Mistake cell -->
+  <rect class="mistake-bg" x="248" y="332" width="400" height="100" rx="4"/>
+  <text class="mistake-tag"  x="260" y="350">MISTAKE</text>
+  <text class="mistake-text" x="260" y="378">Refactor missed 4 imports</text>
+  <text class="mistake-text" x="260" y="396">after a rename.</text>
+  <text class="mistake-meta" x="260" y="420">Local tsc green. Cross-package refs broke.</text>
+
+  <!-- Arrow with loop accent -->
+  <line class="arrow-loop" x1="658" y1="382" x2="678" y2="382" marker-end="url(#a-loop)"/>
+  <text class="arrow-text-hi" x="668" y="370" text-anchor="middle">CAUGHT TWICE</text>
+
+  <!-- Rule cell — slightly taller so the file path fits inside -->
+  <rect class="rule-bg" x="688" y="332" width="400" height="100" rx="4"/>
+  <text class="rule-tag"  x="700" y="350">DERIVED RULE</text>
+  <text class="rule-text" x="700" y="376">After any rename, run a</text>
+  <text class="rule-text" x="700" y="394">project-wide grep before</text>
+  <text class="rule-text" x="700" y="412">claiming done.</text>
+  <text class="rule-meta" x="700" y="426">references/development/code-quality.md</text>
+
+  <!-- Right side: COUNT 1→2 hero -->
+  <g transform="translate(1098 332)">
+    <rect class="count-hero-bg" x="0" y="0" width="68" height="100" rx="4"/>
+    <text class="count-hero-label" x="34" y="20" text-anchor="middle">COUNT</text>
+    <text class="count-hero-num"   x="34" y="55" text-anchor="middle">1 → 2</text>
+    <text class="count-hero-label" x="34" y="78" text-anchor="middle">CAUGHT</text>
+    <text class="count-hero-label" x="34" y="92" text-anchor="middle">AGAIN</text>
+  </g>
+
+  <!-- ============== ROW 3 — ERR-2026-012 ============== -->
+
+  <rect class="id-cell-bg" x="24" y="460" width="196" height="120" rx="4"/>
+  <text class="id-text"  x="36" y="488">ERR-2026-012</text>
+  <text class="id-cat"   x="36" y="506">DEPLOYMENT  ·  HIGH</text>
+  <text class="id-meta"  x="36" y="524">2026-05-04</text>
+  <rect class="sha-pill" x="36" y="538" width="118" height="20" rx="3"/>
+  <text class="sha-text" x="44" y="552">commit f47a0e9</text>
+  <text class="id-meta"  x="36" y="572">count: 1</text>
+
+  <rect class="mistake-bg" x="240" y="460" width="400" height="120" rx="4"/>
+  <text class="mistake-tag"  x="252" y="480">MISTAKE</text>
+  <text class="mistake-text" x="252" y="508">Migration ran after backend</text>
+  <text class="mistake-text" x="252" y="526">deploy, broke prod.</text>
+  <text class="mistake-meta" x="252" y="550">90s of failing readiness probes.</text>
+  <text class="mistake-meta" x="252" y="564">On-call paged. Two requests retried.</text>
+
+  <line class="arrow" x1="650" y1="520" x2="670" y2="520" marker-end="url(#a-rule)"/>
+  <text class="arrow-text" x="660" y="508" text-anchor="middle">CAUGHT</text>
+
+  <rect class="rule-bg" x="680" y="460" width="400" height="120" rx="4"/>
+  <text class="rule-tag"  x="692" y="480">DERIVED RULE</text>
+  <text class="rule-text" x="692" y="508">Always order migrations</text>
+  <text class="rule-text" x="692" y="526">before backend deploy in</text>
+  <text class="rule-text" x="692" y="544">domain runbooks.</text>
+  <text class="rule-meta" x="692" y="568">references/process/review-deployment.md</text>
+
+  <!-- ============== BOTTOM STRAP ============== -->
+  <rect class="strap-bg" x="24" y="600" width="1152" height="80" rx="6"/>
+
+  <text x="64" y="638">
+    <tspan class="strap-headline">The system catches repeats. </tspan><tspan class="strap-accent">Quality compounds, automatically.</tspan>
+  </text>
+  <text x="64" y="664">
+    <tspan class="strap-meta">Every ERR-ID links to its commit and derived rule in </tspan><tspan class="strap-mono">references/errors/error-log.md</tspan><tspan class="strap-meta">. Schema-validated on every PR. Count auto-increments on repeat.</tspan>
+  </text>
+
+  <!-- ============== FOOTER ============== -->
+  <text class="footer" x="24"   y="708">3 entries committed during dogfooding  ·  ERR-2026-007 caught its own repeat (1 → 2)  ·  see references/errors/error-log.md</text>
+  <text class="footer" x="1176" y="708" text-anchor="end">skill-everything  /  docs/error-log.svg</text>
+
+</svg>

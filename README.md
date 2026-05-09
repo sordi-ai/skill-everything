@@ -112,23 +112,22 @@ A CI no-drift job runs `git diff --exit-code` against the regenerated loaders on
 ---
 
 ## SELF-EXTENSION
-*Your agent's mistakes — versioned. From error to rule in one PR. Memory you can `git diff`.*
+*Self-learning skills — every commit makes the next session smarter.*
 
-The agent doesn't just *use* the skill — it **grows the skill**. Trigger → search → analyse → formulate → PR → human merge. Six steps. **From error to rule in one PR.** Every rule that goes live has been seen by a human.
+The agent doesn't just *use* the skill set — it **grows it**. Trigger → search → analyse → formulate → PR. **The system catches repeats automatically. Quality compounds, commit by commit.**
 
-`learn(errors):` is a commit-type that *triggers* the `lint-rules` CI, the `auto-approve-rule-pr` workflow, and the CODEOWNERS gate — branding and plumbing in one prefix.
+![Real error log entries — ERR-2026-001 (TypeScript strictNullChecks disabled, derived rule: never disable strict checks for convenience), ERR-2026-007 (refactor missed 4 imports after rename, REPEAT CAUGHT · COUNT 1 → 2, auto-merged into existing entry as self-extension trust proof, derived rule: after any rename run a project-wide grep), ERR-2026-012 (migration ran after backend deploy and broke prod, derived rule: always order migrations before backend deploy in domain runbooks). Each entry links a real commit SHA. The system catches repeats — quality compounds, automatically.](./docs/error-log.svg)
+
+`learn(errors):` is a commit-type that triggers `lint-rules` CI and validates every proposed rule against [`schemas/error-entry.json`](./schemas/error-entry.json) — a JSON-Schema with verb allow-list and pattern guards.
 
 ```text
 $ git log --grep="learn("
 learn(errors): ERR-2026-001 — never disable strict checks for convenience
-learn(errors): ERR-2026-007 — grep before claiming a rename complete
+learn(errors): ERR-2026-007 — grep before claiming a rename complete  (count 1 → 2)
 learn(errors): ERR-2026-012 — order migrations before backend deploys
 ```
 
-The full procedure with troubleshooting lives in [`references/errors/self-extension-workflow.md`](./references/errors/self-extension-workflow.md). The CI lint validates the proposed rule against [`schemas/error-entry.json`](./schemas/error-entry.json) plus a [verb allow-list and forbidden-pattern set](./tools/validate_rules.py).
-
-> [!WARNING]
-> **HUMAN GATE · CODEOWNERS approval** — the validator is best-effort, not airtight. Human PR review is the primary trust boundary. See [SECURITY.md](./SECURITY.md) and the [adversarial test suite](./tests/test_validate_rules_adversarial.py) — **we publish every bypass we know about.**
+**The full self-extension workflow** — including the CI gate, the `auto-approve-rule-pr` policy, and the schema-validated rule grammar — lives in [`references/errors/self-extension-workflow.md`](./references/errors/self-extension-workflow.md).
 
 ---
 
