@@ -4,10 +4,9 @@
 
 # skill-everything
 
-### Memory you can `git diff`.
+### Your agent forgets every mistake. This one commits the fix.
 
-**Plain Markdown. Reviewed in PRs.** Every rule is a file. Every fix is a commit.
-*No vector DB. No SaaS. No black box. No API key.*
+**Self-improving agent memory in plain Markdown — reviewed in PRs, versioned in Git, portable across four tools.** *The library grows; your per-message cost doesn't.*
 
 [![CI](https://img.shields.io/github/actions/workflow/status/sordi-ai/skill-everything/ci.yml?label=ci&style=flat-square&color=1f7a4a)](./.github/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-555?style=flat-square)](./LICENSE)
@@ -16,7 +15,7 @@
 
 `Claude Code` · `Cursor` · `Gemini CLI` · `OpenCode`
 
-*Side project · two engineers · weekends · independent OSS · the [error log](./references/errors/error-log.md) is public · [no employer endorsement](./DISCLAIMER.md).*
+*One source of truth. Four loaders. Zero re-authoring. The [error log](./references/errors/error-log.md) is public.*
 
 </div>
 
