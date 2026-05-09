@@ -1,30 +1,38 @@
-# Security Policy
+# Security policy
+*The threat model is the product. This file is the contract.*
 
-## Reporting a vulnerability
+> **Skill-everything treats prompt-injection as a supply-chain problem.** The same rigor an npm-package gets — schema validation, lint, CODEOWNERS, branch protection — applies to every `learn(errors):` rule the agent proposes. *That's the architecture. This document spells it out.*
 
-**Please do not file a public issue.** Instead, email `security@sordi.ai` (PGP key on request) with:
+---
+
+## REPORTING A VULNERABILITY
+*Email private, do not file a public issue.*
+
+> [!CAUTION]
+> **Do not file a public issue.** A public report can be exploited before a fix lands.
+
+Email `security@sordi.ai` (PGP key on request) with:
 
 1. A description of the issue and the affected files / lines.
 2. A reproducer if possible.
 3. Whether you have already disclosed the issue elsewhere.
 
-Expected first reply: within 7 days. We are an independent two-person side project — we do not have an SLA, but we take reports seriously.
-
-`blank_issues_enabled` is set to `false` in `.github/ISSUE_TEMPLATE/config.yml` to keep accidental security disclosures from landing in public issues.
+Expected first reply: within 7 days. We are an independent two-person side project — we do not have an SLA, but we take reports seriously. `blank_issues_enabled` is set to `false` in `.github/ISSUE_TEMPLATE/config.yml` to keep accidental security disclosures from landing in public issues.
 
 ---
 
-## Threat model
+## THREAT MODEL
+*Self-extending memory means rules are executable input. This is the threat.*
 
-Skill-Everything is a **self-extending memory system**: an agent writes rules into `references/errors/*.md` and those rules are read by every subsequent agent session as instructions. **The rules are executable input.** This is the threat model.
+Skill-Everything is a self-extending memory system: an agent writes rules into `references/errors/*.md` and those rules are read by every subsequent agent session as instructions. **The rules are executable input.**
 
 ![PR flow — agent branch through lint-rules and auto-approve-rule-pr CI gates, CODEOWNERS human gate, squash-merge into main behind branch protection](./docs/pr-flow.svg)
 
-*Where `lint-rules` and `auto-approve-rule-pr` enforce the trust boundary before CODEOWNERS review.*
+*Branch through CI gates and CODEOWNERS into a squash-merge on `main`.*
 
 ### Asset
 
-- The contents of `references/**`. Every rule is consumed as instruction by downstream consumers of this repository.
+The contents of `references/**`. Every rule is consumed as instruction by downstream consumers of this repository.
 
 ### Trust boundaries
 
@@ -37,27 +45,31 @@ Skill-Everything is a **self-extending memory system**: an agent writes rules in
 | Adversary | Goal | Mitigations |
 |---|---|---|
 | External PR contributor | Insert a rule that exfiltrates credentials, runs shell, or nudges next-session agent toward bad actions | `lint-rules` CI · CODEOWNERS approval for `references/errors/` · branch protection · human PR review |
-| Prompt-injection via task input | Trick the running agent into writing a poisoned `new_rule` that gets committed | Same as above; the lint-rules CI is best-effort, not airtight (see "Limitations" below) |
+| Prompt-injection via task input | Trick the running agent into writing a poisoned `new_rule` that gets committed | Same as above; the lint-rules CI is best-effort, not airtight (see Limitations below) |
 | Honest contributor pasting prod data | Leak PII / secrets into `error-log.md` | `gitleaks` pre-commit · explicit redaction reminder in `.github/ISSUE_TEMPLATE/error-capture.md` |
 
 *Three adversary classes, three mitigation layers. None are individually sufficient — defence-in-depth.*
 
-### Limitations
+### Limitations — what the validator catches and what it doesn't
+
+> **What this validator catches: 12 of 20 documented prompt-injection bypasses. What it doesn't: homoglyphs, indirection, natural-language nudges. The trust boundary is the human PR review — we say so loudly.**
 
 The CI rule validator (`tools/validate_rules.py`) is **best-effort, not airtight**:
 
 - It allow-lists starting verbs and rejects an explicit set of forbidden patterns (URLs, shell binaries, credential paths, `<script>` tags, base64-shaped strings).
-- It does not catch homoglyph attacks (`сurl` with Cyrillic с), indirection (`run "the {tool} command"`), or natural-language nudges that don't match any pattern.
-- It is a static check, not a semantic check. **Human PR review remains the primary trust boundary.**
+- It does **not** catch homoglyph attacks (`сurl` with Cyrillic с), indirection (`run "the {tool} command"`), or natural-language nudges that do not match any pattern.
+- It is a static check, not a semantic check.
 
-We have a 20-pattern adversarial test suite at `tests/test_validate_rules_adversarial.py` documenting which bypasses are caught and which are not. The current bypass-rate is documented honestly in that test file.
+> [!WARNING]
+> **HUMAN GATE · CODEOWNERS approval** — Human PR review remains the primary trust boundary. The 20-pattern adversarial test suite at [`tests/test_validate_rules_adversarial.py`](./tests/test_validate_rules_adversarial.py) documents which bypasses are caught and which are not. The current 12/20-rate is published, not hidden — show us a comparable agent-memory project that publishes its bypass-rate.
 
 ---
 
-## Required GitHub branch-protection on `main`
+## REQUIRED GITHUB BRANCH-PROTECTION ON `main`
+*Eight settings. All required for the threat model to hold.*
 
 > [!WARNING]
-> Branch protection is required, not optional. Without it the trust boundary collapses — anyone with write access can land an unreviewed `learn(errors)` commit.
+> **HUMAN GATE · branch protection** — Branch protection is required, not optional. Without it the trust boundary collapses — anyone with write access can land an unreviewed `learn(errors)` commit.
 
 To make the threat model effective, the repository owner must enable (Settings → Branches → Branch protection rules → `main`):
 
@@ -72,29 +84,28 @@ To make the threat model effective, the repository owner must enable (Settings �
 | `Allow deletions` | disabled | No silent branch removal |
 | `Require review from Code Owners` | enabled (uses `.github/CODEOWNERS`) | Maintainer must see rule changes |
 
-*Eight settings. All required for the threat model to hold.*
-
-`Require signed commits` is **Phase 2** — it raises the barrier for external contributors and is deferred until the project has co-maintainers.
+*`Require signed commits` is **Phase 2** — it raises the barrier for external contributors and is deferred until the project has co-maintainers.*
 
 ---
 
-## Recovery runbook for secret leakage
+## RECOVERY RUNBOOK FOR SECRET LEAKAGE
+*If an API key, JWT, customer ID, or internal hostname lands in the tree.*
 
-If a secret (API key, JWT, customer ID, internal hostname, etc.) is committed to `references/errors/error-log.md` or anywhere else in the tree:
+> [!CAUTION]
+> **`git revert` is not enough.** A revert keeps the secret in git history. Rotation is the only fully effective mitigation.
 
-1. **`git revert` is not enough** — the secret remains in git history.
-2. Rotate the leaked secret at its source immediately. This is the only fully effective mitigation.
-3. Use `git filter-repo` to rewrite history:
+1. Rotate the leaked secret at its source immediately.
+2. Use `git filter-repo` to rewrite history:
    ```bash
    pip install git-filter-repo
    git filter-repo --invert-paths --path <file>
    # or replace the secret in place:
    git filter-repo --replace-text replacements.txt
    ```
-4. Force-push the rewritten branch and notify all forks / clones to re-clone (`git pull` will fail and show the divergence):
+3. Force-push the rewritten branch and notify all forks / clones to re-clone (`git pull` will fail and show the divergence):
    ```bash
    git push --force-with-lease origin main
    ```
-5. Open a [GitHub Security Advisory](https://github.com/sordi-ai/skill-everything/security/advisories/new) so downstream users get notified.
+4. Open a [GitHub Security Advisory](https://github.com/sordi-ai/skill-everything/security/advisories/new) so downstream users get notified.
 
 `git filter-repo` is not bundled with git — install via `pip install git-filter-repo`.

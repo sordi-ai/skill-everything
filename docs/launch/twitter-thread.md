@@ -1,37 +1,47 @@
 # Twitter / X launch thread
 
-8 tweets, all under 280 chars. Honest tone. Lara's recommended Tagline B
-("inherits the fix") is the spine.
+8 tweets, all under 280 chars. Honest tone. Henrik's pain-hook spine
+("same mistake tomorrow"); Lara's substance ratio preserved (Tweet 4
++ Tweet 6 honest about the math and the bypass-rate).
+
+> **Synthesis note (Bo):** Twitter rewards punchy hooks more than HN
+> does. Tweets 1, 2, 4, and 8 were refreshed to Henrik's harder hooks.
+> Tweets 3, 5, 6, 7 stay on Lara's substance line — they carry the
+> token-math, the threat model, and the side-project honesty.
+> The launch tweet is posted within 30 min of the HN submission so the
+> two amplify each other. Tweet 8 CTA tied back to Tweet 1's pain
+> framing per Lara's R4 review.
 
 ---
 
-## Tweet 1 (Hook)
+## Tweet 1 (Hook — concrete pain)
 
 ```
-Every mistake your AI coding agent makes — same one again tomorrow.
+Your AI agent makes the same mistake tomorrow it made today.
 
-We built something to fix that. Plain Markdown, plain Git, dogfooded
-for ~6 weeks. Independent open source.
+We built a memory layer where every fix is a Git commit, every rule is
+plain Markdown, and the same memory works in Cursor, Claude Code,
+Gemini CLI, and OpenCode.
 
-Show HN today. 🧵👇
+Side project. Two engineers. ~6 weeks dogfooding. MIT.
 
-github.com/sordi-ai/skill-everything
+🧵👇 github.com/sordi-ai/skill-everything
 ```
 
 ---
 
-## Tweet 2 (The actual loop)
+## Tweet 2 (The actual loop, with click-hook ending)
 
 ```
 The loop:
 
 1. Agent makes a mistake
-2. Writes a YAML entry → derives an action directive
+2. Writes a YAML entry → derives a rule (`Always X`, `Never Y`)
 3. Opens a PR labelled `needs-rule-review`
-4. Human reviews + merges
-5. Next session, the fix is loaded automatically
+4. CI lints. Human merges.
+5. Next session, the rule auto-loads.
 
-The repo IS the loop.
+The repo IS the loop. Open the error log — every entry is a real one.
 ```
 
 ---
@@ -45,7 +55,7 @@ Because we want every rule to be:
 - `cat`-able by a human
 - `git diff`-able in a PR
 - revertable when wrong
-- portable across Cursor, Claude Code, Gemini CLI
+- portable across Cursor, Claude Code, Gemini CLI, OpenCode
 
 A vector index is the right answer for >1k rules. Not for
 team conventions.
@@ -53,16 +63,18 @@ team conventions.
 
 ---
 
-## Tweet 4 (The honest token math)
+## Tweet 4 (Marginal-cost framing — token math, no hype)
 
 ```
 Token math, no hype:
 
-- vs. uncached monolithic prompts: 20–34% cheaper
-- vs. cached monolithic prompts: ~break-even
+Monolithic prompts grow with your skill library — every user, every
+message pays for skills they don't use.
 
-We don't claim 84% savings. The README has the full table.
-The headline win is review + portability, not the cents.
+skill-everything stays flat. Add the 50th skill, pay the same per
+message as the 1st.
+
+20–34% cheaper uncached. ~break-even cached. README has the table.
 ```
 
 ---
@@ -111,15 +123,12 @@ something we could git-blame.
 
 ---
 
-## Tweet 8 (CTA)
+## Tweet 8 (CTA — bound back to Tweet 1 pain)
 
 ```
-MIT licensed. Plain Markdown. `git clone` is the entire setup.
+MIT-licensed. `git clone` is the entire setup.
 
-If you've been hand-pasting conventions into your agent, this
-might save you an evening.
-
-Issues > stars. Honest critique > 🚀.
+Star it if you've ever rewritten your conventions for three different agents.
 
 github.com/sordi-ai/skill-everything
 ```
@@ -140,3 +149,49 @@ they'll see it organically; tagging looks needy.
 
 Same window as HN: Tue/Wed/Thu, 14:00–16:00 UTC. Post the thread within
 30 minutes of the HN submission so the two amplify each other.
+
+---
+
+## Three independent hook-tweets for follow-up days
+
+Use these on the days after launch — independent of the thread, each
+one is self-contained and points to the repo. Pick one per day, not all
+three at once.
+
+### Hook A — Asymmetry (cross-tool pain)
+
+```
+Your `.cursorrules` is dead the moment you open Claude Code.
+
+Built a thing where the same Markdown lives in Cursor, Claude
+Code, Gemini CLI, and OpenCode — generated from one source,
+drift-checked in CI.
+
+github.com/sordi-ai/skill-everything · MIT
+```
+
+### Hook B — Marginal cost (the bet, in 4 lines)
+
+```
+Hot take: monolithic system prompts charge every user for every skill,
+every message — even the ones they don't use.
+
+Add a 50th skill to your repo, every message pays.
+
+We tried something different. Per-skill router, 3k-token cap, CI-enforced.
+
+🔗 github.com/sordi-ai/skill-everything
+```
+
+### Hook C — `git log --grep` (a command they can paste)
+
+```
+`git log --grep="learn("`
+
+That's how I know when my agent learned something this week.
+Every mistake → YAML entry → action directive → PR → human merge.
+
+The repo IS the loop. Plain Markdown. MIT.
+
+github.com/sordi-ai/skill-everything
+```

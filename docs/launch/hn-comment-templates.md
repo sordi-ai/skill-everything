@@ -8,6 +8,10 @@ The original simulated comments are from Sven's HN-Härtetest in
 `concept/04-review-sven.md`. The replies below assume they will
 appear nearly verbatim.
 
+> **Synthesis note (Bo):** unchanged from Lara R3. This file is for
+> defending the front-page position, not acquiring it. Hype here is
+> the fastest way to lose the thread. The hooks live in `twitter-thread.md`.
+
 ---
 
 ## Comment 1 — "This is AGENTS.md with extra steps"
@@ -249,6 +253,19 @@ covers a different layer (skill packaging and distribution); our value-
 add is the validated PR-review-gated learning loop, which native skills
 don't have. Long term, if Anthropic ships a skill-ratings or skill-eval
 system, we'd happily integrate.
+```
+
+### "Schema-validated sounds like marketing-speak"
+
+```
+The JSON-Schema validates the *structure* of the YAML error entry (id,
+severity, category, target_file etc.) — that's deterministic. It does
+not validate the *content* of the rule for safety; that's a separate
+layer (verb allow-list, forbidden-pattern set, adversarial test suite,
+human review). SECURITY.md's Limitations section spells out the
+distinction. If anything in the README or About description reads as
+"validation = security", file an issue and we'll rephrase — we're
+trying not to conflate them.
 ```
 
 ---

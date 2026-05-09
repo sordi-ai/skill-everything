@@ -3,13 +3,19 @@
 > Posting checklist at the bottom. Read it first. The reply templates
 > for the predictable top comments live in
 > [`hn-comment-templates.md`](./hn-comment-templates.md).
+>
+> **Synthesis note (Bo):** this file is unchanged from Lara R3 in tone
+> and substance. HN actively penalises marketing-rewrites. The only
+> edit is the title field — we lead with `git diff` because it's the
+> single most differentiating verb we own. Henrik's punchier
+> Twitter-direction lives in `twitter-thread.md`, not here.
 
 ---
 
 ## Title (≤ 80 chars, plain, no hype)
 
 ```
-Show HN: skill-everything – agent memory in plain Markdown, reviewed in PRs
+Show HN: skill-everything – memory you can `git diff` for AI coding agents
 ```
 
 Alternative if the above is taken:
@@ -22,7 +28,7 @@ We do not use:
 
 - "Battle-tested"
 - "AI engineers from BMW and Google"
-- "First skill system with X" (`dspy`, `promptfoo`, and `langgraph` have lockfile-equivalents — see Sven's review)
+- "First skill system with X" (`dspy`, `promptfoo`, and `langgraph` have lockfile-equivalents)
 - "84% fewer tokens"
 
 If we say any of the above on HN, we lose the front page.
@@ -52,6 +58,13 @@ forgetting, it writes a YAML entry into references/errors/error-log.md,
 derives an action directive, and opens a PR labelled needs-rule-review.
 A maintainer reviews it. CI lints it against a JSON-Schema and a
 verb allow-list. After merge, the rule loads automatically next session.
+
+The thing we keep going back to: cross-tool. The same Markdown that
+Cursor reads via .cursorrules, Claude Code reads via CLAUDE.md, and
+Gemini CLI reads via GEMINI.md. One source-of-truth (references/_index.yml)
+generates all four loaders. CI fails on drift. If you've ever rewritten
+the same conventions for three different agents, you'll recognise the
+pain.
 
 What's actually new (small, but real): a structured error schema with
 JSON-Schema validation, a `learn(errors): ERR-YYYY-NNN` PR convention
@@ -91,6 +104,7 @@ answers are in the repo already (linked from README → SECURITY.md).
 | **T-2 days** | Confirm the 30-second `git clone` flow on a fresh machine | This is the first thing curious commenters try |
 | **T-1 day** | Make sure CI is fully green on `main` | A red badge in the readme is fatal |
 | **T-1 day** | Pre-load comment templates in `hn-comment-templates.md` into a draft window | You will not have time to compose them live |
+| **T-1 day** | Verify `git shortlog -sne` shows engineer #2 — or rephrase README to "solo project, looking for co-maintainers" | Comment-template #5 antedates the audit; do not rely on it as Plan A |
 | **Post** | Tuesday–Thursday, 14:00–16:00 UTC (8–10 AM Eastern) | Avoid Mondays and weekends |
 | **0–15 min** | Submit + post the first comment within 5 minutes | Comment ordering rewards early authors |
 | **15 min – 4 h** | Reply to **every** top-level comment, even hostile ones | Take the bait politely; concede the ones we already know about |

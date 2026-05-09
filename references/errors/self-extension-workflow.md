@@ -1,13 +1,16 @@
-# Self-Extension Workflow
-<!-- target: ~1100 tokens -->
+# Self-extension workflow
+*Exact prompt and procedure the agent executes after every mistake. The agent never pushes to `main` directly. Every self-extension is a PR.*
 
-**Purpose:** Exact prompt and procedure the agent executes after every mistake to update the skill system. **The agent never pushes to `main` directly. Every self-extension is a PR.**
+> *Six steps from mistake to merged rule. The agent never pushes to main. Every rule that lands has been seen by a human. This page is the contract.*
+
+<!-- target: ~1100 tokens -->
 
 ---
 
-## Trigger conditions
+## TRIGGER CONDITIONS
+*Five conditions. Any one of them starts the workflow.*
 
-The agent starts this workflow when **any** of these conditions is met:
+The agent starts this workflow when **any** of these is met:
 
 - A test fails and the agent wrote the faulty code.
 - A code review comment corrects the agent.
@@ -17,28 +20,29 @@ The agent starts this workflow when **any** of these conditions is met:
 
 ---
 
-## Step-by-step procedure
+## STEP-BY-STEP PROCEDURE
+*Six steps. Every step is mandatory before the next one.*
 
-### Step 0: Search before write (MANDATORY)
+### Step 0 — Search before write
+*Mandatory. Duplicates in the error log destroy the signal.*
 
 Before creating a new error entry, search the existing error log:
 
-```
+```text
 1. Read references/errors/error-log.md.
 2. Search for similar errors (same category + similar context).
 3. If a similar entry exists:
-   → Increment its `count` field by 1.
-   → Update `last_seen` to today.
-   → Supplement the context if needed.
-   → Do NOT create a new entry.
-4. Only if no similar entry exists → continue with Step 1.
+   - Increment its `count` field by 1.
+   - Update `last_seen` to today.
+   - Supplement the context if needed.
+   - Do NOT create a new entry.
+4. Only if no similar entry exists, continue with Step 1.
 ```
 
-### Step 1: Analyse the error
+### Step 1 — Analyse the error
+*The agent answers six questions before writing anything.*
 
-The agent internally answers these questions:
-
-```
+```text
 1. What exactly did I do? (concrete code/action)
 2. What should I have done instead?
 3. Why did I do it wrong? (false assumption, missing knowledge, carelessness)
@@ -50,44 +54,51 @@ The agent internally answers these questions:
    - performance: N+1, missing indexes, oversized datasets
    - domain: wrong understanding of business rules
 5. How severe was the error? (critical/high/medium/low)
+6. Which target file does the rule belong in?
 ```
 
-### Step 2: Determine new error ID
+### Step 2 — Determine new error ID
+*Take the next number after the latest entry.*
 
 ```bash
 # Find last entry in error-log.md
 grep "id: ERR-" references/errors/error-log.md | tail -1
-# Take next number: ERR-2026-004 → ERR-2026-005
+# Take next number: ERR-2026-004 -> ERR-2026-005
 ```
 
-### Step 3: Formulate the entry
+### Step 3 — Formulate the entry
+*Action directive only. The CI verb allow-list rejects anything else.*
 
 Use the template at `references/_templates/error-entry.template.md`. The schema at [`schemas/error-entry.json`](../../schemas/error-entry.json) is enforced by CI.
 
-**Critical:** the `new_rule` must be an **action directive**, not a description. It must start with one of: `Always`, `Never`, `Before`, `After`, `Prefer`, `Avoid`, `Use`, `Do`, `Ensure`. The CI validator will reject anything else.
+> [!WARNING]
+> **CI GATE · verb allow-list** — `new_rule` must start with one of `Always`, `Never`, `Before`, `After`, `Prefer`, `Avoid`, `Use`, `Do`, `Ensure`. Anything else is rejected.
 
-❌ Bad: `"SQL injection is dangerous"`
-✅ Good: `"Never concatenate user input directly into SQL queries. Always use prepared statements."`
+Bad: `"SQL injection is dangerous"`
+Good: `"Never concatenate user input directly into SQL queries. Always use prepared statements."`
 
-### Step 4: Determine target file
+### Step 4 — Determine target file
+*One file per category. Domain rules go to a project file, not a global one.*
 
 | Error category | Target file |
 |---|---|
-| development | `references/development/code-quality.md` |
-| git | `references/git/conventions.md` |
-| deployment | `references/process/review-deployment.md` |
-| security | `references/development/code-quality.md` (Security section) |
-| performance | `references/development/code-quality.md` (Performance section) |
-| domain | `references/domain/<project>.md` |
+| `development` | `references/development/code-quality.md` |
+| `git` | `references/git/conventions.md` |
+| `deployment` | `references/process/review-deployment.md` |
+| `security` | `references/development/code-quality.md` (Security section) |
+| `performance` | `references/development/code-quality.md` (Performance section) |
+| `domain` | `references/domain/<project>.md` |
 
-### Step 5: Insert the rule
+### Step 5 — Insert the rule
+*At the end of the matching section. Reference the ERR-ID.*
 
 1. Open the target file.
 2. Find the matching category section.
 3. Add the new rule at the end of the section.
 4. Add reference: `Reference: ERR-YYYY-NNN`.
 
-### Step 6: Open a PR (NEVER push to `main` directly)
+### Step 6 — Open a PR
+*Never push to `main` directly. The label triggers the lint-rules workflow.*
 
 ```bash
 git checkout -b learn/ERR-YYYY-NNN
@@ -106,7 +117,7 @@ gh pr create --label needs-rule-review \
 
 *Branch through CI gates and CODEOWNERS into a squash-merge on `main`.*
 
-**Why a PR (not a direct commit):**
+**Why a PR (not a direct commit).** *Four layers of gating.*
 
 | Layer | What it gates | Where |
 |---|---|---|
@@ -116,41 +127,39 @@ gh pr create --label needs-rule-review \
 | Human review | Final read of rule wording and target file | maintainer |
 
 > [!NOTE]
-> The four-layer gating is what `pr-flow.svg` above shows. Every rule that goes live has been seen by a human. The validator is best-effort, not airtight — see [SECURITY.md](../../SECURITY.md) Limitations section.
+> **CI GATE · four-layer gating** — Every rule that goes live has been seen by a human. The validator is best-effort, not airtight — see [SECURITY.md](../../SECURITY.md) Limitations section.
 
 The commit type `learn` makes self-extension visible in `git log --grep="learn("`.
 
 ---
 
-## False positives in the validator
-
-If the validator rejects a legitimate rule (e.g. a rule about preventing `subprocess` misuse that itself contains the word `subprocess`):
+## FALSE POSITIVES IN THE VALIDATOR
+*When a legitimate rule must mention a forbidden pattern (e.g. preventing `subprocess` misuse).*
 
 1. Add the new error ID to `references/errors/exceptions.yml`:
    ```yaml
    allow_forbidden_pattern_for:
      - ERR-YYYY-NNN  # rationale: rule must mention `subprocess` to be specific
    ```
-2. Open the PR. CODEOWNERS approval is required for `exceptions.yml` changes — the bypass is auditable in git.
+2. Open the PR. CODEOWNERS approval is required for `exceptions.yml` changes — the bypass is auditable in git history.
 3. The verb allow-list still applies even with a bypass entry.
 
 ---
 
-## Consolidation loop
+## CONSOLIDATION LOOP
+*When the error log exceeds 50 entries. Manual diff review until eval framework lands.*
 
-When the error log exceeds 50 entries, run consolidation:
-
-```
+```text
 1. Read all entries in references/errors/error-log.md.
 2. Group by root_cause similarity.
 3. For groups with the same root cause:
-   → Keep the most detailed entry.
-   → Sum up all `count` values.
-   → Set `last_seen` to the most recent date.
-   → Delete the duplicates.
+   - Keep the most detailed entry.
+   - Sum up all `count` values.
+   - Set `last_seen` to the most recent date.
+   - Delete the duplicates.
 4. For entries older than 6 months with severity: low:
-   → Archive (move to a comment block or separate archive file).
-   → The rules derived from them remain in the sub-skills.
+   - Archive (move to a comment block or separate archive file).
+   - The rules derived from them remain in the sub-skills.
 5. Open a PR: "chore(errors): consolidate error log (N entries merged)".
 ```
 
@@ -158,6 +167,9 @@ LLM-driven consolidation is non-deterministic. Until the eval framework (Phase 2
 
 ---
 
-## Why this sub-skill matters
+## WHY THIS SUB-SKILL MATTERS
+*Self-extension is a supply-chain problem disguised as a magic feature.*
 
-The agent doesn't just fix errors — it learns from them, and every lesson is a Git commit you can review, revert, or share. The PR-flow turns "the LLM writes its own rules" from a magic feature into a supply-chain problem with a normal solution: review, lint, branch protection, code owners.
+The agent doesn't just fix errors — it learns from them, and **every lesson is a Git commit you can review, revert, or share.** The PR-flow turns "the LLM writes its own rules" from a magic feature into a normal supply-chain problem with a normal solution: review, lint, branch protection, code owners.
+
+> ***Your agent's mistakes — versioned. From error to rule in one PR. Memory you can `git diff`.*** *That's the loop.*

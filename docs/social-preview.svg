@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" role="img" aria-labelledby="ogtitle ogdesc"
+     font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
+  <title id="ogtitle">skill-everything — your AI agent forgets every mistake; ours commits the fix</title>
+  <desc id="ogdesc">OpenGraph 1280x640 social-preview card. Three-role palette derived from the SVG design system: agent (blue), CI (green), git (ink). Headline, mini-pipeline echoing how-it-works.svg, and a right-column git timeline showing four real learn(errors) commits — the brand of the loop. Light + dark via prefers-color-scheme.</desc>
+
+  <style>
+    :root {
+      --bg:        #fbfbfa;
+      --ink:       #1a1d21;
+      --muted:     #5a6470;
+      --hairline:  #cfd5dc;
+      --rule:      #8b95a0;
+      --agent:     #3a5a7a;
+      --agent-fill:#eaf0f5;
+      --ci:        #1f7a4a;
+      --ci-fill:   #e6f3ec;
+      --human:     #b46a00;
+      --human-fill:#fbeed1;
+      --git:       #2b2f33;
+      --git-fill:  #eef0f3;
+      --loop:      #7c3aed;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:        #11141a;
+        --ink:       #e6e9ee;
+        --muted:     #8a93a0;
+        --hairline:  #3a424d;
+        --rule:      #5a6470;
+        --agent:     #88aed3;
+        --agent-fill:#1a2330;
+        --ci:        #6fc093;
+        --ci-fill:   #14241c;
+        --human:     #e3a154;
+        --human-fill:#2a2014;
+        --git:       #c8cdd4;
+        --git-fill:  #1c1f25;
+        --loop:      #b794ff;
+      }
+    }
+    .frame      { fill: var(--bg); stroke: var(--hairline); }
+    .lane       { fill: none; stroke: var(--hairline); stroke-dasharray: 2 3; }
+    .eyebrow    { font: 700 14px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 1.2px; fill: var(--muted); }
+    .h-headline { font: 700 60px -apple-system, system-ui, sans-serif; letter-spacing: -0.5px; fill: var(--ink); }
+    .h-sub      { font: 400 22px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+    .strap      { font: 600 20px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .strap-em   { font: 700 italic 20px -apple-system, system-ui, sans-serif; fill: var(--ci); }
+    .mono-tag   { font: 600 13px ui-monospace, Consolas, monospace; fill: var(--ink); }
+    .mono-dim   { font: 400 12px ui-monospace, Consolas, monospace; fill: var(--muted); }
+    .lane-label { font: 700 11px ui-monospace, Consolas, monospace; letter-spacing: 0.8px; fill: var(--muted); }
+    .arrow      { stroke: var(--rule); stroke-width: 1.5; fill: none; }
+    .node       { fill: var(--agent-fill); stroke: var(--agent); stroke-width: 1.5; }
+    .node.ci    { fill: var(--ci-fill);    stroke: var(--ci); }
+    .node.human { fill: var(--human-fill); stroke: var(--human); }
+    .node.git   { fill: var(--git-fill);   stroke: var(--git); }
+    .node-title { font: 600 13px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .node-sub   { font: 400 11px ui-monospace, Consolas, monospace; fill: var(--muted); }
+    .chip       { fill: var(--bg); stroke: var(--hairline); }
+    .chip-text  { font: 500 12px ui-monospace, Consolas, monospace; fill: var(--ink); }
+    .git-line   { stroke: var(--git); stroke-width: 1.5; fill: none; }
+    .git-dot    { fill: var(--bg); stroke: var(--git); stroke-width: 1.5; }
+    .git-label  { font: 700 12px ui-monospace, Consolas, monospace; fill: var(--ink); }
+    .footer     { font: 600 14px ui-monospace, Consolas, monospace; letter-spacing: 0.5px; fill: var(--muted); }
+  </style>
+
+  <defs>
+    <marker id="og-rule" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="var(--rule)"/>
+    </marker>
+    <marker id="og-ci" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="var(--ci)"/>
+    </marker>
+    <marker id="og-git" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="var(--git)"/>
+    </marker>
+  </defs>
+
+  <!-- Outer + inner frame -->
+  <rect class="frame" x="0.5" y="0.5" width="1279" height="639" rx="0"/>
+  <rect class="frame" x="40.5" y="40.5" width="1199" height="559" rx="6"/>
+
+  <!-- Eyebrow (matches README sub: SKILL · ERRORS · GIT) -->
+  <text class="eyebrow" x="80" y="100">SKILL · ERRORS · GIT</text>
+
+  <!-- Headline (Henrik hero — lives here on OG card per Round-2 senior call) -->
+  <text class="h-headline" x="80" y="170">skill-everything</text>
+
+  <!-- Two-line strap, marketing-channel hero -->
+  <text class="strap" x="80" y="218">Your AI agent forgets every mistake.</text>
+  <text class="strap-em" x="80" y="248">Ours commits the fix.</text>
+
+  <!-- Sub line — Lara's architectural property; word-match with README -->
+  <text class="h-sub" x="80" y="290">Memory you can `git diff`. Plain Markdown. Reviewed in PRs.</text>
+
+  <!-- LEFT COLUMN: mini pipeline echoing how-it-works.svg -->
+  <g>
+    <text class="lane-label" x="80" y="345">PIPELINE · 3 ROLES · 1 SUBSTRATE</text>
+
+    <!-- Lane separators -->
+    <line class="lane" x1="80"  y1="360" x2="800" y2="360"/>
+    <line class="lane" x1="80"  y1="430" x2="800" y2="430"/>
+    <line class="lane" x1="80"  y1="500" x2="800" y2="500"/>
+
+    <!-- Lane labels -->
+    <text class="lane-label" x="80" y="382">AGENT</text>
+    <text class="lane-label" x="80" y="452">CI</text>
+    <text class="lane-label" x="80" y="522">HUMAN · GIT</text>
+
+    <!-- Step 1: capture error -->
+    <rect class="node" x="170" y="370" width="160" height="48" rx="6"/>
+    <text class="node-title" x="180" y="390">1 · capture error</text>
+    <text class="node-sub"   x="180" y="408">error-log.md</text>
+
+    <!-- Step 2: derive rule -->
+    <rect class="node" x="350" y="370" width="160" height="48" rx="6"/>
+    <text class="node-title" x="360" y="390">2 · derive rule</text>
+    <text class="node-sub"   x="360" y="408">action directive</text>
+
+    <!-- Step 3: open PR -->
+    <rect class="node" x="530" y="370" width="160" height="48" rx="6"/>
+    <text class="node-title" x="540" y="390">3 · open PR</text>
+    <text class="node-sub"   x="540" y="408">learn(errors): ERR-…</text>
+
+    <!-- CI gate -->
+    <rect class="node ci" x="350" y="440" width="160" height="48" rx="6"/>
+    <text class="node-title" x="360" y="460">4 · lint-rules CI</text>
+    <text class="node-sub"   x="360" y="478">schema + verb-list</text>
+
+    <!-- Human gate -->
+    <rect class="node human" x="530" y="440" width="160" height="48" rx="6"/>
+    <text class="node-title" x="540" y="460">5 · CODEOWNERS</text>
+    <text class="node-sub"   x="540" y="478">human review</text>
+
+    <!-- Squash merge into main — git lane (substrate role) -->
+    <rect class="node git" x="530" y="510" width="160" height="48" rx="6"/>
+    <text class="node-title" x="540" y="530">6 · squash → main</text>
+    <text class="node-sub"   x="540" y="548">rule auto-loads</text>
+
+    <!-- Connecting arrows -->
+    <line class="arrow" x1="330" y1="394" x2="350" y2="394" marker-end="url(#og-rule)"/>
+    <line class="arrow" x1="510" y1="394" x2="530" y2="394" marker-end="url(#og-rule)"/>
+    <!-- step 3 → step 4: orthogonal L-bend (replaces grazing Bezier) -->
+    <path class="arrow" d="M610 418 L610 432 L430 432 L430 440" stroke="var(--ci)" marker-end="url(#og-ci)"/>
+    <line class="arrow" x1="510" y1="464" x2="530" y2="464" stroke="var(--ci)" marker-end="url(#og-ci)"/>
+    <line class="arrow" x1="610" y1="488" x2="610" y2="510" stroke="var(--git)" marker-end="url(#og-git)"/>
+  </g>
+
+  <!-- RIGHT COLUMN: git timeline with four real learn(errors) commits -->
+  <g transform="translate(880,330)">
+    <text class="lane-label" x="0" y="0">GIT LOG --GREP "LEARN("</text>
+
+    <!-- vertical timeline (shortened to keep ≥20 px from footer at y=588) -->
+    <line class="git-line" x1="14" y1="20" x2="14" y2="220"/>
+
+    <!-- commit 1 -->
+    <circle class="git-dot" cx="14" cy="35" r="6"/>
+    <text class="mono-tag" x="32" y="32">learn(errors): ERR-2026-001</text>
+    <text class="mono-dim" x="32" y="48">never disable strict checks</text>
+
+    <!-- commit 2 -->
+    <circle class="git-dot" cx="14" cy="95" r="6"/>
+    <text class="mono-tag" x="32" y="92">learn(errors): ERR-2026-007</text>
+    <text class="mono-dim" x="32" y="108">grep before claiming done</text>
+
+    <!-- commit 3 -->
+    <circle class="git-dot" cx="14" cy="155" r="6"/>
+    <text class="mono-tag" x="32" y="152">learn(errors): ERR-2026-012</text>
+    <text class="mono-dim" x="32" y="168">migrations before deploy</text>
+
+    <!-- commit 4 (raised to ≥20 px above footer) -->
+    <circle class="git-dot" cx="14" cy="200" r="6"/>
+    <text class="mono-tag" x="32" y="197">learn(errors): ERR-2026-014</text>
+    <text class="mono-dim" x="32" y="213">await every promise in tests</text>
+  </g>
+
+  <!-- Tool list, just above the footer -->
+  <text class="mono-dim" x="80" y="588">Claude Code · Cursor · Gemini CLI · OpenCode</text>
+
+  <!-- Bottom-right meta -->
+  <text class="footer" x="1200" y="588" text-anchor="end">github.com/sordi-ai/skill-everything · MIT</text>
+</svg>
