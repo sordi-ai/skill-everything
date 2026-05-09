@@ -17,9 +17,6 @@
       --human-fill:#fbeed1;
       --git:       #2b2f33;
       --git-fill:  #eef0f2;
-      --loop:      #7c3aed;
-      --loop-fill: #f1ebff;
-      --loop-fill-strong: #e6dafd;
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -36,9 +33,6 @@
         --human-fill:#2a2014;
         --git:       #c8cdd4;
         --git-fill:  #181c22;
-        --loop:      #b794ff;
-        --loop-fill: #1f1730;
-        --loop-fill-strong: #2a1f44;
       }
     }
 
@@ -53,12 +47,12 @@
 
     /* ID column */
     .id-cell-bg    { fill: var(--git-fill); stroke: var(--hairline); stroke-width: 0.6; }
-    .id-cell-bg-hi { fill: var(--loop-fill-strong); stroke: var(--loop); stroke-width: 1.2; }
+    .id-cell-bg-hi { fill: var(--ci-fill); stroke: var(--ci); stroke-width: 1.2; }
     .id-text       { font: 800 14px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--ink); letter-spacing: 0.3px; }
     .id-meta       { font: 500 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--muted); }
     .id-cat        { font: 700 9px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 0.8px; fill: var(--agent); }
-    .id-cat-hi     { font: 700 9px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 0.8px; fill: var(--loop); }
-    .id-meta-hi    { font: 700 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--loop); }
+    .id-cat-hi     { font: 700 9px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 0.8px; fill: var(--ci); }
+    .id-meta-hi    { font: 700 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--ci); }
     .sha-pill      { fill: var(--bg); stroke: var(--hairline); stroke-width: 0.8; }
     .sha-text      { font: 600 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--muted); }
 
@@ -77,24 +71,24 @@
 
     /* Arrow between columns */
     .arrow         { stroke: var(--rule); stroke-width: 1.5; fill: none; }
-    .arrow-loop    { stroke: var(--loop); stroke-width: 1.8; fill: none; }
+    .arrow-ci      { stroke: var(--ci); stroke-width: 1.8; fill: none; }
     .arrow-text    { font: 700 9px ui-monospace, Consolas, monospace; letter-spacing: 0.8px; fill: var(--muted); }
-    .arrow-text-hi { font: 800 9px ui-monospace, Consolas, monospace; letter-spacing: 0.8px; fill: var(--loop); }
+    .arrow-text-hi { font: 800 9px ui-monospace, Consolas, monospace; letter-spacing: 0.8px; fill: var(--ci); }
 
     /* ERR-007 highlight */
-    .row-highlight     { fill: var(--loop-fill); stroke: var(--loop); stroke-width: 1.8; }
-    .repeat-banner-bg  { fill: var(--loop); }
+    .row-highlight     { fill: var(--ci-fill); stroke: var(--ci); stroke-width: 1.8; }
+    .repeat-banner-bg  { fill: var(--ci); }
     .repeat-banner-txt { font: 800 11px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 1.5px; fill: #ffffff; }
 
     /* Count hero on right */
-    .count-hero-bg    { fill: var(--loop); }
+    .count-hero-bg    { fill: var(--ci); }
     .count-hero-label { font: 800 8px ui-monospace, Consolas, monospace; letter-spacing: 1.4px; fill: #ffffff; }
     .count-hero-num   { font: 800 22px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: #ffffff; letter-spacing: -0.5px; }
 
     /* Bottom strap */
-    .strap-bg      { fill: var(--loop-fill); stroke: var(--loop); stroke-width: 1.5; }
+    .strap-bg      { fill: var(--ci-fill); stroke: var(--ci); stroke-width: 1.5; }
     .strap-headline{ font: 800 22px -apple-system, system-ui, sans-serif; letter-spacing: -0.3px; fill: var(--ink); }
-    .strap-accent  { font: 800 22px -apple-system, system-ui, sans-serif; letter-spacing: -0.3px; fill: var(--loop); }
+    .strap-accent  { font: 800 22px -apple-system, system-ui, sans-serif; letter-spacing: -0.3px; fill: var(--ci); }
     .strap-meta    { font: 500 12px -apple-system, system-ui, sans-serif; fill: var(--muted); }
     .strap-mono    { font: 700 12px ui-monospace, Consolas, monospace; fill: var(--ink); }
 
@@ -105,8 +99,8 @@
     <marker id="a-rule" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
       <path d="M0,0 L10,4 L0,8 z" fill="var(--rule)"/>
     </marker>
-    <marker id="a-loop" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
-      <path d="M0,0 L10,4 L0,8 z" fill="var(--loop)"/>
+    <marker id="a-ci" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 z" fill="var(--ci)"/>
     </marker>
   </defs>
 
@@ -153,14 +147,14 @@
 
   <!-- ============== ROW 2 — ERR-2026-007 (HIGHLIGHTED) ============== -->
 
-  <!-- Wrap-around purple background spanning the WHOLE row including banner column -->
+  <!-- Wrap-around CI-tinted background spanning the WHOLE row including banner -->
   <rect class="row-highlight" x="20" y="296" width="1160" height="148" rx="6"/>
 
   <!-- Top banner across the entire row width: rounded top corners only -->
   <path class="repeat-banner-bg" d="M 26 296 L 1174 296 Q 1180 296 1180 302 L 1180 322 L 20 322 L 20 302 Q 20 296 26 296 Z"/>
   <text class="repeat-banner-txt" x="36" y="313">REPEAT CAUGHT  ·  COUNT 1 → 2  ·  AUTO-MERGED INTO EXISTING ENTRY  ·  SELF-EXTENSION TRUST PROOF</text>
 
-  <!-- ID cell — purple-tinted -->
+  <!-- ID cell — CI-tinted -->
   <rect class="id-cell-bg-hi" x="32" y="332" width="196" height="100" rx="4"/>
   <text class="id-text"  x="44" y="356">ERR-2026-007</text>
   <text class="id-cat-hi"   x="44" y="372">DEVELOPMENT  ·  MEDIUM</text>
@@ -176,11 +170,12 @@
   <text class="mistake-text" x="260" y="396">after a rename.</text>
   <text class="mistake-meta" x="260" y="420">Local tsc green. Cross-package refs broke.</text>
 
-  <!-- Arrow with loop accent -->
-  <line class="arrow-loop" x1="658" y1="382" x2="678" y2="382" marker-end="url(#a-loop)"/>
-  <text class="arrow-text-hi" x="668" y="370" text-anchor="middle">CAUGHT TWICE</text>
+  <!-- Arrow with CI accent — "CAUGHT / TWICE" stacked so the label fits the 40px gutter -->
+  <line class="arrow-ci" x1="658" y1="382" x2="678" y2="382" marker-end="url(#a-ci)"/>
+  <text class="arrow-text-hi" x="668" y="364" text-anchor="middle">CAUGHT</text>
+  <text class="arrow-text-hi" x="668" y="376" text-anchor="middle">TWICE</text>
 
-  <!-- Rule cell — slightly taller so the file path fits inside -->
+  <!-- Rule cell -->
   <rect class="rule-bg" x="688" y="332" width="400" height="100" rx="4"/>
   <text class="rule-tag"  x="700" y="350">DERIVED RULE</text>
   <text class="rule-text" x="700" y="376">After any rename, run a</text>
