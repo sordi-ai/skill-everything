@@ -142,21 +142,9 @@ The full procedure with troubleshooting lives in [`references/errors/self-extens
 
 **The scaling promise:** monolithic prompts grow linearly with your skill library — every user, every message, every skill. Skill-everything stays flat as the library grows from 1 to 50 skills.
 
-| Setup | Input/msg | Cost / 1k msgs |
-|---|---:|---:|
-| Monolithic `.cursorrules`, no caching | 10,000 | $75.00 |
-| Monolithic + Anthropic prompt caching | 10,000 (~1k effective) | $48.00 |
-| `skill-everything`, single sub-skill | 1,600 | $50.00 |
-| `skill-everything`, 2–3 sub-skills | 3,300 | $55.00 |
-| `skill-everything` **with caching** | 1,600 (~800 effective) | **$47.00** |
+![Cost per 1,000 messages — five setups, one winner: monolithic uncached $75 (painful baseline), monolithic with caching $48, skill-everything 2-3 sub-skills $55, skill-everything single sub-skill $50, skill-everything with caching $47 (winner). $28 saved per 1,000 messages, 37% cheaper than the painful baseline.](./docs/cost-comparison.svg)
 
-*Math: Sonnet-class pricing $3 / 1M input, $15 / 1M output, ~3,000 output tokens / message.*
-
-**The honest take:**
-
-- **20–34 % cheaper** than uncached monolithic prompts.
-- **Roughly break-even** with cached monolithic prompts at today's 9-skill scale.
-- The **architectural win** is structural: at 30, 90, 200 skills — caching helps both, but only one of the two architectures keeps your per-message input cost flat. **That's the bet. We don't claim 84%.**
+**The bottom line:** **`$47` with caching beats the `$75` painful baseline** — that's **`$28` saved per 1,000 messages**, **37 %** cheaper than uncached monolithic. And the architectural win **compounds**: at 30, 90, 200 skills, monolithic explodes — skill-everything stays flat. **Caching helps both. Only one of the two stays flat as your library grows.**
 
 <details>
 <summary><strong>Per-skill token budgets — real tiktoken counts, CI-validated</strong></summary>
