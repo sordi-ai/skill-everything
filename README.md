@@ -37,6 +37,18 @@
 
 ---
 
+<div align="center">
+
+### *Fine-tuning is frozen.*
+### *RAG is blind.*
+### *Your agent forgets everything tomorrow.*
+
+### **What if it didn't?**
+
+</div>
+
+---
+
 ## THE PITCH IN 30 SECONDS
 *One paragraph. One terminal command. The repo is the loop.*
 
@@ -244,26 +256,14 @@ The `skill_resource` tool lets the agent load individual sub-skills on demand wi
 
 ---
 
-## HONEST COMPARISON
-*Fair, not flattering. We don't win every column — that's deliberate.*
+## CAPABILITY MATRIX
 
-<div style="overflow-x:auto">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/comparison.svg">
+  <img alt="Capability matrix: skill-everything carries 9 of 9 capabilities (plain Markdown no database · git-versioned · cross-tool portable · per-skill 3k-token cap CI-enforced · schema-validated rule entries · versioned skill-manifest frontmatter · self-extending via PR · skill-router auto-loads on trigger · audit trail in git history) plus a one-command `git clone` setup. AGENTS.md carries 3 of 9; Cursor Rules 2 of 9; mem0 / MemGPT 1 of 9 and requires API key, SaaS, vector DB and embeddings to install." src="docs/comparison.svg" width="100%">
+</picture>
 
-| Capability | **`skill-everything`** | AGENTS.md | Cursor Rules | mem0 / MemGPT |
-|---|:---:|:---:|:---:|:---:|
-| Plain Markdown, no DB | ✓ | ✓ | ✓ | ✗ |
-| Git-versioned out of the box | ✓ | ✓ | ✓ | ✗ |
-| **Cross-tool portable (one source, four loaders)** | **✓** | ◐ | Cursor-only | ✓ |
-| **Per-skill 3k-token cap, CI-enforced** | **✓** | ✗ | ✗ | n/a |
-| **Schema-validated rule entries** | **✓** | ✗ | ✗ | ✗ |
-| Versioned skill-manifest frontmatter | ✓ | ✗ | ✗ | ✗ |
-| Embedding-based recall | ✗ | ✗ | ✗ | ✓ |
-| Scales to 1,000+ rules | ✗ | ✗ | ✗ | ✓ |
-| Setup cost | `git clone` | none | none | API key + SaaS |
-
-</div>
-
-*We win on cross-tool portability, the token-cap router, and machine-validated rule entries. **mem0 wins on embeddings and 1k-rule scale** — if that's your problem, use mem0. AGENTS.md and Cursor Rules are siblings — we sit on top of them and add the missing review and validation layers. **At 9 sub-skills today, we are not pretending to scale to 1k.***
+<sub>Capabilities sourced from each project's documentation as of 2026-05. <code>✓</code> supported&nbsp;·&nbsp;<code>◐</code> partial&nbsp;·&nbsp;<code>✗</code> missing&nbsp;·&nbsp;<code>n/a</code> not applicable. AGENTS.md and Cursor Rules are siblings — skill-everything sits on top of them and adds the review and validation layers. mem0 / MemGPT solves a different problem (long-running embedded recall); if that's your problem, use mem0.</sub>
 
 ---
 
