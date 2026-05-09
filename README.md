@@ -133,6 +133,19 @@ learn(errors): ERR-2026-012 — order migrations before backend deploys
 
 ---
 
+## MEMORY TO GO
+*Switch tools. Your skills come with.*
+
+**Take your skills anywhere.** Your self-learning sub-skills live once in [`references/_index.yml`](./references/_index.yml) and travel with you across four agent runtimes — `Claude Code`, `Cursor`, `Gemini CLI`, `OpenCode` — with **zero re-authoring**.
+
+[`tools/render_loaders.py`](./tools/render_loaders.py) deterministically generates `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, and `SKILL.md` from the same index. Switch from a Claude Code session to Gemini CLI mid-project and your **composable sub-skills, your error log, your self-extension workflow are already loaded** — identical, token-capped, schema-validated. **No sync layer. No API lock-in. No proprietary memory store.**
+
+This is portable agent memory done the boring way: plain Markdown, git-versioned, CI-gated. **Beyond fine-tuning, beyond vector DBs, beyond black-box memory.** **One source. Four runtimes. Memory follows you.**
+
+![Memory to GO — switch tools, skills come with. Your sub-skills live once in references/_index.yml and travel with you across Claude Code, Cursor, Gemini CLI, and OpenCode with zero re-authoring.](./docs/memory-to-go.svg)
+
+---
+
 ## TOKEN MATH
 *Same task. Same agent. **84% fewer input tokens.** Add a skill, pay nothing extra.*
 
