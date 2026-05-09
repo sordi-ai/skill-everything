@@ -170,8 +170,8 @@
   <text class="mistake-text" x="260" y="396">after a rename.</text>
   <text class="mistake-meta" x="260" y="420">Local tsc green. Cross-package refs broke.</text>
 
-  <!-- Arrow with CI accent — "CAUGHT / TWICE" stacked so the label fits the 40px gutter -->
-  <line class="arrow-ci" x1="658" y1="382" x2="678" y2="382" marker-end="url(#a-ci)"/>
+  <!-- Arrow with CI accent — "CAUGHT / TWICE" stacked so the label fits the 40px gutter; arrow at y=388 to give 12px breathing room below TWICE (matches row 1 spacing) -->
+  <line class="arrow-ci" x1="658" y1="388" x2="678" y2="388" marker-end="url(#a-ci)"/>
   <text class="arrow-text-hi" x="668" y="364" text-anchor="middle">CAUGHT</text>
   <text class="arrow-text-hi" x="668" y="376" text-anchor="middle">TWICE</text>
 
