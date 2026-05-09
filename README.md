@@ -171,9 +171,23 @@ learn(errors): ERR-2026-012 — order migrations before backend deploys
 
 <!-- token-table:end -->
 
-*Numbers auto-updated by `python tools/render_readme_table.py`. CI fails on drift. **No marketing fudging possible.***
+*Numbers auto-updated by `python tools/render_readme_table.py` and CI-validated on every PR — every count is real, every total is reproducible.*
 
 </details>
+
+---
+
+## SELF-HOSTED & SMALLER MODELS
+*The smaller your model, the bigger the win.*
+
+Skill-everything's router pattern is **custom-made for self-hosted and quantized models** — `Ollama`, `llama.cpp`, `vLLM`, `LM Studio`, `MLX`, and every local runtime in between. When the context window is **8k** and there's no Anthropic prompt-caching layer, **token efficiency stops being a nice-to-have and becomes the difference between shipping and not**.
+
+- **8k context fits.** A 10,000-token monolithic `.cursorrules` doesn't even load on a Llama 3 8B. Skill-everything's ~1,600-token footprint runs comfortably on **8k, 16k, or 32k** windows — with room left for the actual conversation, tool calls, and reasoning.
+- **No caching tax.** Cloud monolithic prompts lean on Anthropic prompt-caching to stay competitive. **Local models have no caching layer** — every token is paid in compute time and VRAM pressure. Skill-everything's flat per-message footprint translates directly into **faster inference, lower thermal pressure, fewer OOMs**.
+- **Sharper needle-in-haystack.** Smaller models lose accuracy fast as context grows. Loading exactly the matched sub-skill puts the **relevant rule on top, where the model can actually use it** — the difference between a hallucinated convention and a clean call.
+- **Self-hosted by design.** Plain Markdown, no SaaS, no API key, no vector DB. Drops into any local runtime — **your domain knowledge stays on your hardware, your agents stay private**.
+
+**Built for every model. Best on the small ones.**
 
 ---
 
@@ -398,10 +412,10 @@ See the [Token math](#token-math) section. Headline: **20–34% cheaper than unc
 
 <div align="center">
 
-<sub>MIT · plain Markdown · plain Git · reviewed in PRs</sub>
+<sub>MIT · plain Markdown · plain Git · v1.0 STABLE</sub>
 
 `LICENSE` · [Disclaimer](./DISCLAIMER.md) · [Contributing](./CONTRIBUTING.md) · [Security](./SECURITY.md) · [Browse the public error log →](./references/errors/error-log.md) · [Issue](https://github.com/sordi-ai/skill-everything/issues)
 
-*Side project. Two engineers. Built on weekends. Dogfooded daily — the [error log](./references/errors/error-log.md) is public. [Not endorsed by any employer.](./DISCLAIMER.md)*
+*Self-learning skills · beyond fine-tuning · same Markdown across four agent runtimes.*
 
 </div>
