@@ -157,9 +157,9 @@
   <line x1="277.6" y1="257.5" x2="277.6" y2="340" class="anchor-tick"/>
 
   <circle class="anchor-dot-mono" cx="277.6" cy="257.5" r="5"/>
-  <text class="anchor-mono-text" x="290" y="246">12,300 tok</text>
-  <text class="anchor-meta"      x="290" y="259">monolithic at n=9</text>
-  <text class="anchor-meta"      x="290" y="271">real tiktoken (cl100k)</text>
+  <text class="anchor-mono-text" x="290" y="176">12,300 tok</text>
+  <text class="anchor-meta"      x="290" y="189">monolithic at n=9</text>
+  <text class="anchor-meta"      x="290" y="201">real tiktoken (cl100k)</text>
 
   <circle class="anchor-dot-skill" cx="277.6" cy="340" r="5"/>
   <text class="anchor-skill-text" x="290" y="358">~2,400 tok</text>
