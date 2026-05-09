@@ -77,7 +77,7 @@ def build_table() -> str:
     rows.append(
         f"| **Total if all loaded** | — | **~{_bucket(total):,}** |"
     )
-    rows.append(
+    rows.append(  # noqa: RUF001 — en-dashes match the README's typography
         "| **Typical (router + 1–2 skills)** | depends on task | **~1,800–3,500** |"
     )
     fallback_note = ""
