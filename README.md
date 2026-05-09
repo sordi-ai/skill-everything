@@ -51,11 +51,11 @@
 ---
 
 ## THE PITCH IN 30 SECONDS
-*One paragraph. One terminal command. Beyond fine-tuning.*
+*Self-learning skills. One paragraph. One terminal command.*
 
-**Your domain knowledge — local, in one place.** Plain Markdown, versioned in Git, organised as composable sub-skills. The router loads only what the task needs: ~800 tokens for the router, ~800 tokens for the matching sub-skill — **84 % fewer input tokens per message, $28 saved per 1,000 messages**. Add the 50th skill, the 100th skill — your per-message bill stays flat.
+**Self-learning skills — beyond fine-tuning.** Your domain knowledge, local, in one place, organised as composable sub-skills in plain Markdown, versioned in Git. The router loads only the matching sub-skill: ~800 tokens for the router, ~800 tokens for the sub-skill — **84 % fewer input tokens per message, $28 saved per 1,000 messages**. Add the 50th skill, the 200th skill — your per-message bill stays flat.
 
-The same memory ships across **Claude Code, Cursor, Gemini CLI, and OpenCode** — generated from a single source of truth. **Same Markdown. Four agent runtimes. Zero re-authoring.** Self-extending, modular, and **beyond fine-tuning** — the agent's domain knowledge compounds in `git`, not in opaque weights.
+The same memory ships across **Claude Code, Cursor, Gemini CLI, and OpenCode** — generated from a single source of truth. **Same Markdown. Four agent runtimes. Zero re-authoring.** Self-extending and modular — your agent's domain knowledge compounds in `git`, not in opaque weights.
 
 ```bash
 git clone https://github.com/sordi-ai/skill-everything.git
