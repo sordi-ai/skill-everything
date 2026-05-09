@@ -17,7 +17,7 @@
 
 [![Self-Learning](https://img.shields.io/badge/AI_Memory-Self--Learning-gold?style=for-the-badge&logo=brain)](./docs/how-it-works.svg)
 [![Beyond Fine-Tuning](https://img.shields.io/badge/Beyond-Fine--Tuning-purple?style=for-the-badge&logo=anthropic)](./docs/architecture.svg)
-[![Token Efficient](https://img.shields.io/badge/Tokens-20--34%25_Lower-1f7a4a?style=for-the-badge&logo=lightning)](./docs/token-math.svg)
+[![Token Efficient](https://img.shields.io/badge/Tokens-84%25_Fewer-1f7a4a?style=for-the-badge&logo=lightning)](./docs/token-comparison.svg)
 [![Quality Compounds](https://img.shields.io/badge/Quality-Compounds-ff6b35?style=for-the-badge&logo=trendingup)](./references/errors/error-log.md)
 
 [![CI](https://img.shields.io/github/actions/workflow/status/sordi-ai/skill-everything/ci.yml?style=for-the-badge&label=CI&logo=githubactions&logoColor=white)](./.github/workflows/ci.yml)
@@ -132,11 +132,15 @@ The full procedure with troubleshooting lives in [`references/errors/self-extens
 ---
 
 ## TOKEN MATH
-*Add a skill. Pay nothing. Per-message input cost stays flat as the library grows.*
+*Same task. Same agent. **84% fewer input tokens.** Add a skill, pay nothing extra.*
+
+![Token comparison — monolithic ships the whole rulebook every turn (10,000+ tokens), skill-everything ships a router plus one sub-skill (~1,600 tokens), 84% less per message](./docs/token-comparison.svg)
+
+**The single-message punch:** monolithic prompts load `.cursorrules` *every turn, all of it*. Skill-everything loads the router (`SKILL.md`, ~800 tokens) plus exactly one sub-skill on demand (~800 tokens). Same task, same agent, **84 % fewer input tokens per message**.
 
 ![Token-math chart — monolithic prompts grow with skill count, skill-everything stays flat](./docs/token-math.svg)
 
-**The architectural promise:** monolithic prompts pay every skill on every message. Skill-everything pays only what the router opens for the task at hand.
+**The scaling promise:** monolithic prompts grow linearly with your skill library — every user, every message, every skill. Skill-everything stays flat as the library grows from 1 to 50 skills.
 
 | Setup | Input/msg | Cost / 1k msgs |
 |---|---:|---:|
