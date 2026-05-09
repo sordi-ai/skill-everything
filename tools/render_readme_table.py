@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+# ruff: noqa: RUF001
+# RUF001 disabled at file level: the README and this script intentionally
+# use U+2013 (EN DASH) in the token-table footer ("router + 1-2 skills",
+# "1,800-3,500") to match the README typography. The drift check requires
+# byte-for-byte match, so substituting ASCII hyphens here would just move
+# the drift to a different file.
 """
 render_readme_table.py - Updates the token-budget table in README.md
                          between the markers
@@ -77,7 +83,7 @@ def build_table() -> str:
     rows.append(
         f"| **Total if all loaded** | — | **~{_bucket(total):,}** |"
     )
-    rows.append(  # noqa: RUF001 — en-dashes match the README's typography
+    rows.append(
         "| **Typical (router + 1–2 skills)** | depends on task | **~1,800–3,500** |"
     )
     fallback_note = ""
