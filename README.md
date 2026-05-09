@@ -129,6 +129,8 @@ learn(errors): ERR-2026-012 — order migrations before backend deploys
 
 **The full self-extension workflow** — including the CI gate, the `auto-approve-rule-pr` policy, and the schema-validated rule grammar — lives in [`references/errors/self-extension-workflow.md`](./references/errors/self-extension-workflow.md).
 
+[**Browse the full public error log →**](./references/errors/error-log.md) — every mistake captured and every rule derived, in plain Markdown.
+
 ---
 
 ## TOKEN MATH
@@ -172,23 +174,6 @@ learn(errors): ERR-2026-012 — order migrations before backend deploys
 *Numbers auto-updated by `python tools/render_readme_table.py`. CI fails on drift. **No marketing fudging possible.***
 
 </details>
-
----
-
-## CONCRETE EXAMPLES
-*Three real mistakes. Three Git commits. None hypothetical.*
-
-The first three entries committed during dogfooding — see [`references/errors/error-log.md`](./references/errors/error-log.md):
-
-| ID | Mistake | Derived rule |
-|---|---|---|
-| `ERR-2026-001` | TS `strictNullChecks` disabled to make a demo green | Never disable strict checks for convenience |
-| `ERR-2026-007` | Refactor missed 4 imports after rename | After any rename, run a project-wide grep before claiming done |
-| `ERR-2026-012` | Migration ran after backend deploy, broke prod | Always order migrations before backend deploy in domain runbooks |
-
-*Each entry links a real commit SHA. `ERR-2026-007`'s `count` jumped from 1 to 2 on the second occurrence — **repeat-prevention captured in YAML, reviewed by a human, merged into `main`**.*
-
-[**Browse the public error log →**](./references/errors/error-log.md) — every mistake we have made and learned from, in plain Markdown.
 
 ---
 
