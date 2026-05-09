@@ -51,20 +51,20 @@
 ---
 
 ## THE PITCH IN 30 SECONDS
-*One paragraph. One terminal command. The repo is the loop.*
+*One paragraph. One terminal command. Beyond fine-tuning.*
 
-Your agent makes a mistake. Most setups forget. **This one commits.**
+**Your domain knowledge — local, in one place.** Plain Markdown, versioned in Git, organised as composable sub-skills. The router loads only what the task needs: ~800 tokens for the router, ~800 tokens for the matching sub-skill — **84 % fewer input tokens per message, $28 saved per 1,000 messages**. Add the 50th skill, the 100th skill — your per-message bill stays flat.
 
-It writes a YAML entry into `references/errors/error-log.md`, derives a one-line action directive, and opens a PR labelled `needs-rule-review` titled `learn(errors): ERR-2026-014`. **You review the PR.** CI lints it against a JSON-Schema and a verb allow-list. After merge, the rule loads automatically — in Claude Code, in Cursor, in Gemini CLI, in OpenCode. **Same Markdown. Four tools. Zero re-authoring.**
+The same memory ships across **Claude Code, Cursor, Gemini CLI, and OpenCode** — generated from a single source of truth. **Same Markdown. Four agent runtimes. Zero re-authoring.** Self-extending, modular, and **beyond fine-tuning** — the agent's domain knowledge compounds in `git`, not in opaque weights.
 
 ```bash
 git clone https://github.com/sordi-ai/skill-everything.git
 ```
 
-That is the entire setup. **Star this repo if you want your agent's memory to be `cat`-able, `git diff`-able, and reviewable like code.**
+That is the entire setup. **Star this repo to ship smarter agents — beyond fine-tuning, beyond vector DBs, beyond black-box memory.**
 
 > [!NOTE]
-> **This sits on top of `CLAUDE.md`, not instead of it.** Skill-everything generates the rule files Claude Code, Cursor, Gemini CLI, and OpenCode already read — Anthropic's native Skills covers a different layer (packaging and distribution). We work alongside it, not against it.
+> **Built on top of the formats your tools already read.** Skill-everything generates `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, and `AGENTS.md` from one `references/_index.yml` — same domain knowledge, four agent runtimes.
 
 ---
 
