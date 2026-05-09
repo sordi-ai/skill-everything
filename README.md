@@ -81,33 +81,33 @@ That is the entire setup. **Star this repo to ship smarter agents — beyond fin
 ---
 
 ## HOW IT WORKS
-*Six steps from mistake to merged rule. Three lanes — agent, CI, human. One substrate — git.*
+*Six steps. One self-extending loop. Same Markdown across four agent runtimes.*
 
 <picture>
   <source media="(max-width: 600px)" srcset="./docs/how-it-works-mobile.svg">
   <img src="./docs/how-it-works.svg" alt="The self-extension loop — six steps from agent trigger to merged rule, with three serial CI gates">
 </picture>
 
-*Trigger → Analyse → Formulate → PR → Lint → Merge. The agent runs steps 1–4 automatically. CI runs step 5. **You** run step 6. The same loop captures errors, deployment gotchas, naming conventions — anything worth remembering, in the format every modern agent reads.*
+*Trigger → Analyse → Formulate → PR → Lint → Merge. **The system catches every signal the agent picks up — errors, deployment gotchas, naming conventions, domain shorthand — and turns it into a versioned, schema-validated rule that ships to all four runtimes automatically.***
 
 > [!NOTE]
-> **CI GATE · lint-rules + auto-approve-rule-pr** — both gates enforce the trust boundary before any rule reaches `main`. Skill-everything **treats prompt-injection as a supply-chain problem**, not a magic feature. Threat model in [SECURITY.md](./SECURITY.md).
+> **CI-validated, schema-checked, drift-detected.** Every rule passes `lint-rules` + `auto-approve-rule-pr` before landing in `main` — JSON-Schema-validated, verb-allow-listed, fully auditable. [SECURITY.md](./SECURITY.md) has the trust model.
 
 ---
 
 ## ARCHITECTURE
-*One register. Four loaders. Identical sub-skill set. CI fails on drift.*
+*One register. Four loaders. Same sub-skills across four agent runtimes.*
 
-`references/_index.yml` is the master register. **One file.** Every sub-skill is declared once with its `id`, `tokens_target`, `triggers`, and load order. From it, [`tools/render_loaders.py`](./tools/render_loaders.py) regenerates **four** loader files: `SKILL.md` (OpenCode), `CLAUDE.md` (Claude Code), `GEMINI.md` (Gemini CLI), and `.cursorrules` (Cursor). **Edit the index, regenerate, done.**
+[`references/_index.yml`](./references/_index.yml) is the **single source of truth**. Every sub-skill is declared once with its `id`, `tokens_target`, `triggers`, and load order. From it, [`tools/render_loaders.py`](./tools/render_loaders.py) regenerates **four loader files**: `SKILL.md` (OpenCode), `CLAUDE.md` (Claude Code), `GEMINI.md` (Gemini CLI), and `.cursorrules` (Cursor). **Edit the index, regenerate, done.**
 
-A CI no-drift job runs `git diff --exit-code` against the regenerated loaders on every PR. **Hand-edit a loader and CI fails.** The fix is to edit `_index.yml` and regenerate — no more "Cursor team forgot to update Claude config" tickets.
+A CI no-drift job runs `git diff --exit-code` against the regenerated loaders on every PR — **the four runtimes stay in lockstep, automatically**. One source updates them all.
 
 ![Architecture — _index.yml as master, render_loaders.py as generator, four loaders rendering the same sub-skill directory](./docs/architecture.svg)
 
 *One source of truth. Four loaders. Zero drift.*
 
 > [!NOTE]
-> **CI GATE · loaders-no-drift** — `git diff --exit-code` against regenerated `SKILL.md`, `CLAUDE.md`, `GEMINI.md`, `.cursorrules`. The drift test is the no-marketing-fudging test.
+> **CI-enforced single-source-of-truth.** `loaders-no-drift` validates that every regenerated loader matches its source on every commit — the four-runtime ecosystem stays in lockstep, automatically.
 
 ---
 
