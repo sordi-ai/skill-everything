@@ -138,7 +138,7 @@
   <!-- annotation chip on left: meta -->
   <g transform="translate(280 110)">
     <rect class="chip" x="0" y="0" width="180" height="22" rx="3"/>
-    <text class="chip-text" x="8" y="14">meta.version: 1.2.0</text>
+    <text class="chip-text" x="8" y="14">meta.version: 1.0.0</text>
     <text class="annot"     x="0" y="38">single source of truth</text>
   </g>
 

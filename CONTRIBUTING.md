@@ -3,7 +3,7 @@
 
 > **Pull requests are how this project grows.** Every merged `learn(errors):` is a brick in the public agent-memory layer. **From error to rule in one PR.** Welcome.
 
-This is an independent open-source side project — see [DISCLAIMER.md](./DISCLAIMER.md). The visual conventions in this file (tables, callouts, code-block language hints) follow the [`design/design-system.md`](../design/design-system.md) Section 7 Markdown mapping. Consistency makes review faster.
+This is an independent open-source project — see [DISCLAIMER.md](./DISCLAIMER.md). The visual conventions in this file (tables, callouts, code-block language hints) follow the same style as the rest of the repo. Consistency makes review faster.
 
 If something below is unclear or wrong, open an issue or a PR fixing it.
 

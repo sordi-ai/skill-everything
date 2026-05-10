@@ -16,10 +16,10 @@
 [![Last Commit](https://img.shields.io/github/last-commit/sordi-ai/skill-everything?style=for-the-badge&color=green)](https://github.com/sordi-ai/skill-everything/commits/main)
 [![Commit Activity](https://img.shields.io/github/commit-activity/m/sordi-ai/skill-everything?style=for-the-badge&color=brightgreen)](https://github.com/sordi-ai/skill-everything/commits/main)
 
-[![Self-Learning](https://img.shields.io/badge/AI_Memory-Self--Learning-gold?style=for-the-badge&logo=brain)](./docs/how-it-works.svg)
+[![Self-Learning](https://img.shields.io/badge/AI_Memory-Self--Learning-gold?style=for-the-badge)](./docs/how-it-works.svg)
 [![Beyond Fine-Tuning](https://img.shields.io/badge/Beyond-Fine--Tuning-purple?style=for-the-badge&logo=anthropic)](./docs/architecture.svg)
 [![Token Efficient](https://img.shields.io/badge/Tokens-84%25_Fewer-1f7a4a?style=for-the-badge&logo=lightning)](./docs/token-comparison.svg)
-[![Quality Compounds](https://img.shields.io/badge/Quality-Compounds-ff6b35?style=for-the-badge&logo=trendingup)](./references/errors/error-log.md)
+[![Quality Compounds](https://img.shields.io/badge/Quality-Compounds-ff6b35?style=for-the-badge)](./references/errors/error-log.md)
 
 [![CI](https://img.shields.io/github/actions/workflow/status/sordi-ai/skill-everything/ci.yml?style=for-the-badge&label=CI&logo=githubactions&logoColor=white)](./.github/workflows/ci.yml)
 [![Schemas](https://img.shields.io/badge/Schemas-JSON_Validated-blue?style=for-the-badge&logo=json)](./schemas/skill-manifest.json)
@@ -419,7 +419,7 @@ That's the threat model spelled out in [SECURITY.md](./SECURITY.md). **We treat 
 
 <br>
 
-See the [Token math](#token-math) section. Headline: **20–34% cheaper than uncached monolithic prompts; roughly break-even with cached at today's scale.** The architectural win is **flat per-message input cost as your skill library grows**. **We don't claim 84%.**
+See the [Token math](#token-math) section. **Same task, same agent: 84% fewer input tokens** (`10,000+` monolithic vs `~1,600` skill-everything per message). At cost level: **`$28` saved per 1,000 messages, 37% cheaper than the painful baseline**. The architectural win is **flat per-message input cost as your skill library grows** — caching helps both, but only one stays flat.
 
 </details>
 

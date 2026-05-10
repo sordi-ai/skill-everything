@@ -16,9 +16,11 @@ Usage:
     python tools/render_readme_table.py
     python tools/render_readme_table.py --check    # exit 1 on drift
 
-The table shows REAL costs without marketing fiction. The README's headline
-claim is now "20-34% cheaper than uncached monolithic, roughly break-even
-with cached monolithic" - this script provides the data behind that.
+The table shows real per-skill token counts via tiktoken. The README's
+headline claim is "84% fewer input tokens" (10,000+ monolithic vs ~1,600
+skill-everything per message); at cost level "$28 saved per 1,000 messages,
+37% cheaper than the painful baseline". This script provides the per-skill
+token data behind those numbers.
 """
 
 from __future__ import annotations
