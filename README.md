@@ -250,17 +250,20 @@ Cursor reads `.cursorrules` automatically when the file sits at your project roo
 </details>
 
 <details>
-<summary><strong>OpenCode</strong> — via <code>opencode.json</code></summary>
+<summary><strong>OpenCode</strong> — symlink <code>SKILL.md</code> to a skills directory</summary>
 
 <br>
 
-```json
-{
-  "skills": ["./skill-everything/SKILL.md"]
-}
-```
+OpenCode auto-discovers skills in standard locations:
 
-The `skill_resource` tool lets the agent load individual sub-skills on demand without bloating the context window.
+- `.opencode/skills/skill-everything/SKILL.md` (project-local)
+- `~/.config/opencode/skills/skill-everything/SKILL.md` (user-global)
+- `.claude/skills/skill-everything/SKILL.md` (shared with Claude Code)
+- `.agents/skills/skill-everything/SKILL.md` (shared cross-tool)
+
+Either symlink the repo's `SKILL.md` to one of these paths or copy it, then load it from any agent prompt via the native `skill({ name: "skill-everything" })` tool. The router (`SKILL.md`) auto-loads the matching sub-skill from the trigger table.
+
+The frontmatter (`name`, `description`, `license`, `compatibility`, `metadata`) matches OpenCode's recognised fields; additional fields are ignored.
 
 </details>
 

@@ -69,7 +69,7 @@ FORBIDDEN_PATTERNS = [
      "html-tag"),
 ]
 
-SUB_SKILL_DIRS = ["development", "git", "process", "domain"]
+SUB_SKILL_DIRS = ["development", "git", "process", "domain", "errors"]
 
 
 def load_yaml_file(path: Path):

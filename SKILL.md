@@ -2,6 +2,14 @@
 name: skill-everything
 description: Git-versioned agent memory — agents that never make the same mistake twice.
 version: 1.0.0
+license: MIT
+compatibility:
+  opencode: ">=0.1"
+  claude-code: ">=1.0"
+metadata:
+  source: https://github.com/sordi-ai/skill-everything
+  type: router
+  loads: nine sub-skills via trigger table
 ---
 
 # skill-everything
