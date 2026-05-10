@@ -44,4 +44,5 @@ def test_loaders_section_present_for_each_skill():
     for s in data["skills"]:
         assert "claude" in s["loaders"]
         assert "gemini" in s["loaders"]
+        assert "cursor" in s["loaders"]
         assert "skill_resource" in s["loaders"]

@@ -56,7 +56,7 @@ git clone https://github.com/sordi-ai/skill-everything.git
 That is the entire setup. **Star this repo to ship smarter agents — beyond fine-tuning, beyond vector DBs, beyond black-box memory.**
 
 > [!NOTE]
-> **Built on top of the formats your tools already read.** Skill-everything generates `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, and `AGENTS.md` from one `references/_index.yml` — same domain knowledge, four agent runtimes.
+> **Built on top of the formats your tools already read.** Skill-everything generates `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, and `SKILL.md` from one `references/_index.yml` — same domain knowledge, four agent runtimes.
 
 ---
 
@@ -68,7 +68,7 @@ That is the entire setup. **Star this repo to ship smarter agents — beyond fin
 - **Self-extending memory.** Every accepted change makes the next session smarter. `git log --grep="learn("` is your agent's growth trail. **Quality compounds — commit by commit, automatically.**
 - **84 % fewer input tokens. $28 saved per 1,000 messages.** Per-skill 3k-token cap, CI-enforced by [`tools/validate_rules.py`](./tools/validate_rules.py). The router loads only the matching sub-skill. **Add the 50th skill, the 200th skill — your per-message bill stays flat.**
 - **Modular by design.** Composable sub-skills, hot-loaded on demand. Domain knowledge — local, in one place, organised by trigger. **The library grows; per-message cost doesn't.**
-- **Drop-in compatible with the agent ecosystem.** `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, and `AGENTS.md` are all generated from the same source. **Works with the formats your tools already read — today.**
+- **Drop-in compatible with the agent ecosystem.** `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, and `SKILL.md` are all generated from the same source. **Works with the formats your tools already read — today.**
 
 ---
 
@@ -273,6 +273,7 @@ skill-everything/
 ├── SKILL.md                       # Router for OpenCode (generated)
 ├── CLAUDE.md                      # Router for Claude Code (generated)
 ├── GEMINI.md                      # Router for Gemini CLI (generated)
+├── .cursorrules                   # Router for Cursor (generated)
 ├── DISCLAIMER.md                  # Independent project, no employer endorsement
 ├── SECURITY.md                    # Threat model + responsible-disclosure
 ├── references/
@@ -296,7 +297,7 @@ skill-everything/
 ├── tools/
 │   ├── generate-dashboard.py      # Updates docs/dashboard.html
 │   ├── validate_rules.py          # CI lint: schema + verb allow-list
-│   ├── render_loaders.py          # Regenerates SKILL/CLAUDE/GEMINI from _index.yml
+│   ├── render_loaders.py          # Regenerates SKILL/CLAUDE/GEMINI/.cursorrules from _index.yml
 │   ├── render_readme_table.py     # Regenerates the token table above
 │   └── templates/                 # Jinja2 templates for the routers
 ├── tests/                         # pytest suite + adversarial bypass tests

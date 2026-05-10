@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-render_loaders.py - Regenerates SKILL.md, CLAUDE.md, GEMINI.md from
-                    references/_index.yml. CI fails if outputs drift.
+render_loaders.py - Regenerates SKILL.md, CLAUDE.md, GEMINI.md, .cursorrules
+                    from references/_index.yml. CI fails if outputs drift.
 
 Usage:
     python tools/render_loaders.py
@@ -9,9 +9,9 @@ Usage:
 
 Templates live under tools/templates/*.j2.
 
-This is the single source of truth machinery: editing CLAUDE.md or GEMINI.md
-directly will be overwritten on the next pre-commit / CI run. Edit
-references/_index.yml instead.
+This is the single source of truth machinery: editing CLAUDE.md, GEMINI.md or
+.cursorrules directly will be overwritten on the next pre-commit / CI run.
+Edit references/_index.yml instead.
 """
 
 from __future__ import annotations
@@ -27,11 +27,15 @@ ROOT = Path(__file__).resolve().parent.parent
 INDEX = ROOT / "references" / "_index.yml"
 TEMPLATES = ROOT / "tools" / "templates"
 
-# Each tuple: (output filename, template filename)
+# Each tuple: (output filename, template filename).
+# Output filenames are written to the repo root (ROOT). The Cursor loader
+# must live at the repo root as `.cursorrules` — Cursor only auto-discovers
+# the file when it sits next to the project root.
 TARGETS = [
-    ("SKILL.md",  "skill.md.j2"),
-    ("CLAUDE.md", "claude.md.j2"),
-    ("GEMINI.md", "gemini.md.j2"),
+    ("SKILL.md",     "skill.md.j2"),
+    ("CLAUDE.md",    "claude.md.j2"),
+    ("GEMINI.md",    "gemini.md.j2"),
+    (".cursorrules", "cursorrules.j2"),
 ]
 
 

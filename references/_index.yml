@@ -1,5 +1,5 @@
 # Single source of truth for sub-skill index.
-# tools/render_loaders.py reads this and regenerates SKILL.md, CLAUDE.md, GEMINI.md.
+# tools/render_loaders.py reads this and regenerates SKILL.md, CLAUDE.md, GEMINI.md, .cursorrules.
 # CI fails if the regenerated files differ from what's in git (drift detection).
 
 meta:
@@ -18,6 +18,7 @@ skills:
     loaders:
       claude:  '@references/development/code-quality.md'
       gemini:  '@references/development/code-quality.md'
+      cursor:  '@file:./references/development/code-quality.md'
       skill_resource: 'skill_resource(skill_name="skill-everything", relative_path="references/development/code-quality.md")'
 
   - id: python
@@ -30,6 +31,7 @@ skills:
     loaders:
       claude:  '@references/development/python.md'
       gemini:  '@references/development/python.md'
+      cursor:  '@file:./references/development/python.md'
       skill_resource: 'skill_resource(skill_name="skill-everything", relative_path="references/development/python.md")'
 
   - id: typescript
@@ -42,6 +44,7 @@ skills:
     loaders:
       claude:  '@references/development/typescript.md'
       gemini:  '@references/development/typescript.md'
+      cursor:  '@file:./references/development/typescript.md'
       skill_resource: 'skill_resource(skill_name="skill-everything", relative_path="references/development/typescript.md")'
 
   - id: react
@@ -54,6 +57,7 @@ skills:
     loaders:
       claude:  '@references/development/react.md'
       gemini:  '@references/development/react.md'
+      cursor:  '@file:./references/development/react.md'
       skill_resource: 'skill_resource(skill_name="skill-everything", relative_path="references/development/react.md")'
 
   - id: git-conventions
@@ -66,6 +70,7 @@ skills:
     loaders:
       claude:  '@references/git/conventions.md'
       gemini:  '@references/git/conventions.md'
+      cursor:  '@file:./references/git/conventions.md'
       skill_resource: 'skill_resource(skill_name="skill-everything", relative_path="references/git/conventions.md")'
 
   - id: review-deployment
@@ -78,6 +83,7 @@ skills:
     loaders:
       claude:  '@references/process/review-deployment.md'
       gemini:  '@references/process/review-deployment.md'
+      cursor:  '@file:./references/process/review-deployment.md'
       skill_resource: 'skill_resource(skill_name="skill-everything", relative_path="references/process/review-deployment.md")'
 
   - id: domain-template
@@ -89,6 +95,7 @@ skills:
     loaders:
       claude:  '@references/domain/template.md'
       gemini:  '@references/domain/template.md'
+      cursor:  '@file:./references/domain/template.md'
       skill_resource: 'skill_resource(skill_name="skill-everything", relative_path="references/domain/template.md")'
 
   - id: error-log
@@ -100,6 +107,7 @@ skills:
     loaders:
       claude:  '@references/errors/error-log.md'
       gemini:  '@references/errors/error-log.md'
+      cursor:  '@file:./references/errors/error-log.md'
       skill_resource: 'skill_resource(skill_name="skill-everything", relative_path="references/errors/error-log.md")'
 
   - id: self-extension-workflow
@@ -110,4 +118,5 @@ skills:
     loaders:
       claude:  '@references/errors/self-extension-workflow.md'
       gemini:  '@references/errors/self-extension-workflow.md'
+      cursor:  '@file:./references/errors/self-extension-workflow.md'
       skill_resource: 'skill_resource(skill_name="skill-everything", relative_path="references/errors/self-extension-workflow.md")'
