@@ -136,7 +136,7 @@
     <text class="step-num"   x="12" y="16">SOURCE  ·  PORTABLE</text>
     <text class="node-title" x="12" y="34">references/_index.yml</text>
     <text class="mono-tag"   x="12" y="52">+ 9 self-learning sub-skills</text>
-    <text class="mono-dim"   x="12" y="68">code · python · typescript · git · errors · …</text>
+    <text class="mono-dim"   x="12" y="68">code · python · git · errors · …</text>
   </g>
 
   <!-- left annotation chips -->
@@ -244,12 +244,15 @@
   </g>
 
   <!-- ============== PORTABILITY ARC (below the runtime row) ==============
-       Bidirectional curve in the y=494..518 band, well above the strap
-       top (y=534).  Forward arc (Claude Code → Gemini CLI) and reverse
-       arc (Gemini CLI → Claude Code) curve in opposite directions so
-       they don't overlap.  -->
+       Bidirectional pair below the runtime row (boxes end y=490) and
+       above the strap (top y=534).  Both arcs bow downward in parallel
+       so they never cross: forward (Claude Code → Gemini CLI) at y=500
+       endpoints with peak at y=512 (visible centre), reverse (Gemini CLI
+       → Claude Code) at y=510 endpoints with peak at y=519 (visible
+       centre).  The reverse uses opacity 0.5 to read as the round-trip
+       partner.  -->
   <path d="M 200 500 Q 485 524 730 500" class="arrow port" marker-end="url(#a-port)"/>
-  <path d="M 730 510 Q 485 486 200 510" class="arrow port" marker-end="url(#a-port)" opacity="0.5"/>
+  <path d="M 730 510 Q 485 528 200 510" class="arrow port" marker-end="url(#a-port)" opacity="0.5"/>
 
   <!-- ============== STRAP (closing punch) ============== -->
   <g transform="translate(24 534)">

@@ -1,0 +1,252 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 660" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
+  <title id="title">Self-hosted and smaller models — skill-everything fits an 8k context with no caching tax</title>
+  <desc id="desc">Two stacked context-window bars locked to a Llama 3 8B 8k window: the 10,000-token monolithic prompt overflows and does not load; skill-everything's ~1,600-token router plus sub-skill footprint fits comfortably with ~6,400 tokens of headroom for conversation, tool calls, and reasoning. Below, five local-runtime chips — Ollama, llama.cpp, vLLM, LM Studio, MLX — fan out from a central skill-everything box, all loading the same plain Markdown. Bottom strap: the smaller your model, the bigger the win.</desc>
+
+  <style>
+    :root {
+      --bg:        #fbfbfa;
+      --ink:       #1a1d21;
+      --muted:     #5a6470;
+      --hairline:  #cfd5dc;
+      --rule:      #8b95a0;
+      --agent:     #3a5a7a;
+      --agent-fill:#eaf0f5;
+      --ci:        #1f7a4a;
+      --ci-fill:   #e6f3ec;
+      --human:     #b46a00;
+      --human-fill:#fbeed1;
+      --git:       #2b2f33;
+      --git-fill:  #eef0f2;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:        #11141a;
+        --ink:       #e6e9ee;
+        --muted:     #8a93a0;
+        --hairline:  #3a424d;
+        --rule:      #5a6470;
+        --agent:     #88aed3;
+        --agent-fill:#1a2330;
+        --ci:        #6fc093;
+        --ci-fill:   #14241c;
+        --human:     #e3a154;
+        --human-fill:#2a2014;
+        --git:       #c8cdd4;
+        --git-fill:  #181c22;
+      }
+    }
+
+    .frame      { fill: var(--bg); stroke: var(--hairline); }
+    .lane       { fill: none; stroke: var(--hairline); stroke-dasharray: 2 3; }
+    .lane-label { font: 700 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 0.8px; fill: var(--muted); }
+
+    .eyebrow    { font: 700 11px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 1.6px; fill: var(--muted); }
+    .hero       { font: 800 28px -apple-system, system-ui, sans-serif; letter-spacing: -0.5px; fill: var(--ink); }
+    .hero-win   { fill: var(--ci); }
+    .hero-sub   { font: 400 13px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+
+    /* context-window comparison */
+    .window-frame    { fill: none; stroke: var(--git); stroke-width: 1.8; stroke-dasharray: 6 4; }
+    .window-cap-l    { font: 700 11px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 0.8px; fill: var(--git); }
+
+    .bar-fail-fill   { fill: var(--human-fill); stroke: var(--human); stroke-width: 1.5; }
+    .bar-fail-over   { fill: var(--human); opacity: 0.20; stroke: var(--human); stroke-width: 1.2; stroke-dasharray: 4 3; }
+    .bar-win-router  { fill: var(--ci-fill); stroke: var(--ci); stroke-width: 1.5; }
+    .bar-win-skill   { fill: var(--ci-fill); stroke: var(--ci); stroke-width: 1.5; }
+    .bar-headroom    { fill: var(--git-fill); stroke: var(--hairline); stroke-width: 1; stroke-dasharray: 3 3; }
+
+    .bar-head-text   { font: 700 14px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .bar-fail-tok    { font: 700 14px ui-monospace, Consolas, monospace; fill: var(--human); }
+    .bar-win-tok     { font: 700 13px ui-monospace, Consolas, monospace; fill: var(--ci); }
+    .bar-cap         { font: 600 11px ui-monospace, Consolas, monospace; fill: var(--muted); letter-spacing: 0.4px; }
+    .bar-segment-l   { font: 700 11px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.3px; }
+    .bar-headroom-l  { font: 500 11px ui-monospace, Consolas, monospace; fill: var(--muted); font-style: italic; }
+    .bar-fail-l      { font: 700 11px ui-monospace, Consolas, monospace; fill: var(--human); letter-spacing: 0.5px; }
+
+    .verdict-fail    { font: 800 13px -apple-system, system-ui, sans-serif; fill: var(--human); letter-spacing: 0.4px; }
+    .verdict-win     { font: 800 13px -apple-system, system-ui, sans-serif; fill: var(--ci); letter-spacing: 0.4px; }
+
+    /* fact strip */
+    .fact-key        { font: 700 11px ui-monospace, Consolas, monospace; letter-spacing: 0.6px; fill: var(--ink); }
+    .fact-key-ci     { font: 700 11px ui-monospace, Consolas, monospace; letter-spacing: 0.6px; fill: var(--ci); }
+    .fact-meta       { font: 400 10px -apple-system, system-ui, sans-serif; fill: var(--muted); font-style: italic; }
+
+    /* runtimes row */
+    .hub             { fill: var(--agent-fill); stroke: var(--agent); stroke-width: 1.5; }
+    .hub-eyebrow     { font: 700 10px ui-monospace, Consolas, monospace; letter-spacing: 0.8px; fill: var(--agent); }
+    .hub-title       { font: 800 14px -apple-system, system-ui, sans-serif; fill: var(--agent); }
+    .hub-meta        { font: 500 10px ui-monospace, Consolas, monospace; fill: var(--ink); }
+
+    .chip            { fill: var(--ci-fill); stroke: var(--ci); stroke-width: 1.4; }
+    .chip-name       { font: 700 12px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.4px; }
+    .chip-meta       { font: 500 9px ui-monospace, Consolas, monospace; fill: var(--muted); }
+
+    .arrow-ci        { stroke: var(--ci); stroke-width: 1.5; fill: none; }
+
+    /* score-strap */
+    .strap-bg     { fill: var(--ci-fill); stroke: var(--ci); stroke-width: 1.5; }
+    .strap-text   { font: 800 16px -apple-system, system-ui, sans-serif; fill: var(--ci); letter-spacing: -0.2px; }
+    .strap-meta   { font: 400 11px -apple-system, system-ui, sans-serif; fill: var(--ink); font-style: italic; }
+
+    .footer       { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
+
+    /* legend */
+    .legend-t   { font: 500 10px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+  </style>
+
+  <defs>
+    <marker id="a-rule" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 z" fill="var(--rule)"/>
+    </marker>
+    <marker id="a-ci" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 z" fill="var(--ci)"/>
+    </marker>
+  </defs>
+
+  <rect class="frame" x="0.5" y="0.5" width="1199" height="659" rx="6"/>
+
+  <!-- ============== HEADER ============== -->
+  <text class="eyebrow" x="24" y="30">SELF-HOSTED  ·  SMALLER MODELS  ·  NO CACHING TAX</text>
+  <text class="hero"    x="24" y="64">The smaller your model, the bigger the <tspan class="hero-win">win</tspan>.</text>
+  <text class="hero-sub" x="24" y="86">Plain Markdown. 8k context fits. No prompt-caching layer needed. Drops into every local runtime.</text>
+
+  <!-- legend top right — tightened spacing, moved left so all 3 fit inside x≤1176 -->
+  <g transform="translate(736 22)">
+    <rect class="bar-fail-fill" x="0" y="0" width="14" height="10" rx="2"/>
+    <text class="legend-t" x="20" y="9">monolithic (overflow)</text>
+    <rect class="bar-win-skill" x="140" y="0" width="14" height="10" rx="2"/>
+    <text class="legend-t" x="160" y="9">skill-everything (fits)</text>
+    <rect class="bar-headroom" x="280" y="0" width="14" height="10" rx="2"/>
+    <text class="legend-t" x="300" y="9">headroom for prompt</text>
+  </g>
+
+  <!-- ============== SWIMLANES ============== -->
+  <line x1="24" y1="110" x2="1176" y2="110" class="lane"/>
+  <line x1="24" y1="395" x2="1176" y2="395" class="lane"/>
+  <text class="lane-label" x="30" y="125">CONTEXT WINDOW  ·  Llama 3 8B  ·  8,192 tokens (1 char = ~80 tokens, locked scale)</text>
+  <text class="lane-label" x="30" y="410">FIVE LOCAL RUNTIMES  ·  same plain Markdown, zero re-authoring</text>
+
+  <!--
+    Bar geometry:
+    Track total width = 800 px → represents 8k window scale.
+    1 token ≈ 0.1 px. Origin x = 200, end x = 1000.
+    Monolithic bar: 10,000 tok → drawn 1000 px wide, overflows window by 200 px.
+    skill-everything bar: 1,600 tok → 160 px wide.
+    Headroom: 6,400 tok → 640 px wide (light dashed).
+
+    Vertical layout — window frame y=160..360, frame fully encloses both bars + their verdict.
+      y=170..174 : window-frame top labels
+      y=180..220 : MONO bar (40 px tall)
+      y=232      : MONO verdict line
+      y=252..292 : SKILL-EVERYTHING bar (40 px tall)
+      y=304      : SKILL-EVERYTHING verdict line
+      y=320..344 : token-summary annotations BELOW second bar
+  -->
+
+  <!-- WINDOW FRAME — encloses both bars + their inline verdict lines -->
+  <rect class="window-frame" x="200" y="148" width="800" height="208" rx="4"/>
+  <text class="window-cap-l" x="208" y="142">8k WINDOW</text>
+  <text class="window-cap-l" x="992" y="142" text-anchor="end">8,192 tok</text>
+
+  <!-- Row 1 — MONOLITHIC: overflows window -->
+  <text class="bar-head-text" x="24" y="186">Monolithic prompt</text>
+  <text class="bar-cap"       x="24" y="204">.cursorrules / system</text>
+
+  <!-- bar fills 0..800 (8k worth) -->
+  <rect class="bar-fail-fill" x="200" y="178" width="800" height="40" rx="3"/>
+  <!-- overflow visualisation — extends past the window -->
+  <rect class="bar-fail-over" x="1000" y="178" width="160" height="40" rx="3"/>
+  <text class="bar-fail-l"    x="208" y="204">10,000+ TOKENS  ·  WON'T LOAD</text>
+  <text class="bar-fail-tok"  x="1080" y="204" text-anchor="middle">+ 1,800</text>
+  <text class="bar-cap"       x="1080" y="218" text-anchor="middle">overflow</text>
+
+  <!-- MONO verdict — placed BETWEEN the two bars (y=240). Window frame top y=148, frame bottom y=356. -->
+  <text class="verdict-fail" x="208" y="240">DOES NOT FIT  ·  10k overflows the 8k window</text>
+
+  <!-- Row 2 — SKILL-EVERYTHING: 1,600 tok, fits with 6,400 headroom -->
+  <text class="bar-head-text" x="24" y="278">Skill-Everything</text>
+  <text class="bar-cap"       x="24" y="296">router + 1 sub-skill</text>
+
+  <!-- router segment (800 tok = 80 px) -->
+  <rect class="bar-win-router" x="200" y="262" width="80" height="40" rx="3"/>
+  <!-- sub-skill segment (800 tok = 80 px) -->
+  <rect class="bar-win-skill"  x="280" y="262" width="80" height="40" rx="3"/>
+  <!-- headroom (6,400 tok = 640 px) -->
+  <rect class="bar-headroom"   x="360" y="262" width="640" height="40" rx="3"/>
+
+  <!-- segment labels INSIDE the bars: vertically centred (font 11px, baseline at y=287 for 40 px tall bar y=262..302) -->
+  <text class="bar-segment-l"  x="240" y="287" text-anchor="middle">router</text>
+  <text class="bar-segment-l"  x="320" y="287" text-anchor="middle">+1 skill</text>
+  <text class="bar-headroom-l" x="680" y="287" text-anchor="middle">~6,400 tok headroom — conversation · tool calls · reasoning</text>
+
+  <!-- SKILL-EVERYTHING verdict — same row pattern as MONO verdict, below sub-skill bar (y=326) -->
+  <text class="verdict-win"    x="208" y="326">FITS COMFORTABLY  ·  ~1,600 tok = 20% of an 8k window</text>
+
+  <!-- ============== FOUR FACTS STRIP — well below window frame (y=356), at y=380 ============== -->
+  <g transform="translate(24 374)">
+    <text class="fact-key-ci" x="0"   y="0">8k FITS</text>
+    <text class="fact-meta"   x="0"   y="14">won't OOM your local box</text>
+
+    <text class="fact-key-ci" x="296" y="0">NO CACHING TAX</text>
+    <text class="fact-meta"   x="296" y="14">no prompt-cache layer needed</text>
+
+    <text class="fact-key-ci" x="592" y="0">SHARPER NEEDLE</text>
+    <text class="fact-meta"   x="592" y="14">matched skill on top, every turn</text>
+
+    <text class="fact-key-ci" x="888" y="0">SELF-HOSTED</text>
+    <text class="fact-meta"   x="888" y="14">your hardware, your weights, private</text>
+  </g>
+
+  <!-- ============== HUB + 5 RUNTIME CHIPS ============== -->
+  <!-- hub centre, large agent box (skill-everything) -->
+  <g transform="translate(490 432)">
+    <rect class="hub" x="0" y="0" width="220" height="78" rx="6"/>
+    <text class="hub-eyebrow" x="14" y="20">SOURCE  ·  PORTABLE</text>
+    <text class="hub-title"   x="14" y="42">skill-everything</text>
+    <text class="hub-meta"    x="14" y="60">plain Markdown  ·  ~1.6k / msg</text>
+    <text class="hub-meta"    x="14" y="74">git-versioned  ·  schema-validated</text>
+  </g>
+
+  <!-- 5 chips, evenly spaced across width 1152, y=540..590 -->
+  <!-- chip width 192, gap 48 → 5*192 + 4*48 = 1152 -->
+  <g transform="translate(24 540)">
+    <rect class="chip" x="0"   y="0" width="192" height="50" rx="6"/>
+    <text class="chip-name" x="96" y="22" text-anchor="middle">Ollama</text>
+    <text class="chip-meta" x="96" y="38" text-anchor="middle">drop-in CLI runtime</text>
+
+    <rect class="chip" x="240" y="0" width="192" height="50" rx="6"/>
+    <text class="chip-name" x="336" y="22" text-anchor="middle">llama.cpp</text>
+    <text class="chip-meta" x="336" y="38" text-anchor="middle">C/C++ inference, GGUF</text>
+
+    <rect class="chip" x="480" y="0" width="192" height="50" rx="6"/>
+    <text class="chip-name" x="576" y="22" text-anchor="middle">vLLM</text>
+    <text class="chip-meta" x="576" y="38" text-anchor="middle">throughput-tuned server</text>
+
+    <rect class="chip" x="720" y="0" width="192" height="50" rx="6"/>
+    <text class="chip-name" x="816" y="22" text-anchor="middle">LM Studio</text>
+    <text class="chip-meta" x="816" y="38" text-anchor="middle">desktop UI runtime</text>
+
+    <rect class="chip" x="960" y="0" width="192" height="50" rx="6"/>
+    <text class="chip-name" x="1056" y="22" text-anchor="middle">MLX</text>
+    <text class="chip-meta" x="1056" y="38" text-anchor="middle">Apple Silicon native</text>
+  </g>
+
+  <!-- arrows from hub bottom (y=510) to chip tops (y=540).
+       Hub bottom centres at x=600. Chip top centres: 120, 360, 600, 840, 1080. -->
+  <line x1="540" y1="510" x2="120"  y2="540" class="arrow-ci" marker-end="url(#a-ci)"/>
+  <line x1="570" y1="510" x2="360"  y2="540" class="arrow-ci" marker-end="url(#a-ci)"/>
+  <line x1="600" y1="510" x2="600"  y2="540" class="arrow-ci" marker-end="url(#a-ci)"/>
+  <line x1="630" y1="510" x2="840"  y2="540" class="arrow-ci" marker-end="url(#a-ci)"/>
+  <line x1="660" y1="510" x2="1080" y2="540" class="arrow-ci" marker-end="url(#a-ci)"/>
+
+  <!-- ============== STRAP ============== -->
+  <g transform="translate(24 600)">
+    <rect class="strap-bg" x="0" y="0" width="1152" height="40" rx="6"/>
+    <text class="strap-text" x="20" y="18">8k context fits.  No caching tax.  Self-hosted by design.</text>
+    <text class="strap-meta" x="20" y="34">Same plain Markdown. Five local runtimes. Zero re-authoring — beyond fine-tuning, beyond vector DBs, beyond black-box memory.</text>
+  </g>
+
+  <!-- footer -->
+  <text class="footer" x="24"   y="652">skill-everything  /  docs/self-hosted-models.svg</text>
+  <text class="footer" x="1176" y="652" text-anchor="end">10,000 tok overflows · 1,600 tok fits · 84% smaller per message</text>
+</svg>

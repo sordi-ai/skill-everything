@@ -200,6 +200,8 @@ Skill-everything's router pattern is **custom-made for self-hosted and quantized
 - **Sharper needle-in-haystack.** Smaller models lose accuracy fast as context grows. Loading exactly the matched sub-skill puts the **relevant rule on top, where the model can actually use it** — the difference between a hallucinated convention and a clean call.
 - **Self-hosted by design.** Plain Markdown, no SaaS, no API key, no vector DB. Drops into any local runtime — **your domain knowledge stays on your hardware, your agents stay private**.
 
+![Self-hosted & smaller models — context-window comparison shows monolithic 10,000+ tokens overflowing the 8k Llama 3 8B window, while skill-everything's ~1,600-token footprint fits comfortably with ~6,400 tokens of headroom for conversation, tool calls, and reasoning. Plus four facts (8k fits, no caching tax, sharper needle, self-hosted) and a fan-out from skill-everything to five local runtimes: Ollama, llama.cpp, vLLM, LM Studio, MLX. The smaller your model, the bigger the win.](./docs/self-hosted-models.svg)
+
 **Built for every model. Best on the small ones.**
 
 ---
