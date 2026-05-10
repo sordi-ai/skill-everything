@@ -162,16 +162,16 @@ This is portable agent memory done the boring way: plain Markdown, git-versioned
 
 | Sub-skill | Path | Tokens (real, tiktoken cl100k) |
 |---|---|---:|
-| `code-quality` | `references/development/code-quality.md` | ~1,000 |
-| `python` | `references/development/python.md` | ~2,000 |
-| `typescript` | `references/development/typescript.md` | ~2,300 |
-| `react` | `references/development/react.md` | ~2,400 |
-| `git-conventions` | `references/git/conventions.md` | ~650 |
-| `review-deployment` | `references/process/review-deployment.md` | ~800 |
+| `code-quality` | `references/development/code-quality.md` | ~850 |
+| `python` | `references/development/python.md` | ~1,600 |
+| `typescript` | `references/development/typescript.md` | ~1,850 |
+| `react` | `references/development/react.md` | ~1,750 |
+| `git-conventions` | `references/git/conventions.md` | ~500 |
+| `review-deployment` | `references/process/review-deployment.md` | ~600 |
 | `domain-template` | `references/domain/template.md` | ~850 |
-| `error-log` | `references/errors/error-log.md` | ~1,200 |
-| `self-extension-workflow` | `references/errors/self-extension-workflow.md` | ~1,100 |
-| **Total if all loaded** | — | **~12,300** |
+| `error-log` | `references/errors/error-log.md` | ~1,500 |
+| `self-extension-workflow` | `references/errors/self-extension-workflow.md` | ~1,750 |
+| **Total if all loaded** | — | **~11,550** |
 | **Typical (router + 1–2 skills)** | depends on task | **~1,800–3,500** |
 
 <!-- token-table:end -->
