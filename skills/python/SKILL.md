@@ -3,7 +3,7 @@ name: python
 description: Apply when writing Python code. Type hints, error handling, mutable defaults, async patterns, and packaging conventions.
 license: MIT
 version: 1.0.0
-tokens_target: 2000
+tokens_target: 2200
 triggers:
   - python code
   - type hints
@@ -14,10 +14,17 @@ supersedes: []
 ---
 
 # Sub-Skill: Python Best Practices
-<!-- target: ~2000 tokens (real tiktoken count) | 20 rules -->
+<!-- target: ~2200 tokens (real tiktoken count) | 20 rules with severity classification -->
 
-**Purpose:** Prevents the Python-specific mistakes LLMs make on autopilot — mutable defaults,
-bare excepts, missing guards, and subtle performance traps that pass review but break in production.
+**Purpose:** Prevents the Python-specific mistakes LLMs make on autopilot — mutable defaults, bare excepts, missing guards, and subtle performance traps that pass review but break in production.
+
+## Rule classification
+
+- **MUST** — load-bearing. Violating causes bugs, security issues, or invisible failures. Never break.
+- **SHOULD** — default behavior. Deviation needs a documented reason in the code or PR.
+- **AVOID** — usually wrong; documented exception inline where needed.
+
+**Where these rules don't strictly apply:** test fixtures, generated code, throwaway scripts, REPL exploration, and tutorial snippets may legitimately differ. The rules below apply to **production code paths and reusable libraries**.
 
 ---
 
@@ -25,24 +32,19 @@ bare excepts, missing guards, and subtle performance traps that pass review but 
 
 ### Type Hints
 
-1. **Always annotate function signatures with types.** `def process(data)` tells callers nothing.
-   Use `def process(data: list[str]) -> dict[str, int]:`. Return type `None` must be explicit too.
+1. **SHOULD: Annotate function signatures with types.** `def process(data)` tells callers nothing. Use `def process(data: list[str]) -> dict[str, int]:`. Return type `None` should be explicit too. *Exception: lambdas and short generator helpers in private scope.*
 
-2. **Never use `List`, `Dict`, `Tuple` from `typing` for Python 3.9+.** Use the built-in lowercase
-   forms directly: `list[str]`, `dict[str, int]`, `tuple[int, ...]`.
+2. **SHOULD: Use built-in lowercase generics for Python 3.9+.** `list[str]`, `dict[str, int]`, `tuple[int, ...]` rather than `List`, `Dict`, `Tuple` from `typing`.
 
-3. **Always use `Optional[X]` or `X | None` for nullable parameters, never a bare default of `None`
-   without a type annotation.** `def find(id: int) -> User | None:` not `def find(id):`.
+3. **MUST: Use `Optional[X]` or `X | None` for nullable parameters, never a bare default of `None` without a type annotation.** `def find(id: int) -> User | None:` not `def find(id):`.
 
-4. **Never use `Any` as a shortcut.** If the type is genuinely unknown, document why with a comment.
-   `Any` silences the type checker and hides bugs.
+4. **AVOID: `Any` as a shortcut.** If the type is genuinely unknown, document why with a comment. `Any` silences the type checker and hides bugs. *Exception: third-party libraries without stubs and explicit dynamic-data boundaries (e.g. JSON decode at the API edge).*
 
 ---
 
 ### Error Handling
 
-5. **Never use bare `except:`.** It catches `SystemExit`, `KeyboardInterrupt`, and `GeneratorExit`.
-   Always catch `except Exception:` at minimum, or a specific exception class.
+5. **MUST: Never use bare `except:`.** It catches `SystemExit`, `KeyboardInterrupt`, and `GeneratorExit`. Always catch `except Exception:` at minimum, or a specific exception class.
 
    ```python
    # Wrong
@@ -58,18 +60,15 @@ bare excepts, missing guards, and subtle performance traps that pass review but 
        logger.warning("Invalid value: %s", e)
    ```
 
-6. **Never silently swallow exceptions with `pass`.** At minimum log the error. Silent failures
-   produce ghost bugs that are impossible to trace.
+6. **MUST: Never silently swallow exceptions with `pass`.** At minimum log the error. Silent failures produce ghost bugs that are impossible to trace.
 
-7. **Always raise with context when re-raising.** Use `raise NewError("msg") from original_error`
-   to preserve the traceback chain, not `raise NewError("msg")` alone.
+7. **SHOULD: Raise with context when re-raising.** Use `raise NewError("msg") from original_error` to preserve the traceback chain, not `raise NewError("msg")` alone.
 
 ---
 
 ### Common Pitfalls
 
-8. **Never use mutable default arguments.** Python evaluates defaults once at function definition,
-   not per call. The list or dict is shared across all calls.
+8. **MUST: Never use mutable default arguments.** Python evaluates defaults once at function definition, not per call. The list or dict is shared across all calls.
 
    ```python
    # Wrong — items accumulates across calls
@@ -85,11 +84,9 @@ bare excepts, missing guards, and subtle performance traps that pass review but 
        return items
    ```
 
-9. **Always guard script entry points with `if __name__ == "__main__":`.** Without it, importing
-   the module executes top-level code, breaking tests and imports.
+9. **MUST: Guard script entry points with `if __name__ == "__main__":`.** Without it, importing the module executes top-level code, breaking tests and imports.
 
-10. **Always use `with` for file handles, sockets, and locks.** Never open a file without a context
-    manager. `f = open(...)` without `with` leaks handles on exceptions.
+10. **MUST: Use `with` for file handles, sockets, and locks.** Never open a file without a context manager. `f = open(...)` without `with` leaks handles on exceptions.
 
     ```python
     # Wrong
@@ -102,8 +99,7 @@ bare excepts, missing guards, and subtle performance traps that pass review but 
         data = f.read()
     ```
 
-11. **Never concatenate strings in loops.** Each `+=` on a string creates a new object.
-    Collect into a list and call `"".join(parts)` at the end.
+11. **AVOID: String concatenation in loops.** Each `+=` on a string creates a new object. Collect into a list and call `"".join(parts)` at the end.
 
     ```python
     # Wrong — O(n^2) memory
@@ -115,27 +111,23 @@ bare excepts, missing guards, and subtle performance traps that pass review but 
     result = " ".join(words)
     ```
 
-12. **Always use f-strings for string interpolation in Python 3.6+.** Never use `%` formatting or
-    `"Hello " + name`. F-strings are faster, safer, and readable.
+12. **SHOULD: Use f-strings for string interpolation in Python 3.6+.** Avoid `%` formatting or `"Hello " + name`. F-strings are faster, safer, and readable.
 
     ```python
-    # Wrong
+    # Avoid
     msg = "User %s has %d items" % (name, count)
 
-    # Correct
+    # Prefer
     msg = f"User {name} has {count} items"
     ```
 
-13. **Never use `dict()` constructor when a literal suffices.** `{}` is faster and more idiomatic.
-    `dict(key=value)` is only justified when keys are dynamic or come from variables.
+13. **AVOID: `dict()` constructor when a literal suffices.** `{}` is faster and more idiomatic. `dict(key=value)` is only justified when keys are dynamic or come from variables.
 
 ---
 
 ### Performance
 
-14. **Always use list comprehensions or generator expressions instead of `map`/`filter` with
-    `lambda`.** Comprehensions are more readable and equally fast. Use generators when the full
-    list is not needed at once.
+14. **SHOULD: Use list comprehensions or generator expressions instead of `map`/`filter` with `lambda`.** Comprehensions are more readable and equally fast. Use generators when the full list is not needed at once.
 
     ```python
     # Avoid
@@ -148,8 +140,7 @@ bare excepts, missing guards, and subtle performance traps that pass review but 
     total = sum(x * 2 for x in items)
     ```
 
-15. **Never check membership in a list when a set suffices.** `x in list` is O(n).
-    `x in set` is O(1). Convert once, query many times.
+15. **SHOULD: Use a `set` for membership lookups, not a `list`.** `x in list` is O(n). `x in set` is O(1). Convert once, query many times.
 
     ```python
     # Wrong for repeated lookups
@@ -165,14 +156,11 @@ bare excepts, missing guards, and subtle performance traps that pass review but 
 
 ### Testing
 
-16. **Always name test functions to describe the scenario, not just the function under test.**
-    `test_process_returns_empty_dict_on_empty_input` not `test_process`.
+16. **SHOULD: Name test functions to describe the scenario, not just the function under test.** `test_process_returns_empty_dict_on_empty_input` not `test_process`.
 
-17. **Never use `assert` statements in production code for validation.** `assert` is stripped with
-    `python -O`. Use explicit `if` checks with `raise ValueError(...)` for runtime validation.
+17. **MUST: Never use `assert` statements in production code for validation.** `assert` is stripped with `python -O`. Use explicit `if` checks with `raise ValueError(...)` for runtime validation.
 
-18. **Always use `pytest.raises` as a context manager to assert exceptions, never wrap in
-    try/except inside a test.** A bare try/except can mask a missing exception.
+18. **MUST: Use `pytest.raises` as a context manager to assert exceptions, never wrap in try/except inside a test.** A bare try/except can mask a missing exception.
 
     ```python
     # Wrong
@@ -192,12 +180,9 @@ bare excepts, missing guards, and subtle performance traps that pass review but 
 
 ### Packaging
 
-19. **Always include `__init__.py` in every package directory.** Without it, Python 3 treats the
-    directory as a namespace package, which breaks relative imports and tool discovery in many
-    environments.
+19. **SHOULD: Include `__init__.py` in every package directory.** Without it, Python 3 treats the directory as a namespace package, which breaks relative imports and tool discovery in many environments. *Exception: explicit namespace packages (PEP 420) where the omission is documented intent.*
 
-20. **Never import from `__init__.py` inside the same package's submodules.** This creates circular
-    imports. Keep `__init__.py` as a re-export surface only, not a logic file.
+20. **AVOID: Imports from `__init__.py` inside the same package's submodules.** This creates circular imports. Keep `__init__.py` as a re-export surface only, not a logic file.
 
 ---
 
@@ -211,4 +196,4 @@ These rules target the exact failure modes that appear in LLM-generated Python:
 - Missing type annotations and `Any` shortcuts defeat the entire value of static analysis.
 - Skipping `with` for file handles causes resource leaks under load.
 
-None of these are caught by syntax checkers. All of them appear in production incidents.
+None of these are caught by syntax checkers. All of them appear in production incidents. The MUST/SHOULD/AVOID classification means the security/correctness rules are strict and the stylistic rules respect context.

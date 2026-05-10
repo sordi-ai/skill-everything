@@ -3,7 +3,7 @@ name: react
 description: Apply when writing React components. Hook discipline, state placement, performance, async cleanup, and list keys.
 license: MIT
 version: 1.0.0
-tokens_target: 2400
+tokens_target: 2600
 triggers:
   - react component
   - react hooks
@@ -15,43 +15,51 @@ supersedes: []
 ---
 
 # Sub-Skill: React Best Practices
-<!-- target: ~2400 tokens (real tiktoken count) | 17 rules -->
+<!-- target: ~2600 tokens (real tiktoken count) | 17 rules with severity classification -->
 
 **Purpose:** Prevents the React-specific mistakes LLMs make repeatedly — wrong state placement, stale closures, unnecessary re-renders, and broken async patterns. Concrete rules with code examples.
+
+## Rule classification
+
+- **MUST** — load-bearing. Violating causes infinite loops, stale data, leaked subscriptions, or invisible UI bugs. Never break.
+- **SHOULD** — default behavior. Deviation needs a documented reason in the code or PR.
+- **AVOID** — usually wrong; documented exception inline where needed.
+
+**Where these rules don't strictly apply:** test fixtures, Storybook stories, design-system primitives in isolation, and small in-tutorial demo components may legitimately differ. The rules below apply to **production application code**.
 
 ---
 
 ## Component Design
 
-1. **Co-locate state with the component that owns it.** Lift state only when two siblings genuinely share it. Lifting to a grandparent "just in case" causes unnecessary re-renders across the tree.
+1. **SHOULD: Co-locate state with the component that owns it.** Lift state only when two siblings genuinely share it. Lifting to a grandparent "just in case" causes unnecessary re-renders across the tree.
 
    ```tsx
-   // Wrong: form state lifted to page-level parent
+   // Avoid: form state lifted to page-level parent
    function Page() {
      const [email, setEmail] = useState('');
      return <Form email={email} setEmail={setEmail} />;
    }
 
-   // Correct: state lives in the component that uses it
+   // Prefer: state lives in the component that uses it
    function Form() {
      const [email, setEmail] = useState('');
      return <input value={email} onChange={e => setEmail(e.target.value)} />;
    }
    ```
 
-2. **Split components at 100 lines or when a section has its own data concern.** One component = one responsibility. Extract `<UserAvatar>`, `<OrderSummary>` rather than one `<ProfilePage>` that does everything.
+2. **SHOULD: Split components at ~100 lines or when a section has its own data concern.** One component = one responsibility. Extract `<UserAvatar>`, `<OrderSummary>` rather than one `<ProfilePage>` that does everything. *Exception: pages that are mostly markup with little logic may exceed 100 lines.*
 
-3. **Replace prop drilling beyond two levels with composition or context.** Passing `userId` through four components to reach a button is a design smell.
+3. **SHOULD: Replace prop drilling beyond two levels with composition or context.** Passing `userId` through four components to reach a button is a design smell.
 
    ```tsx
-   // Wrong: drilling through intermediaries
+   // Avoid: drilling through intermediaries
    <Layout userId={userId}><Sidebar userId={userId}><Nav userId={userId} /></Sidebar></Layout>
 
-   // Correct: context or render-prop composition
+   // Prefer: context or render-prop composition
    <UserContext.Provider value={userId}><Layout /></UserContext.Provider>
    ```
 
-4. **Never create component definitions inside render.** Inner components are recreated on every render, destroying their state and forcing full remounts.
+4. **MUST: Never create component definitions inside render.** Inner components are recreated on every render, destroying their state and forcing full remounts.
 
    ```tsx
    // Wrong
@@ -69,7 +77,7 @@ supersedes: []
 
 ## State Management
 
-5. **Never mutate state directly.** React compares references. Mutating in place skips re-renders silently.
+5. **MUST: Never mutate state directly.** React compares references. Mutating in place skips re-renders silently.
 
    ```tsx
    // Wrong
@@ -81,18 +89,18 @@ supersedes: []
    setItems(prev => [...prev, newItem]);
    ```
 
-6. **Compute derived values in render, not in useEffect.** If a value can be calculated from existing state/props, calculate it inline. useEffect for derived state creates a one-render lag and extra state variables.
+6. **SHOULD: Compute derived values in render, not in useEffect.** If a value can be calculated from existing state/props, calculate it inline. useEffect for derived state creates a one-render lag and extra state variables.
 
    ```tsx
-   // Wrong
+   // Avoid
    const [fullName, setFullName] = useState('');
    useEffect(() => { setFullName(`${first} ${last}`); }, [first, last]);
 
-   // Correct
+   // Prefer
    const fullName = `${first} ${last}`;
    ```
 
-7. **Use useRef for values that must not trigger re-renders** (timers, DOM nodes, previous values). Use useState for anything the UI depends on. Mixing them causes invisible bugs.
+7. **MUST: Use useRef for values that must not trigger re-renders** (timers, DOM nodes, previous values). Use useState for anything the UI depends on. Mixing them causes invisible bugs.
 
    ```tsx
    // Wrong: ref for displayed value
@@ -110,7 +118,7 @@ supersedes: []
 
 ## Hooks
 
-8. **Always specify complete dependency arrays in useEffect.** Omitting a dependency creates a stale closure. The ESLint rule `exhaustive-deps` must be enabled and respected.
+8. **MUST: Specify complete dependency arrays in useEffect.** Omitting a dependency creates a stale closure. The ESLint rule `exhaustive-deps` must be enabled and respected.
 
    ```tsx
    // Wrong: stale closure over userId
@@ -120,7 +128,7 @@ supersedes: []
    useEffect(() => { fetchUser(userId); }, [userId]);
    ```
 
-9. **Cancel async operations in useEffect cleanup.** Fetch without an AbortController causes state updates on unmounted components and race conditions.
+9. **MUST: Cancel async operations in useEffect cleanup.** Fetch without an AbortController causes state updates on unmounted components and race conditions.
 
    ```tsx
    useEffect(() => {
@@ -133,7 +141,7 @@ supersedes: []
    }, [id]);
    ```
 
-10. **Never call hooks conditionally or inside loops.** Hook call order must be identical on every render. Wrap conditional logic inside the hook body, not around the hook call.
+10. **MUST: Never call hooks conditionally or inside loops.** Hook call order must be identical on every render. Wrap conditional logic inside the hook body, not around the hook call.
 
     ```tsx
     // Wrong
@@ -147,20 +155,20 @@ supersedes: []
 
 ## Performance
 
-11. **Wrap expensive computations in useMemo, not inline.** Recalculating a sorted/filtered list on every render is the most common performance bug in React.
+11. **SHOULD: Wrap expensive computations in useMemo, not inline.** Recalculating a sorted/filtered list on every render is the most common performance bug in React. *Exception: small lists (<20 items) where the recompute is negligible — adding useMemo costs more than it saves.*
 
     ```tsx
-    // Wrong: re-sorts on every render including unrelated state changes
+    // Avoid: re-sorts on every render including unrelated state changes
     const sorted = items.sort((a, b) => a.name.localeCompare(b.name));
 
-    // Correct
+    // Prefer
     const sorted = useMemo(
       () => [...items].sort((a, b) => a.name.localeCompare(b.name)),
       [items]
     );
     ```
 
-12. **Never create new object or array literals as props inline.** New references on every render break React.memo and cause child re-renders.
+12. **AVOID: New object or array literals as props inline.** New references on every render break React.memo and cause child re-renders. *Exception: when the consuming child is not memoised, the inline literal cost is negligible.*
 
     ```tsx
     // Wrong: new object reference every render
@@ -171,7 +179,7 @@ supersedes: []
     <Chart options={chartOptions} />
     ```
 
-13. **Use React.lazy and Suspense for routes and heavy components.** Bundling everything eagerly increases initial load time.
+13. **SHOULD: Use React.lazy and Suspense for routes and heavy components.** Bundling everything eagerly increases initial load time.
 
     ```tsx
     const Dashboard = React.lazy(() => import('./Dashboard'));
@@ -189,7 +197,7 @@ supersedes: []
 
 ## Lists & Keys
 
-14. **Never use array index as key when the list can reorder, filter, or grow.** Index keys cause React to reuse the wrong DOM nodes, breaking animations, form state, and focus.
+14. **MUST: Never use array index as key when the list can reorder, filter, or grow.** Index keys cause React to reuse the wrong DOM nodes, breaking animations, form state, and focus. *Exception: static, sort-stable lists that never filter — but stable IDs are still safer.*
 
     ```tsx
     // Wrong
@@ -203,17 +211,17 @@ supersedes: []
 
 ## Testing
 
-15. **Test behavior, not implementation.** Query by role/label, not by class name or component internals. Tests that break on refactors without behavior changes are noise.
+15. **SHOULD: Test behavior, not implementation.** Query by role/label, not by class name or component internals. Tests that break on refactors without behavior changes are noise.
 
     ```tsx
-    // Wrong
+    // Avoid
     expect(wrapper.find('.submit-btn').exists()).toBe(true);
 
-    // Correct
+    // Prefer
     expect(screen.getByRole('button', { name: /submit/i })).toBeInTheDocument();
     ```
 
-16. **Always test loading and error states, not just the happy path.** Components that render `null` silently on error are invisible bugs in production.
+16. **MUST: Test loading and error states, not just the happy path.** Components that render `null` silently on error are invisible bugs in production.
 
     ```tsx
     it('shows error message when fetch fails', async () => {
@@ -223,10 +231,10 @@ supersedes: []
     });
     ```
 
-17. **Mock at the network boundary, not at the module boundary.** Mocking `fetch` or using MSW keeps tests closer to real behavior than mocking `useUser` directly.
+17. **SHOULD: Mock at the network boundary, not at the module boundary.** Mocking `fetch` or using MSW keeps tests closer to real behavior than mocking `useUser` directly.
 
 ---
 
 ## Why This Sub-Skill Earns Stars
 
-These rules target the exact failure modes that appear in LLM-generated React code: state lifted too high, effects without cleanup, index keys, inline object props, and derived state stored redundantly. Each rule is actionable in a single code review comment and includes a before/after example that makes the correct pattern unambiguous.
+These rules target the exact failure modes that appear in LLM-generated React code: state lifted too high, effects without cleanup, index keys, inline object props, and derived state stored redundantly. Each rule is actionable in a single code review comment and includes a before/after example that makes the correct pattern unambiguous. The MUST/SHOULD/AVOID classification means hook-correctness rules are strict and stylistic rules respect context.

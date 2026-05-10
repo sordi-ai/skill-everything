@@ -141,16 +141,16 @@ A CI no-drift job runs `git diff --exit-code` against the regenerated loaders on
 
 | Sub-skill | Path | Tokens (real, tiktoken cl100k) |
 |---|---|---:|
-| `code-quality` | `skills/code-quality/SKILL.md` | ~1,000 |
-| `python` | `skills/python/SKILL.md` | ~1,600 |
-| `typescript` | `skills/typescript/SKILL.md` | ~1,900 |
-| `react` | `skills/react/SKILL.md` | ~1,800 |
+| `code-quality` | `skills/code-quality/SKILL.md` | ~1,300 |
+| `python` | `skills/python/SKILL.md` | ~1,850 |
+| `typescript` | `skills/typescript/SKILL.md` | ~2,150 |
+| `react` | `skills/react/SKILL.md` | ~2,050 |
 | `git-conventions` | `skills/git-conventions/SKILL.md` | ~550 |
 | `review-deployment` | `skills/review-deployment/SKILL.md` | ~650 |
 | `domain-template` | `skills/domain-template/SKILL.md` | ~900 |
 | `error-log` | `skills/error-log/SKILL.md` | ~2,150 |
 | `self-extension-workflow` | `skills/self-extension-workflow/SKILL.md` | ~1,850 |
-| **Total if all loaded** | — | **~12,600** |
+| **Total if all loaded** | — | **~13,600** |
 | **Typical (router + 1–2 skills)** | depends on task | **~1,800–3,500** |
 
 <!-- token-table:end -->

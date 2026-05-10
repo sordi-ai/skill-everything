@@ -3,7 +3,7 @@ name: code-quality
 description: Apply when writing or refactoring code. Generic rules to prevent the most common review comments — function length, naming, error handling, security, and tooling.
 license: MIT
 version: 1.0.0
-tokens_target: 1100
+tokens_target: 1500
 triggers:
   - writing code
   - refactoring
@@ -13,10 +13,17 @@ supersedes: []
 ---
 
 # Sub-Skill: Code Quality & Common Mistakes
-<!-- target: ~1000 tokens (real tiktoken count, see tools/render_readme_table.py) | 23 rules -->
+<!-- target: ~1500 tokens (real tiktoken count, see tools/render_readme_table.py) | 24 rules with severity classification -->
 
-**Purpose:** Prevents the 20% of mistakes that cause 80% of review comments.
-Concrete rules from real projects — no boilerplate.
+**Purpose:** Prevents the 20 % of mistakes that cause 80 % of review comments. Concrete rules from real projects — no boilerplate.
+
+## Rule classification
+
+- **MUST** — load-bearing. Violating causes bugs, security issues, or cross-team confusion. Never break.
+- **SHOULD** — default behavior. Deviation needs a documented reason in the code or PR.
+- **AVOID** — usually wrong; documented exception inline where needed.
+
+**Where these rules don't strictly apply:** test fixtures, generated code (parser tables, codegen output, schema-derived types), CLI bootstrap scripts, framework adapters, and migration scripts may legitimately differ. The rules below apply to **production code paths** unless an inline exception says otherwise.
 
 ---
 
@@ -24,55 +31,54 @@ Concrete rules from real projects — no boilerplate.
 
 ### Functions & Logic
 
-1. **Functions max. 30 lines.** Longer → split. No exceptions for "complex logic".
-2. **No boolean parameter as last argument.** `render(true)` is unreadable. Use enum or named object instead: `render({ withHeader: true })`.
-3. **Early return instead of nested if-blocks.** Nesting depth > 2 is a warning sign.
-4. **No magic numbers.** `if (status === 3)` → `if (status === OrderStatus.SHIPPED)`.
-5. **No double negation.** `if (!isNotValid)` → `if (isValid)`.
+1. **SHOULD: Functions under ~30 lines.** Longer → split where practical. Reduces cognitive load.
+2. **AVOID: Boolean as last argument.** `render(true)` is unreadable. Use enum or named-property: `render({ withHeader: true })`.
+3. **SHOULD: Early return over nested if-blocks.** Nesting depth > 2 is a warning sign.
+4. **SHOULD: No magic numbers.** `if (status === 3)` → `if (status === OrderStatus.SHIPPED)`.
+5. **AVOID: Double negation.** `if (!isNotValid)` → `if (isValid)`.
 
 ### Variables & Naming
 
-6. **Variable names describe content, not type.** `userList` instead of `arr`, `activeUserId` instead of `id`.
-7. **Temporary variables for complex expressions.** `const isEligible = age >= 18 && !isBanned;` instead of cramming it all into an `if`.
-8. **No abbreviations except established ones** (`id`, `url`, `ctx`, `req`, `res`). `usr`, `cfg`, `tmp` → spell them out.
+6. **SHOULD: Variable names describe content, not type.** `userList` instead of `arr`, `activeUserId` instead of `id`.
+7. **SHOULD: Temporary variables for complex expressions.** `const isEligible = age >= 18 && !isBanned;` instead of cramming it all into an `if`.
+8. **AVOID: Abbreviations except established ones** (`id`, `url`, `ctx`, `req`, `res`). `usr`, `cfg`, `tmp` → spell out.
 
 ### Error Handling
 
-9. **Every `async` call needs a `try/catch` or `.catch()`.** Unhandled promise rejections crash Node processes.
-10. **Never silently swallow error objects.** `catch (e) {}` is forbidden. At minimum: `logger.warn(e)`.
-11. **Error messages must include context.** `throw new Error('User not found: ' + userId)` not `throw new Error('Not found')`.
+9. **MUST: Every `async` call needs `try/catch` or `.catch()`.** Unhandled promise rejections crash Node processes.
+10. **MUST: Never silently swallow error objects.** `catch (e) {}` is forbidden. At minimum: `logger.warn(e)`.
+11. **MUST: Error messages must include context.** `throw new Error('User not found: ' + userId)` not `throw new Error('Not found')`.
 
 ### Imports & Dependencies
 
-12. **No circular imports.** When in doubt: run `madge --circular src/`.
-13. **External dependencies only in dedicated adapter files.** No direct `axios.get()` in business logic — always wrap through an interface.
-14. **Remove `console.log` before commit.** Use a pre-commit hook or linter rule `no-console`.
+12. **SHOULD: No circular imports.** When in doubt: run `madge --circular src/`.
+13. **SHOULD: External dependencies only in dedicated adapter files.** No direct `axios.get()` in business logic — always wrap through an interface.
+14. **MUST: Remove `console.log` before commit.** Use a pre-commit hook or linter rule `no-console`. *Exception: debug helpers behind a build-time `__DEV__` flag.*
 
 ### Tests
 
-15. **Every new function needs at least one happy-path test.** No merge without test coverage for new logic.
+15. **MUST: Every new function needs at least one happy-path test.** No merge without test coverage for new logic. *Exception: pure projection wrappers, single-line getters, and deprecated shims may rely on integration tests.*
 
 ### Performance
 
-16. **No DB queries in loops (N+1 problem).** Instead of `for (item of items) { await db.find(item.id) }` → use a JOIN or `WHERE id IN (...)` query.
-17. **Paginate large datasets.** Never `SELECT * FROM table` without `LIMIT`. API endpoints with lists need `?page=` and `?limit=`.
-18. **New WHERE clauses need indexes.** Before every new query: is there a matching DB index? Without index → full table scan on growing data.
-19. **Lazy loading for heavy operations.** Load data only when needed, not "just in case".
+16. **MUST: No DB queries in loops (N+1 problem).** Instead of `for (item of items) { await db.find(item.id) }` → use a JOIN or `WHERE id IN (...)` query.
+17. **MUST: Paginate large datasets.** Never `SELECT * FROM table` without `LIMIT`. API endpoints with lists need `?page=` and `?limit=`.
+18. **SHOULD: New `WHERE` clauses need indexes.** Before every new query: is there a matching DB index? Without index → full table scan on growing data.
+19. **SHOULD: Lazy loading for heavy operations.** Load data only when needed, not "just in case".
 
 ### Security
 
-20. **Never use user input directly in queries.** Always use prepared statements or ORM query builders. Applies to SQL, NoSQL, shell commands, and template engines.
-21. **New API endpoints need auth.** No endpoint without authentication and authorization — not even "internal" endpoints.
-22. **Never put secrets in code.** No API keys, passwords, or tokens in source code or comments. Always use environment variables.
-23. **Validate and sanitize user input.** At the system boundary (API entry): check type, length, format. Never trust blindly.
+20. **MUST: Never use user input directly in queries.** Always use prepared statements or ORM query builders. Applies to SQL, NoSQL, shell commands, and template engines.
+21. **MUST: New API endpoints need auth.** No endpoint without authentication and authorization — not even "internal" endpoints. *Exception: documented public-asset / health-check routes that explicitly opt out in code comments.*
+22. **MUST: Never put secrets in code.** No API keys, passwords, or tokens in source code or comments. Always use environment variables.
+23. **MUST: Validate and sanitize user input.** At the system boundary (API entry): check type, length, format. Never trust blindly.
 
 ### Tooling & Cross-Platform
 
-24. **Always prefix `docker run -v` from Git Bash / MSYS on Windows with `MSYS_NO_PATHCONV=1`.** MSYS auto-converts unquoted Linux paths to Windows paths before passing them to `docker.exe`, mangling bind-mount arguments. Use `MSYS_NO_PATHCONV=1 docker run -v "C:/path:/repo" ...` with explicit Windows-style host paths. Derived from `ERR-2026-013`.
+24. **MUST: Always prefix `docker run -v` from Git Bash / MSYS on Windows with `MSYS_NO_PATHCONV=1`.** MSYS auto-converts unquoted Linux paths to Windows paths before passing them to `docker.exe`, mangling bind-mount arguments. Use `MSYS_NO_PATHCONV=1 docker run -v "C:/path:/repo" ...` with explicit Windows-style host paths. Reference: `ERR-2026-013`.
 
 ---
 
 ## Why This Sub-Skill Earns Stars
 
-Without these rules, the agent produces code that works but immediately gets flagged in reviews.
-With these rules, it writes code that looks like it came from a senior developer — on the first try.
+Without these rules, the agent produces code that works but immediately gets flagged in reviews. With these rules, it writes code that looks like it came from a senior developer — on the first try. The MUST/SHOULD/AVOID classification means rules are followed strictly where they matter (security, error handling) and pragmatically where context matters (function length, lazy loading).
