@@ -6,6 +6,8 @@
 
 ### **84 % fewer input tokens · `$28` saved per 1,000 messages · same Markdown across four agent runtimes.**
 
+<sub>* vs. 10k-token monolithic baseline at Sonnet-class pricing — see [Token math](#token-math) for the assumptions.</sub>
+
 ### Never make the same mistake twice.
 
 ### The self-learning memory layer for AI agents — beyond fine-tuning.
