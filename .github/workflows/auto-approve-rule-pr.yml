@@ -1,0 +1,74 @@
+name: auto-approve-rule-pr
+
+# Defense-in-depth gate for rule-learning PRs.
+# Runs on every PR. If the PR is labelled `needs-rule-review`, the gate enforces:
+#   1. The diff is scoped to references/errors/** only.
+#   2. The head commit carries a Co-Authored-By: trailer (the maintainer
+#      explicitly co-author-acknowledges the agent's work).
+# If the label is absent, the gate exits 0 (normal PR path).
+# Final approval still requires a CODEOWNERS reviewer per .github/CODEOWNERS.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for needs-rule-review label
+        id: check_label
+        run: |
+          set -e
+          LABELS='${{ toJson(github.event.pull_request.labels) }}'
+          if echo "$LABELS" | grep -q '"name": *"needs-rule-review"'; then
+            echo "label_present=true" >> "$GITHUB_OUTPUT"
+            echo "needs-rule-review label present — gate enforced."
+          else
+            echo "label_present=false" >> "$GITHUB_OUTPUT"
+            echo "No needs-rule-review label — normal PR path, gate passes by default."
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.check_label.outputs.label_present == 'true'
+        with:
+          fetch-depth: 0
+
+      - name: Verify diff scope (only references/errors/** allowed)
+        if: steps.check_label.outputs.label_present == 'true'
+        run: |
+          set -e
+          BAD=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD" \
+                | grep -vE '^references/errors/' || true)
+          if [ -n "$BAD" ]; then
+            echo "::error::This PR touches files outside references/errors/. Rule-PRs must be scoped:"
+            echo "$BAD"
+            exit 1
+          fi
+          echo "Diff scope OK."
+
+      - name: Verify Co-Authored-By trailer present and non-self
+        if: steps.check_label.outputs.label_present == 'true'
+        env:
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          set -e
+          BODY=$(git log -1 --pretty=%B)
+          TRAILER=$(echo "$BODY" | grep -iE '^Co-[Aa]uthored-[Bb]y:' || true)
+          if [ -z "$TRAILER" ]; then
+            echo "::error::Missing Co-Authored-By: trailer in head commit."
+            echo "Self-extension PRs require an explicit co-author trailer:"
+            echo "  Co-Authored-By: Real Name <real@email>"
+            exit 1
+          fi
+          # Defense against self-co-authorship (PR author co-authoring themselves)
+          if echo "$TRAILER" | grep -qiE "@$PR_AUTHOR\\b|<$PR_AUTHOR@"; then
+            echo "::error::Co-Authored-By trailer matches PR author. Self-co-authorship is not a co-author."
+            echo "$TRAILER"
+            exit 1
+          fi
+          echo "Co-Authored-By trailer present and non-self."

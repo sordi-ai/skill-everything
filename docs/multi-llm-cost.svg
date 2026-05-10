@@ -1,0 +1,264 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
+  <title id="title">Multi-LLM token-cost comparison — Sonnet 4.5, Opus 4.7, Kimi 2.6, GPT-4o</title>
+  <desc id="desc">Per-provider cost comparison per 1,000 messages, monolithic versus skill-everything. Four rows of paired bars, one row per provider. Claude Sonnet 4.5 ($3 in / $15 out): monolithic $75 versus skill-everything $47, saving $28, 37% cheaper. Claude Opus 4.7 ($15 in / $75 out): monolithic $375 versus skill-everything $226, saving $149, 40% cheaper. Kimi 2.6 ($0.50 in / $2 out): monolithic $11 versus skill-everything $6.40, saving $4.60, 42% cheaper. GPT-4o ($2.50 in / $10 out): monolithic $55 versus skill-everything $33, saving $22, 40% cheaper. The architectural ratio — 84% input-token reduction — is constant across every provider. Bottom strap: same architecture, same 84%, four providers, $203.60 saved per 1,000 messages combined.</desc>
+
+  <style>
+    :root {
+      --bg:        #fbfbfa;
+      --ink:       #1a1d21;
+      --muted:     #5a6470;
+      --hairline:  #cfd5dc;
+      --rule:      #8b95a0;
+      --agent:     #3a5a7a;
+      --agent-fill:#eaf0f5;
+      --ci:        #1f7a4a;
+      --ci-fill:   #e6f3ec;
+      --human:     #b46a00;
+      --human-fill:#fbeed1;
+      --git:       #2b2f33;
+      --git-fill:  #eef0f2;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:        #11141a;
+        --ink:       #e6e9ee;
+        --muted:     #8a93a0;
+        --hairline:  #3a424d;
+        --rule:      #5a6470;
+        --agent:     #88aed3;
+        --agent-fill:#1a2330;
+        --ci:        #6fc093;
+        --ci-fill:   #14241c;
+        --human:     #e3a154;
+        --human-fill:#2a2014;
+        --git:       #c8cdd4;
+        --git-fill:  #181c22;
+      }
+    }
+
+    .frame      { fill: var(--bg); stroke: var(--hairline); }
+    .lane       { fill: none; stroke: var(--hairline); stroke-dasharray: 2 3; }
+    .lane-label { font: 700 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 0.8px; fill: var(--muted); }
+
+    .eyebrow    { font: 700 11px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 1.6px; fill: var(--muted); }
+    .hero       { font: 800 28px -apple-system, system-ui, sans-serif; letter-spacing: -0.5px; fill: var(--ink); }
+    .hero-win   { fill: var(--ci); }
+    .hero-sub   { font: 400 13px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+
+    /* legend swatches top-right */
+    .leg-sw-mono { fill: var(--human); }
+    .leg-sw-skill{ fill: var(--ci); }
+    .leg-text    { font: 600 10px ui-monospace, Consolas, monospace; fill: var(--ink); letter-spacing: 0.4px; }
+
+    /* central architectural-ratio chip */
+    .ratio-chip-bg   { fill: var(--ci-fill); stroke: var(--ci); stroke-width: 1.4; }
+    .ratio-chip-num  { font: 800 18px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--ci); letter-spacing: -0.3px; }
+    .ratio-chip-text { font: 700 11px -apple-system, system-ui, sans-serif; fill: var(--ci); letter-spacing: 0.4px; }
+    .ratio-chip-meta { font: 500 10px ui-monospace, Consolas, monospace; fill: var(--muted); letter-spacing: 0.3px; }
+
+    /* row: provider header */
+    .row-divider     { stroke: var(--hairline); stroke-width: 0.8; stroke-dasharray: 3 3; }
+    .prov-name       { font: 800 16px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--ink); letter-spacing: -0.3px; }
+    .prov-tier       { font: 700 9px ui-monospace, Consolas, monospace; fill: var(--muted); letter-spacing: 1.2px; }
+    .prov-pricing    { font: 500 11px ui-monospace, Consolas, monospace; fill: var(--muted); letter-spacing: 0.2px; }
+
+    /* provider markers */
+    .marker-sonnet { fill: var(--agent); }
+    .marker-opus   { fill: var(--git); }
+    .marker-kimi   { fill: var(--ci); }
+    .marker-gpt    { fill: var(--human); }
+
+    /* bars: mono (pain) vs skill (win) */
+    .bar-mono        { fill: var(--human); }
+    .bar-mono-stroke { fill: none; stroke: var(--human); stroke-width: 1; }
+    .bar-skill       { fill: var(--ci); fill-opacity: 0.20; stroke: var(--ci); stroke-width: 1.5; }
+    .bar-skill-cap   { fill: var(--ci); }
+
+    .bar-label-mono  { font: 700 12px ui-monospace, Consolas, monospace; fill: var(--bg); letter-spacing: 0.4px; }
+    .bar-label-skill { font: 700 12px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.4px; }
+    .bar-tag         { font: 600 10px ui-monospace, Consolas, monospace; fill: var(--muted); letter-spacing: 0.4px; }
+    .bar-tag-on-mono { font: 600 10px ui-monospace, Consolas, monospace; fill: var(--bg); letter-spacing: 0.4px; opacity: 0.92; }
+
+    /* cost numerals at right */
+    .cost-mono       { font: 700 18px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--human); }
+    .cost-skill      { font: 800 22px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--ci); letter-spacing: -0.4px; }
+
+    /* delta + percent column */
+    .delta-num       { font: 800 18px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--ci); letter-spacing: -0.3px; }
+    .delta-pct       { font: 700 12px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.4px; }
+    .delta-tag       { font: 500 9px ui-monospace, Consolas, monospace; fill: var(--muted); letter-spacing: 0.6px; }
+
+    /* strap */
+    .strap-bg        { fill: var(--ci-fill); stroke: var(--ci); stroke-width: 1.4; }
+    .strap-num       { font: 800 26px -apple-system, system-ui, sans-serif; fill: var(--ci); letter-spacing: -0.3px; }
+    .strap-text      { font: 700 13px -apple-system, system-ui, sans-serif; fill: var(--ci); }
+    .strap-meta      { font: 400 11px ui-monospace, Consolas, monospace; fill: var(--muted); }
+    .strap-meta-strong { font: 700 11px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.5px; }
+
+    .footer          { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
+  </style>
+
+  <rect class="frame" x="0.5" y="0.5" width="1199" height="719" rx="6"/>
+
+  <!-- ============== HEADER ============== -->
+  <text class="eyebrow"  x="24" y="32">MULTI-LLM TOKEN-COST  /  PER 1,000 MESSAGES  /  4 PROVIDERS</text>
+  <text class="hero"     x="24" y="68">Same architecture. Same <tspan class="hero-win">84%</tspan>. Every provider.</text>
+  <text class="hero-sub" x="24" y="92">10k-token monolithic baseline vs 1.6k skill-everything (with caching, ~50% effective). 3k output tok / msg. USD.</text>
+
+  <!-- legend top-right -->
+  <rect class="leg-sw-mono"  x="930" y="22" width="14" height="14" rx="2"/>
+  <text class="leg-text"     x="950" y="33">monolithic, no caching</text>
+  <rect class="leg-sw-skill" x="930" y="44" width="14" height="14" rx="2"/>
+  <text class="leg-text"     x="950" y="55">skill-everything, cached</text>
+
+  <!--
+    Geometry per provider row:
+      y_anchor: 158, 268, 378, 488  (110 px row-pitch)
+      x layout:
+        x=24..220  provider info column   (196 px)
+        x=240..820 dual-bar plot column   (580 px)  - same scale per row, normalized to mono = full width
+        x=830..980 cost-numerals column   (150 px) - mono$ stacked over skill$
+        x=996..1176 saved + % column      (180 px)
+
+      Per-row bar scaling (mono = full 580 px wide; skill scaled to mono ratio):
+        Sonnet  47/75 = 0.6267 -> 363.5 px
+        Opus    226/375 = 0.6027 -> 349.5 px
+        Kimi    6.4/11 = 0.5818 -> 337.4 px
+        GPT-4o  33/55 = 0.6000 -> 348.0 px
+      All ~constant ratio (~0.60) — visually demonstrates the architectural constancy.
+      Bar height: 26 px each, 8 px gap (mono on top, skill below)
+      Bar tops (per row): mono y_top = y_anchor - 24, skill y_top = y_anchor + 10
+  -->
+
+  <!-- ============== CENTRAL RATIO BANNER (between header and rows) ============== -->
+  <rect class="ratio-chip-bg" x="24" y="110" width="1152" height="32" rx="4"/>
+  <text class="ratio-chip-num"  x="40"  y="133">84%</text>
+  <text class="ratio-chip-text" x="78"  y="131">input-token reduction is constant across every provider.</text>
+  <text class="ratio-chip-meta" x="1160" y="131" text-anchor="end">10,000 -&gt; 1,600 tok/msg  ·  router + 1 sub-skill  ·  architectural, not provider-specific</text>
+
+  <!-- column headers (above first row) -->
+  <text class="lane-label" x="24"  y="158">PROVIDER</text>
+  <text class="lane-label" x="240" y="158">MONOLITHIC  vs  SKILL-EVERYTHING (per 1,000 msg)</text>
+  <text class="lane-label" x="830" y="158">COST</text>
+  <text class="lane-label" x="996" y="158">SAVED</text>
+
+  <!-- ============== ROW 1 — Claude Sonnet 4.5 (y_anchor 198) ============== -->
+  <line class="row-divider" x1="24" y1="170" x2="1176" y2="170"/>
+
+  <!-- provider info -->
+  <rect class="marker-sonnet" x="24" y="186" width="6" height="36" rx="1"/>
+  <text class="prov-tier"     x="40" y="183">CLAUDE</text>
+  <text class="prov-name"     x="40" y="204">Sonnet 4.5</text>
+  <text class="prov-pricing"  x="40" y="222">$3 / $15 per 1M</text>
+
+  <!-- bars -->
+  <!-- mono: 580 px = $75; skill: 363.47 px = $47 -->
+  <rect class="bar-mono"  x="240" y="178" width="580"     height="26" rx="3"/>
+  <text class="bar-label-mono" x="252" y="196">10,000 input tok / msg</text>
+  <text class="bar-tag-on-mono" x="816" y="196" text-anchor="end">monolithic</text>
+
+  <rect class="bar-skill" x="240" y="212" width="363.47"  height="26" rx="3"/>
+  <rect class="bar-skill-cap" x="240" y="212" width="6" height="26"/>
+  <text class="bar-label-skill" x="256" y="230">1,600 tok (~800 effective)</text>
+
+  <!-- cost numerals -->
+  <text class="cost-mono"  x="976" y="194" text-anchor="end">$75</text>
+  <text class="cost-skill" x="976" y="232" text-anchor="end">$47</text>
+
+  <!-- saved column -->
+  <text class="delta-num" x="996"  y="200">−$28</text>
+  <text class="delta-pct" x="996"  y="220">37% cheaper</text>
+  <text class="delta-tag" x="996"  y="234">PER 1,000 MSG</text>
+
+  <!-- ============== ROW 2 — Claude Opus 4.7 (y_anchor 308) ============== -->
+  <line class="row-divider" x1="24" y1="252" x2="1176" y2="252"/>
+
+  <!-- provider info -->
+  <rect class="marker-opus"   x="24" y="268" width="6" height="36" rx="1"/>
+  <text class="prov-tier"     x="40" y="265">CLAUDE</text>
+  <text class="prov-name"     x="40" y="286">Opus 4.7</text>
+  <text class="prov-pricing"  x="40" y="304">$15 / $75 per 1M</text>
+
+  <!-- bars: mono 580 px = $375; skill 349.55 px = $226 -->
+  <rect class="bar-mono"  x="240" y="260" width="580"     height="26" rx="3"/>
+  <text class="bar-label-mono" x="252" y="278">10,000 input tok / msg</text>
+  <text class="bar-tag-on-mono" x="816" y="278" text-anchor="end">monolithic</text>
+
+  <rect class="bar-skill" x="240" y="294" width="349.55"  height="26" rx="3"/>
+  <rect class="bar-skill-cap" x="240" y="294" width="6" height="26"/>
+  <text class="bar-label-skill" x="256" y="312">1,600 tok (~800 effective)</text>
+
+  <text class="cost-mono"  x="976" y="276" text-anchor="end">$375</text>
+  <text class="cost-skill" x="976" y="314" text-anchor="end">$226</text>
+
+  <text class="delta-num" x="996" y="282">−$149</text>
+  <text class="delta-pct" x="996" y="302">40% cheaper</text>
+  <text class="delta-tag" x="996" y="316">PER 1,000 MSG</text>
+
+  <!-- ============== ROW 3 — Kimi 2.6 (y_anchor 418) ============== -->
+  <line class="row-divider" x1="24" y1="334" x2="1176" y2="334"/>
+
+  <rect class="marker-kimi"   x="24" y="350" width="6" height="36" rx="1"/>
+  <text class="prov-tier"     x="40" y="347">MOONSHOT</text>
+  <text class="prov-name"     x="40" y="368">Kimi 2.6</text>
+  <text class="prov-pricing"  x="40" y="386">$0.50 / $2 per 1M</text>
+
+  <!-- bars: mono 580 px = $11; skill 337.45 px = $6.40 -->
+  <rect class="bar-mono"  x="240" y="342" width="580"     height="26" rx="3"/>
+  <text class="bar-label-mono" x="252" y="360">10,000 input tok / msg</text>
+  <text class="bar-tag-on-mono" x="816" y="360" text-anchor="end">monolithic</text>
+
+  <rect class="bar-skill" x="240" y="376" width="337.45"  height="26" rx="3"/>
+  <rect class="bar-skill-cap" x="240" y="376" width="6" height="26"/>
+  <text class="bar-label-skill" x="256" y="394">1,600 tok (~800 effective)</text>
+
+  <text class="cost-mono"  x="976" y="358" text-anchor="end">$11</text>
+  <text class="cost-skill" x="976" y="396" text-anchor="end">$6.40</text>
+
+  <text class="delta-num" x="996" y="364">−$4.60</text>
+  <text class="delta-pct" x="996" y="384">42% cheaper</text>
+  <text class="delta-tag" x="996" y="398">PER 1,000 MSG</text>
+
+  <!-- ============== ROW 4 — GPT-4o (y_anchor 528) ============== -->
+  <line class="row-divider" x1="24" y1="416" x2="1176" y2="416"/>
+
+  <rect class="marker-gpt"   x="24" y="432" width="6" height="36" rx="1"/>
+  <text class="prov-tier"    x="40" y="429">OPENAI</text>
+  <text class="prov-name"    x="40" y="450">GPT-4o</text>
+  <text class="prov-pricing" x="40" y="468">$2.50 / $10 per 1M</text>
+
+  <!-- bars: mono 580 px = $55; skill 348 px = $33 -->
+  <rect class="bar-mono"  x="240" y="424" width="580"     height="26" rx="3"/>
+  <text class="bar-label-mono" x="252" y="442">10,000 input tok / msg</text>
+  <text class="bar-tag-on-mono" x="816" y="442" text-anchor="end">monolithic</text>
+
+  <rect class="bar-skill" x="240" y="458" width="348"  height="26" rx="3"/>
+  <rect class="bar-skill-cap" x="240" y="458" width="6" height="26"/>
+  <text class="bar-label-skill" x="256" y="476">1,600 tok (~800 effective)</text>
+
+  <text class="cost-mono"  x="976" y="440" text-anchor="end">$55</text>
+  <text class="cost-skill" x="976" y="478" text-anchor="end">$33</text>
+
+  <text class="delta-num" x="996" y="446">−$22</text>
+  <text class="delta-pct" x="996" y="466">40% cheaper</text>
+  <text class="delta-tag" x="996" y="480">PER 1,000 MSG</text>
+
+  <line class="row-divider" x1="24" y1="500" x2="1176" y2="500"/>
+
+  <!-- ============== STRAP (bottom) ============== -->
+  <rect class="strap-bg" x="24" y="528" width="1152" height="116" rx="6"/>
+
+  <text class="strap-num"  x="48" y="572">$203.60 saved</text>
+  <text class="strap-text" x="48" y="596">across 4 providers, per 1,000 messages, without changing the architecture.</text>
+  <text class="strap-text" x="48" y="616">Local models (no caching tax) win even harder — see self-hosted-models.svg.</text>
+
+  <text class="strap-meta-strong" x="1152" y="566" text-anchor="end">architectural ratio = 84% input reduction</text>
+  <text class="strap-meta"        x="1152" y="586" text-anchor="end">$28 + $149 + $4.60 + $22 = $203.60</text>
+  <text class="strap-meta"        x="1152" y="604" text-anchor="end">Sonnet 37%  ·  Opus 40%  ·  Kimi 42%  ·  GPT-4o 40%</text>
+  <text class="strap-meta"        x="1152" y="622" text-anchor="end">tier-independent: same skills, every model</text>
+
+  <!-- ============== FOOTER ============== -->
+  <text class="footer" x="24"   y="690">10k mono baseline  ·  1.6k skill-everything  ·  3k output / msg  ·  caching: 50% effective on input  ·  pricing snapshot 2026-05</text>
+  <text class="footer" x="1176" y="690" text-anchor="end">skill-everything  /  docs/multi-llm-cost.svg</text>
+
+</svg>

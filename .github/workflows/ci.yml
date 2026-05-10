@@ -1,0 +1,99 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: test (${{ matrix.python }}, ${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.11", "3.12"]
+        os: [ubuntu-latest]
+        include:
+          - python: "3.12"
+            os: windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Lint (ruff check — blocking)
+        run: ruff check .
+      - name: Format check (advisory)
+        # Advisory until the maintainer has run `ruff format` locally and
+        # committed the result. The pre-commit hook handles formatting on
+        # contributor machines (.pre-commit-config.yaml).
+        continue-on-error: true
+        run: ruff format --check .
+      - name: Test
+        run: pytest -q
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    # gitleaks-action@v2 requires a paid licence for organisation accounts
+    # (gitleaks.io). We install the OSS binary directly so the scan stays
+    # free for community forks.
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install gitleaks
+        run: |
+          curl -fsSL -o gitleaks.tar.gz \
+            https://github.com/gitleaks/gitleaks/releases/download/v8.18.4/gitleaks_8.18.4_linux_x64.tar.gz
+          tar -xzf gitleaks.tar.gz gitleaks
+          sudo mv gitleaks /usr/local/bin/
+          gitleaks version
+      - name: Scan and report findings
+        run: |
+          gitleaks detect --no-banner --redact \
+                          --report-format json \
+                          --report-path gitleaks-report.json \
+                          --source . || EXIT=$?
+          if [ -f gitleaks-report.json ] && [ -s gitleaks-report.json ]; then
+            echo "::group::Gitleaks findings (file paths + rule IDs only)"
+            jq -r '.[] | "\(.RuleID)\t\(.File):\(.StartLine)\t\(.Description)"' gitleaks-report.json
+            echo "::endgroup::"
+          fi
+          exit ${EXIT:-0}
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitleaks-report
+          path: gitleaks-report.json
+
+  loaders-and-table-no-drift:
+    name: loaders + readme-table no-drift
+    runs-on: ubuntu-latest
+    # Advisory only: this job warns about drift but does not block merges.
+    # The pre-commit hook regenerates loaders + table locally; the CI run
+    # is here to surface the issue in PR conversation, not to gate merges.
+    # Promote to required check once the maintainer has run the generator
+    # at least once on the canonical branch and the outputs are stable.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - name: render_loaders --check
+        run: python tools/render_loaders.py --check
+      - name: render_readme_table --check
+        run: python tools/render_readme_table.py --check

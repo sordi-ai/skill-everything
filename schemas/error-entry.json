@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/sordi-ai/skill-everything/schemas/error-entry.json",
+  "title": "Error log entry",
+  "description": "Schema for entries in references/errors/error-log.md. Validated by tools/validate_rules.py in CI.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "date",
+    "category",
+    "severity",
+    "context",
+    "what_happened",
+    "root_cause",
+    "impact",
+    "resolution",
+    "new_rule",
+    "target_file"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^ERR-\\d{4}-\\d{3}$",
+      "description": "Sequential ID like ERR-2026-001."
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "When the error first occurred (YYYY-MM-DD)."
+    },
+    "last_seen": {
+      "type": "string",
+      "format": "date",
+      "description": "Most recent occurrence (update on repeat)."
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10000,
+      "description": "How many times this error has been observed (with derived rule active)."
+    },
+    "category": {
+      "enum": ["development", "git", "deployment", "security", "performance", "domain"]
+    },
+    "severity": {
+      "enum": ["critical", "high", "medium", "low"]
+    },
+    "context": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 600,
+      "description": "1-3 sentences: what task was being worked on, in what project."
+    },
+    "what_happened": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 1200,
+      "description": "What the agent actually did. Code snippet allowed inside fenced block."
+    },
+    "root_cause": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 800,
+      "description": "What false assumption caused this."
+    },
+    "impact": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 600,
+      "description": "Concrete consequences (downtime, data loss, time spent, etc.)."
+    },
+    "resolution": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 800,
+      "description": "What was done to fix the error."
+    },
+    "new_rule": {
+      "type": "string",
+      "minLength": 15,
+      "maxLength": 500,
+      "description": "Action directive starting with one of: Always, Never, Before, After, Prefer, Avoid, Use, Do, Ensure."
+    },
+    "target_file": {
+      "type": "string",
+      "pattern": "^references/(development|git|process|domain|errors)/[a-z0-9_-]+\\.md$",
+      "description": "Where the derived rule was added."
+    }
+  }
+}

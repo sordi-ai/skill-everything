@@ -1,0 +1,267 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 610" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
+  <title id="title">Memory to GO — cross-tool memory portability for skill-everything</title>
+  <desc id="desc">A single Markdown source — references/_index.yml plus nine self-learning sub-skills — is rendered into four loader files (CLAUDE.md, .cursorrules, GEMINI.md, SKILL.md) which load identically into four agent runtimes: Claude Code, Cursor, Gemini CLI, and OpenCode. A bidirectional "memory follows you across tools" arc on the runtime row demonstrates portability: stop Claude Code, start Gemini CLI — the same skills are present, no re-authoring required.</desc>
+
+  <style>
+    :root {
+      --bg:        #fbfbfa;
+      --ink:       #1a1d21;
+      --muted:     #5a6470;
+      --hairline:  #cfd5dc;
+      --rule:      #8b95a0;
+      --agent:     #3a5a7a;
+      --agent-fill:#eaf0f5;
+      --ci:        #1f7a4a;
+      --ci-fill:   #e6f3ec;
+      --human:     #b46a00;
+      --human-fill:#fbeed1;
+      --git:       #2b2f33;
+      --git-fill:  #eef0f2;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:        #11141a;
+        --ink:       #e6e9ee;
+        --muted:     #8a93a0;
+        --hairline:  #3a424d;
+        --rule:      #5a6470;
+        --agent:     #88aed3;
+        --agent-fill:#1a2330;
+        --ci:        #6fc093;
+        --ci-fill:   #14241c;
+        --human:     #e3a154;
+        --human-fill:#2a2014;
+        --git:       #c8cdd4;
+        --git-fill:  #181c22;
+      }
+    }
+
+    .frame      { fill: var(--bg); stroke: var(--hairline); }
+    .lane       { fill: var(--bg); stroke: var(--hairline); stroke-dasharray: 2 3; }
+    .lane-label { font: 700 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 0.8px; fill: var(--muted); }
+
+    .eyebrow    { font: 700 11px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 1.6px; fill: var(--muted); }
+    .hero       { font: 800 30px -apple-system, system-ui, sans-serif; letter-spacing: -0.6px; fill: var(--ink); }
+    .hero-go    { fill: var(--ci); }
+    .hero-sub   { font: 400 13px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+
+    .node       { fill: var(--agent-fill); stroke: var(--agent); stroke-width: 1.5; }
+    .node.ci    { fill: var(--ci-fill);    stroke: var(--ci); }
+    .node.git   { fill: var(--git-fill);   stroke: var(--git); }
+
+    .step-num   { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--muted); letter-spacing: 0.5px; }
+    .node-title { font: 700 13px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .node-sub   { font: 400 11px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+    .mono-tag   { font: 500 11px ui-monospace, Consolas, monospace; fill: var(--ink); }
+    .mono-dim   { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
+    .mono-ci    { font: 600 11px ui-monospace, Consolas, monospace; fill: var(--ci); }
+
+    .arrow      { stroke: var(--rule); stroke-width: 1.5; fill: none; }
+    .arrow.ci   { stroke: var(--ci); stroke-width: 1.5; fill: none; }
+    .arrow.same { stroke: var(--ci); stroke-width: 1.5; stroke-dasharray: 5 4; fill: none; }
+    .arrow.port { stroke: var(--ci); stroke-width: 2.5; fill: none; }
+
+    .chip       { fill: var(--bg); stroke: var(--hairline); }
+    .chip-text  { font: 500 10px ui-monospace, Consolas, monospace; fill: var(--ink); }
+    .chip-ci    { fill: var(--ci-fill); stroke: var(--ci); stroke-width: 1.2; }
+    .chip-ci-t  { font: 700 11px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.6px; }
+
+    .legend-t   { font: 500 10px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+
+    .strap-bg   { fill: var(--ci-fill); stroke: var(--ci); stroke-width: 1.5; }
+    .strap-text { font: 700 14px -apple-system, system-ui, sans-serif; fill: var(--ci); }
+    .strap-meta { font: 400 11px -apple-system, system-ui, sans-serif; fill: var(--ink); font-style: italic; }
+
+    .footer     { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
+    .annot      { font: 400 10px -apple-system, system-ui, sans-serif; fill: var(--muted); font-style: italic; }
+    .port-label { font: 700 11px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.6px; }
+
+    /* Suitcase handle — solid arc above source block */
+    .suitcase-handle { fill: none; stroke: var(--git); stroke-width: 3.5; stroke-linecap: round; }
+  </style>
+
+  <defs>
+    <marker id="a-rule" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 z" fill="var(--rule)"/>
+    </marker>
+    <marker id="a-ci" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 z" fill="var(--ci)"/>
+    </marker>
+    <marker id="a-port" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="11" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 z" fill="var(--ci)"/>
+    </marker>
+  </defs>
+
+  <!-- ============== FRAME ============== -->
+  <rect class="frame" x="0.5" y="0.5" width="1199" height="609" rx="6"/>
+
+  <!-- ============== HEADER ============== -->
+  <text class="eyebrow" x="24" y="30">PORTABLE  ·  SELF-LEARNING  ·  ZERO RE-AUTHORING</text>
+  <text class="hero"    x="24" y="64">Memory to <tspan class="hero-go">GO</tspan>  —  switch tools. skills come with.</text>
+  <text class="hero-sub" x="24" y="86">One Markdown source. Four agent runtimes. Identical memory in every one — no sync tools, no API lock-in, no re-authoring.</text>
+
+  <!-- legend top right -->
+  <g transform="translate(820 20)">
+    <rect class="node git" x="0" y="0" width="14" height="10" rx="2"/>
+    <text class="legend-t" x="20" y="9">source</text>
+    <rect class="node"     x="76" y="0" width="14" height="10" rx="2"/>
+    <text class="legend-t" x="96" y="9">loader output</text>
+    <rect class="node ci"  x="190" y="0" width="14" height="10" rx="2"/>
+    <text class="legend-t" x="210" y="9">runtime</text>
+    <line x1="270" y1="5" x2="292" y2="5" class="arrow port" marker-end="url(#a-port)"/>
+    <text class="legend-t" x="298" y="9">memory follows</text>
+  </g>
+
+  <!-- ============== SWIMLANES ==============
+       y=110..240   SOURCE
+       y=240..360   LOADER OUTPUT
+       y=360..510   FOUR AGENT RUNTIMES + portability arc
+       y=520..585   STRAP  -->
+  <line x1="24" y1="110" x2="1176" y2="110" class="lane"/>
+  <line x1="24" y1="240" x2="1176" y2="240" class="lane"/>
+  <line x1="24" y1="360" x2="1176" y2="360" class="lane"/>
+
+  <text class="lane-label" x="30"  y="125">SOURCE  ·  the portable asset</text>
+  <text class="lane-label" x="30"  y="255">LOADER OUTPUT  ·  rendered Markdown, one per tool</text>
+  <text class="lane-label" x="30"  y="375">FOUR AGENT RUNTIMES  ·  load the same memory, identically</text>
+
+  <!-- ============== THE PORTABLE ASSET ("suitcase") ==============
+       Centered: x=490..710, y=145..225.  Handle as solid arc above box.
+       -->
+  <g transform="translate(490 145)">
+    <!-- handle -->
+    <path d="M 70 0 Q 110 -20 150 0" class="suitcase-handle"/>
+    <!-- main source box -->
+    <rect class="node git" x="0" y="0" width="220" height="80" rx="6"/>
+    <text class="step-num"   x="12" y="16">SOURCE  ·  PORTABLE</text>
+    <text class="node-title" x="12" y="34">references/_index.yml</text>
+    <text class="mono-tag"   x="12" y="52">+ 9 self-learning sub-skills</text>
+    <text class="mono-dim"   x="12" y="68">code · python · git · errors · …</text>
+  </g>
+
+  <!-- left annotation chips -->
+  <g transform="translate(280 150)">
+    <rect class="chip" x="0" y="0" width="180" height="22" rx="3"/>
+    <text class="chip-text" x="8" y="14">id · title · path · triggers</text>
+    <rect class="chip" x="0" y="32" width="180" height="22" rx="3"/>
+    <text class="chip-text" x="8" y="46">4 loader-keys per skill</text>
+    <text class="annot"     x="0" y="74">single source of truth</text>
+  </g>
+
+  <!-- right capacity chip -->
+  <g transform="translate(740 150)">
+    <rect class="chip-ci" x="0" y="0" width="220" height="62" rx="4"/>
+    <text class="chip-ci-t"  x="14" y="22">9 SKILLS  ·  4 LOADER KEYS</text>
+    <text class="mono-ci"    x="14" y="40">composable · self-extending</text>
+    <text class="mono-ci"    x="14" y="55">token-capped · CI-validated</text>
+  </g>
+
+  <!-- arrow: source → fan-out trunk
+       Source bottom y=225.  Trunk drop to y=265, horizontal across,
+       then 4 vertical drops to loader-output box tops at y=294. -->
+  <line x1="600" y1="225" x2="600" y2="265" class="arrow"/>
+  <line x1="160" y1="265" x2="1040" y2="265" class="arrow"/>
+  <line x1="160"  y1="265" x2="160"  y2="294" class="arrow" marker-end="url(#a-rule)"/>
+  <line x1="430"  y1="265" x2="430"  y2="294" class="arrow" marker-end="url(#a-rule)"/>
+  <line x1="770"  y1="265" x2="770"  y2="294" class="arrow" marker-end="url(#a-rule)"/>
+  <line x1="1040" y1="265" x2="1040" y2="294" class="arrow" marker-end="url(#a-rule)"/>
+
+  <!-- annotation: render_loaders.py -->
+  <text class="annot" x="600" y="283" text-anchor="middle">render_loaders.py  ·  deterministic  ·  zero diff</text>
+
+  <!-- ============== LOADER OUTPUTS ==============
+       y=294..356.  -->
+  <g transform="translate(60 294)">
+    <rect class="node" x="0" y="0" width="200" height="62" rx="6"/>
+    <text class="step-num"   x="12" y="14">CLAUDE CODE</text>
+    <text class="node-title" x="12" y="32">CLAUDE.md</text>
+    <text class="mono-tag"   x="12" y="50">@references/development/…</text>
+  </g>
+
+  <g transform="translate(330 294)">
+    <rect class="node" x="0" y="0" width="200" height="62" rx="6"/>
+    <text class="step-num"   x="12" y="14">CURSOR</text>
+    <text class="node-title" x="12" y="32">.cursorrules</text>
+    <text class="mono-tag"   x="12" y="50">stub  ·  manual paste</text>
+  </g>
+
+  <g transform="translate(670 294)">
+    <rect class="node" x="0" y="0" width="200" height="62" rx="6"/>
+    <text class="step-num"   x="12" y="14">GEMINI CLI</text>
+    <text class="node-title" x="12" y="32">GEMINI.md</text>
+    <text class="mono-tag"   x="12" y="50">@references/…  ·  /memory show</text>
+  </g>
+
+  <g transform="translate(940 294)">
+    <rect class="node" x="0" y="0" width="200" height="62" rx="6"/>
+    <text class="step-num"   x="12" y="14">OPENCODE</text>
+    <text class="node-title" x="12" y="32">SKILL.md</text>
+    <text class="mono-tag"   x="12" y="50">skill_resource(skill_name=…)</text>
+  </g>
+
+  <!-- arrows: loader → runtime, in 360..420 corridor -->
+  <line x1="160" y1="356" x2="160" y2="408" class="arrow same" marker-end="url(#a-ci)"/>
+  <line x1="430" y1="356" x2="430" y2="408" class="arrow same" marker-end="url(#a-ci)"/>
+  <line x1="770" y1="356" x2="770" y2="408" class="arrow same" marker-end="url(#a-ci)"/>
+  <line x1="1040" y1="356" x2="1040" y2="408" class="arrow same" marker-end="url(#a-ci)"/>
+
+  <!-- "all four load the same skills" label centered between
+       lane-label y=375 and runtime box top y=410 → place at y=394 -->
+  <text class="port-label" x="600" y="394" text-anchor="middle">all four load the same skills</text>
+
+  <!-- ============== FOUR RUNTIMES ==============
+       y=410..490.  -->
+  <g transform="translate(60 410)">
+    <rect class="node ci" x="0" y="0" width="200" height="80" rx="6"/>
+    <text class="step-num"   x="12" y="14">RUNTIME</text>
+    <text class="node-title" x="12" y="32">Claude Code</text>
+    <text class="mono-tag"   x="12" y="50">CLI  ·  @-imports</text>
+    <text class="mono-dim"   x="12" y="68">memory present at session start</text>
+  </g>
+
+  <g transform="translate(330 410)">
+    <rect class="node ci" x="0" y="0" width="200" height="80" rx="6"/>
+    <text class="step-num"   x="12" y="14">RUNTIME</text>
+    <text class="node-title" x="12" y="32">Cursor</text>
+    <text class="mono-tag"   x="12" y="50">IDE  ·  rules file</text>
+    <text class="mono-dim"   x="12" y="68">same skills, in your editor</text>
+  </g>
+
+  <g transform="translate(670 410)">
+    <rect class="node ci" x="0" y="0" width="200" height="80" rx="6"/>
+    <text class="step-num"   x="12" y="14">RUNTIME</text>
+    <text class="node-title" x="12" y="32">Gemini CLI</text>
+    <text class="mono-tag"   x="12" y="50">CLI  ·  @-imports</text>
+    <text class="mono-dim"   x="12" y="68">switch in — memory is already there</text>
+  </g>
+
+  <g transform="translate(940 410)">
+    <rect class="node ci" x="0" y="0" width="200" height="80" rx="6"/>
+    <text class="step-num"   x="12" y="14">RUNTIME</text>
+    <text class="node-title" x="12" y="32">OpenCode</text>
+    <text class="mono-tag"   x="12" y="50">skill resources</text>
+    <text class="mono-dim"   x="12" y="68">model-agnostic, same skills</text>
+  </g>
+
+  <!-- ============== PORTABILITY ARC (below the runtime row) ==============
+       Bidirectional pair below the runtime row (boxes end y=490) and
+       above the strap (top y=534).  Both arcs bow downward in parallel
+       so they never cross: forward (Claude Code → Gemini CLI) at y=500
+       endpoints with peak at y=512 (visible centre), reverse (Gemini CLI
+       → Claude Code) at y=510 endpoints with peak at y=519 (visible
+       centre).  The reverse uses opacity 0.5 to read as the round-trip
+       partner.  -->
+  <path d="M 200 500 Q 485 524 730 500" class="arrow port" marker-end="url(#a-port)"/>
+  <path d="M 730 510 Q 485 528 200 510" class="arrow port" marker-end="url(#a-port)" opacity="0.5"/>
+
+  <!-- ============== STRAP (closing punch) ============== -->
+  <g transform="translate(24 534)">
+    <rect class="strap-bg" x="0" y="0" width="1152" height="50" rx="6"/>
+    <text class="strap-text" x="24" y="22">One source.  Four runtimes.  Memory follows you.</text>
+    <text class="strap-meta" x="24" y="40">edit the index, regenerate, switch tool — skills are already there.  Beyond fine-tuning, beyond vector DBs, beyond black-box memory.</text>
+  </g>
+
+  <!-- footer (immediately below the strap) -->
+  <text class="footer" x="24"   y="598">skill-everything  /  docs/memory-to-go.svg</text>
+  <text class="footer" x="1176" y="598" text-anchor="end">portable memory  ·  self-learning  ·  zero re-authoring</text>
+</svg>

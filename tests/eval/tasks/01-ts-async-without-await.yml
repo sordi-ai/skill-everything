@@ -1,0 +1,23 @@
+id: 01-ts-async-without-await
+title: TypeScript — async without await
+mistake_class: returning_promise_as_value
+rule_under_test: |
+  Always await async calls before returning the result. If a function returns
+  the awaited value, never return the un-awaited Promise directly.
+prompt: |
+  Write a TypeScript function `getUserName(id: string): Promise<string>` that
+  fetches a user from a database via `db.findById(id)` (which returns
+  Promise<User>) and returns the user's `name` field. Make it idiomatic.
+mistake_signature:
+  type: regex
+  pattern: 'return\s+db\.findById\(.*\)\.name'
+pass_signature:
+  type: regex
+  pattern: 'const\s+\w+\s*=\s*await\s+db\.findById\('
+references:
+  - references/development/typescript.md
+notes: |
+  Triggers the classic `return db.findById(id).name` mistake where the
+  agent reads the Promise as if it were the resolved value. Mistake-detector
+  regex matches the no-await form; pass-signature requires `await` to be
+  present in an assignment.

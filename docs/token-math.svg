@@ -1,0 +1,210 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
+  <title id="title">Token math — add a skill, pay nothing</title>
+  <desc id="desc">A line chart comparing input tokens per message between a monolithic prompt and skill-everything as the skill library grows from 0 to 50 skills. Monolithic rises from 0 to about 30000 tokens at 50 skills; skill-everything stays flat at about 2400 tokens, just below the 3000-token per-skill CI cap. Real tiktoken anchor at n=9: monolithic 11550, skill-everything 2400. The shaded wedge between the two lines represents the cost you don't pay.</desc>
+
+  <style>
+    :root {
+      --bg:        #fbfbfa;
+      --ink:       #1a1d21;
+      --muted:     #5a6470;
+      --hairline:  #cfd5dc;
+      --rule:      #8b95a0;
+      --agent:     #3a5a7a;
+      --agent-fill:#eaf0f5;
+      --ci:        #1f7a4a;
+      --ci-fill:   #e6f3ec;
+      --human:     #b46a00;
+      --human-fill:#fbeed1;
+      --git:       #2b2f33;
+      --git-fill:  #eef0f2;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:        #11141a;
+        --ink:       #e6e9ee;
+        --muted:     #8a93a0;
+        --hairline:  #3a424d;
+        --rule:      #5a6470;
+        --agent:     #88aed3;
+        --agent-fill:#1a2330;
+        --ci:        #6fc093;
+        --ci-fill:   #14241c;
+        --human:     #e3a154;
+        --human-fill:#2a2014;
+        --git:       #c8cdd4;
+        --git-fill:  #181c22;
+      }
+    }
+
+    .frame      { fill: var(--bg); stroke: var(--hairline); }
+    .lane-label { font: 700 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 0.8px; fill: var(--muted); }
+
+    .h-title    { font: 700 13px -apple-system, system-ui, sans-serif; letter-spacing: 2px; fill: var(--ink); }
+    .h-sub      { font: 400 11px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+
+    .mono-tag   { font: 500 11px ui-monospace, Consolas, monospace; fill: var(--ink); }
+    .mono-dim   { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
+
+    .axis       { stroke: var(--hairline); stroke-width: 1; }
+    .gridline   { stroke: var(--hairline); stroke-width: 0.5; stroke-dasharray: 2 3; }
+    .axis-tick  { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
+    .axis-label { font: 700 10px ui-monospace, Consolas, monospace; letter-spacing: 0.8px; fill: var(--muted); }
+
+    .line-mono  { fill: none; stroke: var(--agent); stroke-width: 2.0; }
+    .line-skill { fill: none; stroke: var(--ci);    stroke-width: 2.6; }
+    .line-cap   { fill: none; stroke: var(--human); stroke-width: 1.3; stroke-dasharray: 5 4; }
+
+    .wedge      { fill: var(--ci); opacity: 0.10; }
+
+    .anchor-dot-mono  { fill: var(--agent); stroke: var(--bg); stroke-width: 2; }
+    .anchor-dot-skill { fill: var(--ci);    stroke: var(--bg); stroke-width: 2; }
+    .anchor-tick      { stroke: var(--muted); stroke-width: 0.5; stroke-dasharray: 1 2; }
+
+    .anchor-mono-text  { font: 700 12px ui-monospace, Consolas, monospace; fill: var(--agent); }
+    .anchor-skill-text { font: 700 12px ui-monospace, Consolas, monospace; fill: var(--ci); }
+    .anchor-meta       { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
+
+    .lane-mono   { font: 700 11px -apple-system, system-ui, sans-serif; fill: var(--agent); }
+    .lane-skill  { font: 700 11px -apple-system, system-ui, sans-serif; fill: var(--ci); }
+    .lane-cap    { font: 700 11px ui-monospace, Consolas, monospace; letter-spacing: 0.5px; fill: var(--human); }
+
+    .hero        { font: 700 26px -apple-system, system-ui, sans-serif; letter-spacing: -0.4px; fill: var(--ink); }
+    .hero-sub    { font: 400 13px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+
+    .wedge-text  { font: 700 13px -apple-system, system-ui, sans-serif; fill: var(--ci); font-style: italic; }
+    .wedge-meta  { font: 400 11px -apple-system, system-ui, sans-serif; fill: var(--muted); font-style: italic; }
+
+    .chip       { fill: var(--bg); stroke: var(--hairline); }
+    .chip-text  { font: 500 10px ui-monospace, Consolas, monospace; fill: var(--ink); }
+    .chip-key   { font: 700 10px ui-monospace, Consolas, monospace; letter-spacing: 0.5px; fill: var(--muted); }
+
+    .annot      { font: 400 10px -apple-system, system-ui, sans-serif; fill: var(--muted); font-style: italic; }
+    .footer     { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
+
+    .y-axis-title { font: 700 10px ui-monospace, Consolas, monospace; letter-spacing: 0.8px; fill: var(--muted); }
+
+    .callout-line { stroke: var(--human); stroke-width: 0.8; fill: none; }
+  </style>
+
+  <rect class="frame" x="0.5" y="0.5" width="1199" height="499" rx="6"/>
+
+  <!-- Header -->
+  <text class="lane-label" x="24" y="28">TOKEN MATH  /  INPUT TOKENS PER MESSAGE  vs  SKILLS IN REPO</text>
+  <text class="hero"       x="24" y="64">Add a skill. Pay nothing.</text>
+  <text class="hero-sub"   x="24" y="86">Your input bill stays flat as your skill library grows. Monolithic prompts don't.</text>
+
+  <text class="y-axis-title" transform="translate(40 240) rotate(-90)" text-anchor="middle">INPUT TOKENS / MSG</text>
+
+  <!-- gridlines + y-ticks -->
+  <line x1="130" y1="360" x2="950" y2="360" class="gridline"/>
+  <text class="axis-tick" x="124" y="363" text-anchor="end">0</text>
+
+  <line x1="130" y1="318.33" x2="950" y2="318.33" class="gridline"/>
+  <text class="axis-tick" x="124" y="321.33" text-anchor="end">5k</text>
+
+  <line x1="130" y1="276.67" x2="950" y2="276.67" class="gridline"/>
+  <text class="axis-tick" x="124" y="279.67" text-anchor="end">10k</text>
+
+  <line x1="130" y1="235" x2="950" y2="235" class="gridline"/>
+  <text class="axis-tick" x="124" y="238" text-anchor="end">15k</text>
+
+  <line x1="130" y1="193.33" x2="950" y2="193.33" class="gridline"/>
+  <text class="axis-tick" x="124" y="196.33" text-anchor="end">20k</text>
+
+  <line x1="130" y1="151.67" x2="950" y2="151.67" class="gridline"/>
+  <text class="axis-tick" x="124" y="154.67" text-anchor="end">25k</text>
+
+  <line x1="130" y1="110" x2="950" y2="110" class="gridline"/>
+  <text class="axis-tick" x="124" y="113" text-anchor="end">30k</text>
+
+  <!-- x-ticks -->
+  <line x1="130"   y1="360" x2="130"   y2="364" class="axis"/>
+  <text class="axis-tick" x="130"   y="376" text-anchor="middle">0</text>
+
+  <line x1="277.6" y1="360" x2="277.6" y2="364" class="axis"/>
+  <text class="axis-tick" x="277.6" y="376" text-anchor="middle">9</text>
+
+  <line x1="540"   y1="360" x2="540"   y2="364" class="axis"/>
+  <text class="axis-tick" x="540"   y="376" text-anchor="middle">25</text>
+
+  <line x1="950"   y1="360" x2="950"   y2="364" class="axis"/>
+  <text class="axis-tick" x="950"   y="376" text-anchor="middle">50</text>
+
+  <text class="axis-label" x="540" y="394" text-anchor="middle">SKILLS IN REPO</text>
+
+  <!-- axes -->
+  <line x1="130" y1="110" x2="130" y2="360" class="axis"/>
+  <line x1="130" y1="360" x2="950" y2="360" class="axis"/>
+
+  <!-- ============== WEDGE ============== -->
+  <polygon class="wedge" points="130,360 146.4,351.67 179.2,330.83 212,310 244.8,289.17 277.6,257.5 540,197.5 950,110 950,340 130,340"/>
+
+  <text class="wedge-text" x="620" y="245" text-anchor="middle">the cost you don't pay</text>
+  <text class="wedge-meta" x="620" y="261" text-anchor="middle">every additional skill, every message</text>
+
+  <!-- ============== CAP LINE (3k) ============== -->
+  <line class="line-cap" x1="130" y1="335" x2="950" y2="335"/>
+
+  <!-- ============== MONOLITHIC LINE ============== -->
+  <polyline class="line-mono" points="130,360 146.4,351.67 179.2,330.83 212,310 244.8,289.17 277.6,257.5 540,197.5 950,110"/>
+
+  <!-- ============== SKILL-EVERYTHING LINE ============== -->
+  <line class="line-skill" x1="130" y1="340" x2="950" y2="340"/>
+
+  <!-- ============== n=9 ANCHOR  ============== -->
+  <line x1="277.6" y1="257.5" x2="277.6" y2="340" class="anchor-tick"/>
+
+  <circle class="anchor-dot-mono" cx="277.6" cy="257.5" r="5"/>
+  <text class="anchor-mono-text" x="290" y="176">11,550 tok</text>
+  <text class="anchor-meta"      x="290" y="189">monolithic at n=9</text>
+  <text class="anchor-meta"      x="290" y="201">real tiktoken (cl100k)</text>
+
+  <circle class="anchor-dot-skill" cx="277.6" cy="340" r="5"/>
+  <text class="anchor-skill-text" x="290" y="358">~2,400 tok</text>
+  <text class="anchor-meta"        x="290" y="371">router + 1-2 sub-skills</text>
+
+  <!-- ============== CAP CALLOUT (cap is primary, CI-enforced is meta) ============== -->
+  <line class="callout-line" x1="820" y1="335" x2="820" y2="305"/>
+  <line class="callout-line" x1="816" y1="335" x2="824" y2="335"/>
+  <circle cx="820" cy="335" r="2.5" fill="var(--human)"/>
+  <text class="lane-cap" x="820" y="298" text-anchor="middle">3k per-skill cap</text>
+  <text class="annot"    x="820" y="288" text-anchor="middle">CI-enforced</text>
+
+  <!-- ============== END-OF-LINE LABELS ============== -->
+  <text class="lane-mono"  x="958" y="118">monolithic</text>
+  <text class="mono-dim"   x="958" y="131">~30k tok @ n=50</text>
+  <text class="mono-dim"   x="958" y="143">linear scaling</text>
+
+  <text class="lane-skill" x="958" y="343">skill-everything</text>
+  <text class="mono-dim"   x="958" y="356">flat, router-loaded</text>
+
+  <!-- ============== BOTTOM CHIPS ============== -->
+  <g transform="translate(24 410)">
+    <rect class="chip" x="0" y="0" width="430" height="62" rx="3"/>
+    <text class="chip-key"  x="10" y="14">TYPICAL TASK</text>
+    <text class="chip-text" x="10" y="30">router (~800 tok)  +  1-2 sub-skills (650-2,400 tok each)</text>
+    <text class="mono-dim"  x="10" y="44">1.8k-3.5k input / msg, regardless of library size</text>
+    <text class="mono-dim"  x="10" y="56">per-skill cap 3,000 tok (schemas/skill-manifest.json, CI-validated)</text>
+  </g>
+
+  <g transform="translate(470 410)">
+    <rect class="chip" x="0" y="0" width="296" height="62" rx="3"/>
+    <text class="chip-key"  x="10" y="14">OUTPUT (FIXED BY MODEL)</text>
+    <text class="chip-text" x="10" y="30">~3,000 output tok / msg  ~ $45 / 1k msgs</text>
+    <text class="mono-dim"  x="10" y="44">output is the same in every setup</text>
+    <text class="mono-dim"  x="10" y="56">input is where architecture decides</text>
+  </g>
+
+  <g transform="translate(782 410)">
+    <rect class="chip" x="0" y="0" width="394" height="62" rx="3"/>
+    <text class="chip-key"  x="10" y="14">HONEST CAVEAT</text>
+    <text class="chip-text" x="10" y="30">cached monolithic narrows the gap at n=9.</text>
+    <text class="mono-dim"  x="10" y="44">skill-everything keeps room when caching</text>
+    <text class="mono-dim"  x="10" y="56">is unavailable, partial, or library doubles.</text>
+  </g>
+
+  <!-- ============== FOOTER STRIP ============== -->
+  <text class="footer" x="24"   y="490">router loads 1-2 of N  ·  add a skill = git commit  ·  per-skill cap CI-validated</text>
+  <text class="footer" x="1176" y="490" text-anchor="end">skill-everything  /  docs/token-math.svg</text>
+
+</svg>

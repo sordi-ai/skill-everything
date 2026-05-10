@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "skill-everything-tools"
+version = "1.0.0"
+description = "Tooling for skill-everything: rule validator, loader sync, token-table renderer"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "skill-everything maintainers" }]
+dependencies = [
+    "pyyaml>=6.0",
+    "tiktoken>=0.7",
+    "jsonschema>=4.21",
+    "jinja2>=3.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "ruff>=0.5",
+    "pyright>=1.1",
+    "pre-commit>=3.6",
+]
+
+[project.urls]
+Homepage = "https://github.com/sordi-ai/skill-everything"
+Issues = "https://github.com/sordi-ai/skill-everything/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["tools"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "PTH", "RUF"]
+ignore = []
+
+[tool.pyright]
+pythonVersion = "3.10"
+include = ["tools", "tests"]
+strict = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"

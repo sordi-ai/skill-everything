@@ -1,0 +1,195 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
+  <title id="title">Cost comparison — $75 to $47 per 1,000 messages, five setups</title>
+  <desc id="desc">Five horizontal cost bars sorted from most expensive to cheapest, comparing the dollar cost per 1,000 messages at Sonnet-class pricing. Monolithic .cursorrules with no caching is $75.00, the painful baseline. Skill-everything with two to three sub-skills is $55.00. Skill-everything with a single sub-skill is $50.00. Monolithic plus Anthropic prompt caching is $48.00. Skill-everything with caching is $47.00, the winner. A bottom strap announces $28 saved per 1,000 messages versus the uncached monolithic baseline, 37% cheaper.</desc>
+
+  <style>
+    :root {
+      --bg:        #fbfbfa;
+      --ink:       #1a1d21;
+      --muted:     #5a6470;
+      --hairline:  #cfd5dc;
+      --rule:      #8b95a0;
+      --agent:     #3a5a7a;
+      --agent-fill:#eaf0f5;
+      --ci:        #1f7a4a;
+      --ci-fill:   #e6f3ec;
+      --human:     #b46a00;
+      --human-fill:#fbeed1;
+      --git:       #2b2f33;
+      --git-fill:  #eef0f2;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:        #11141a;
+        --ink:       #e6e9ee;
+        --muted:     #8a93a0;
+        --hairline:  #3a424d;
+        --rule:      #5a6470;
+        --agent:     #88aed3;
+        --agent-fill:#1a2330;
+        --ci:        #6fc093;
+        --ci-fill:   #14241c;
+        --human:     #e3a154;
+        --human-fill:#2a2014;
+        --git:       #c8cdd4;
+        --git-fill:  #181c22;
+      }
+    }
+
+    .frame      { fill: var(--bg); stroke: var(--hairline); }
+    .lane-label { font: 700 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 0.8px; fill: var(--muted); }
+
+    .hero       { font: 700 26px -apple-system, system-ui, sans-serif; letter-spacing: -0.4px; fill: var(--ink); }
+    .hero-sub   { font: 400 13px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+
+    /* Plot axis + ticks */
+    .plot-axis  { stroke: var(--rule); stroke-width: 1; }
+    .plot-grid  { stroke: var(--hairline); stroke-width: 0.5; stroke-dasharray: 2 3; }
+    .plot-tick  { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
+    .plot-ref-75{ stroke: var(--human); stroke-width: 0.8; stroke-dasharray: 3 3; opacity: 0.55; }
+
+    /* Setup row labels */
+    .row-name      { font: 700 14px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .row-mono      { font: 700 14px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--ink); }
+    .row-meta      { font: 400 11px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+
+    /* Bar fills */
+    .bar-pain         { fill: var(--human); }
+    .bar-mono-cache   { fill: var(--human-fill); stroke: var(--human); stroke-width: 1.4; stroke-dasharray: 5 3; }
+    .bar-skill        { fill: var(--ci); fill-opacity: 0.18; stroke: var(--ci); stroke-width: 1.5; }
+    .bar-skill-accent { fill: var(--ci); }
+    .bar-winner       { fill: var(--ci); stroke: var(--ci); stroke-width: 1.2; }
+    .bar-winner-accent{ fill: var(--ci); }
+
+    /* Cost labels */
+    .cost-pain     { font: 700 22px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--human); }
+    .cost-mid      { font: 700 22px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--ink); }
+    .cost-winner   { font: 800 32px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--ci); letter-spacing: -0.5px; }
+
+    /* Inline annotations */
+    .anno-pain      { font: 700 11px ui-monospace, Consolas, monospace; fill: var(--human); letter-spacing: 0.4px; }
+    .anno-skill     { font: 700 11px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.4px; }
+    .anno-on-pain   { font: 700 11px ui-monospace, Consolas, monospace; fill: var(--bg); letter-spacing: 0.4px; }
+    .anno-on-winner { font: 700 11px ui-monospace, Consolas, monospace; fill: var(--bg); letter-spacing: 0.4px; }
+
+    /* Savings delta */
+    .delta-text     { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.5px; }
+
+    /* Winner badge */
+    .winner-pill      { fill: var(--ci); stroke: var(--bg); stroke-width: 1.5; }
+    .winner-pill-text { font: 800 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: #ffffff; letter-spacing: 1.8px; }
+
+    /* Bottom highlight strap */
+    .strap-bg      { fill: var(--ci-fill); stroke: var(--ci); stroke-width: 1.4; }
+    .strap-num     { font: 800 28px -apple-system, system-ui, sans-serif; fill: var(--ci); letter-spacing: -0.3px; }
+    .strap-text    { font: 700 14px -apple-system, system-ui, sans-serif; fill: var(--ci); }
+    .strap-meta    { font: 400 11px ui-monospace, Consolas, monospace; fill: var(--muted); }
+    .strap-meta-strong { font: 700 11px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.5px; }
+
+    .footer        { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
+  </style>
+
+  <rect class="frame" x="0.5" y="0.5" width="1199" height="619" rx="6"/>
+
+  <!-- ============== HEADER ============== -->
+  <text class="lane-label" x="24" y="28">COST PER 1,000 MESSAGES  /  SONNET-CLASS PRICING</text>
+  <text class="hero"       x="24" y="64">From $75 to $47 — your config, your savings.</text>
+  <text class="hero-sub"   x="24" y="86">Sonnet-class pricing. ~3k output tokens per message. Five setups, one winner.</text>
+
+  <!--
+    Geometry
+    Bar zone:  x=400 .. x=1024  (624 px = $75 budget; 8.32 px / $)
+    Cost zone: x=1040 .. x=1170 (right-aligned)
+    Row pitch 56 px, bar height 32 px
+    Bar tops:        116, 172, 228, 284, 340
+    Bar centers:     132, 188, 244, 300, 356
+  -->
+
+  <!-- ============== Y-AXIS + GRIDLINES + REFERENCE LINE @ $75 ============== -->
+  <line class="plot-axis" x1="400" y1="106" x2="400" y2="384"/>
+  <line class="plot-axis" x1="400" y1="384" x2="1024" y2="384"/>
+
+  <line class="plot-grid" x1="608"  y1="106" x2="608"  y2="384"/>
+  <line class="plot-grid" x1="816"  y1="106" x2="816"  y2="384"/>
+  <line class="plot-ref-75" x1="1024" y1="106" x2="1024" y2="384"/>
+
+  <text class="plot-tick" x="400"  y="398" text-anchor="middle">$0</text>
+  <text class="plot-tick" x="608"  y="398" text-anchor="middle">$25</text>
+  <text class="plot-tick" x="816"  y="398" text-anchor="middle">$50</text>
+  <text class="plot-tick" x="1024" y="398" text-anchor="middle">$75</text>
+
+  <!-- ============== ROW 1 — Monolithic, no caching → $75 ============== -->
+  <text class="row-name"      x="64" y="126">Monolithic <tspan class="row-mono">.cursorrules</tspan></text>
+  <text class="row-meta"      x="64" y="142">no caching · painful baseline</text>
+
+  <rect class="bar-pain"      x="400" y="116" width="624" height="32" rx="3"/>
+  <text class="anno-on-pain"  x="412" y="137">10,000 input tok / msg · loaded EVERY turn</text>
+
+  <text class="cost-pain"     x="1170" y="140" text-anchor="end">$75.00</text>
+
+  <!-- ============== ROW 2 — Skill-everything, 2-3 sub-skills → $55 ============== -->
+  <!-- $55 = 624 * 55/75 = 457.6 -->
+  <text class="row-name"      x="64" y="182"><tspan class="row-mono">skill-everything</tspan>, 2-3 sub-skills</text>
+  <text class="row-meta"      x="64" y="198">router + multiple skills loaded</text>
+
+  <rect class="bar-skill"          x="400" y="172" width="457.6" height="32" rx="3"/>
+  <rect class="bar-skill-accent"   x="400" y="172" width="6"     height="32"/>
+  <text class="anno-skill"         x="416" y="193">3,300 input tok / msg</text>
+  <text class="delta-text"         x="867.6" y="193">−$20</text>
+
+  <text class="cost-mid"           x="1170" y="196" text-anchor="end">$55.00</text>
+
+  <!-- ============== ROW 3 — Skill-everything, single sub-skill → $50 ============== -->
+  <!-- $50 = 624 * 50/75 = 416 -->
+  <text class="row-name"      x="64" y="238"><tspan class="row-mono">skill-everything</tspan>, single sub-skill</text>
+  <text class="row-meta"      x="64" y="254">router + 1 skill loaded on demand</text>
+
+  <rect class="bar-skill"          x="400" y="228" width="416" height="32" rx="3"/>
+  <rect class="bar-skill-accent"   x="400" y="228" width="6"   height="32"/>
+  <text class="anno-skill"         x="416" y="249">1,600 input tok / msg</text>
+  <text class="delta-text"         x="826" y="249">−$25</text>
+
+  <text class="cost-mid"           x="1170" y="252" text-anchor="end">$50.00</text>
+
+  <!-- ============== ROW 4 — Monolithic + caching → $48 ============== -->
+  <!-- $48 = 624 * 48/75 = 399.36 -->
+  <text class="row-name"       x="64" y="294">Monolithic + prompt caching</text>
+  <text class="row-meta"       x="64" y="310">caching helps mono · still 10k loaded</text>
+
+  <rect class="bar-mono-cache" x="400" y="284" width="399.36" height="32" rx="3"/>
+  <text class="anno-pain"      x="412" y="305">10,000 tok (~1k effective)</text>
+  <text class="delta-text"     x="809.36" y="305">−$27</text>
+
+  <text class="cost-mid"       x="1170" y="308" text-anchor="end">$48.00</text>
+
+  <!-- ============== ROW 5 — Skill-everything + caching → $47 (WINNER) ============== -->
+  <!-- $47 = 624 * 47/75 = 391.04 -->
+  <text class="row-name"        x="64" y="350"><tspan class="row-mono">skill-everything</tspan> + caching</text>
+  <text class="row-meta"        x="64" y="366">router cached · 1 skill loaded · architecturally flat</text>
+
+  <rect class="bar-winner"        x="400" y="340" width="391.04" height="32" rx="3"/>
+  <rect class="bar-winner-accent" x="400" y="340" width="6"      height="32"/>
+  <text class="anno-on-winner"    x="416" y="361">1,600 tok (~800 effective)</text>
+
+  <!-- WINNER pill -->
+  <rect class="winner-pill"       x="697" y="346" width="90" height="20" rx="3"/>
+  <text class="winner-pill-text"  x="742" y="360" text-anchor="middle">WINNER</text>
+
+  <text class="cost-winner"       x="1170" y="367" text-anchor="end">$47.00</text>
+
+  <!-- ============== BOTTOM HIGHLIGHT STRAP ============== -->
+  <rect class="strap-bg" x="24" y="430" width="1152" height="92" rx="6"/>
+
+  <text class="strap-num"  x="64"  y="470">$28 saved</text>
+  <text class="strap-text" x="64"  y="494">per 1,000 messages vs uncached monolithic.</text>
+  <text class="strap-text" x="64"  y="512">37% cheaper than the painful baseline.</text>
+
+  <text class="strap-meta-strong" x="1136" y="466" text-anchor="end">winner = skill-everything + caching</text>
+  <text class="strap-meta"        x="1136" y="486" text-anchor="end">$75.00 − $47.00 = $28.00</text>
+  <text class="strap-meta"        x="1136" y="504" text-anchor="end">28 / 75 = 37.3% cheaper</text>
+
+  <!-- ============== FOOTER ============== -->
+  <text class="footer" x="24"   y="600">$3 / 1M input  ·  $15 / 1M output  ·  ~3k output tok / msg  ·  all costs in USD, Sonnet-class</text>
+  <text class="footer" x="1176" y="600" text-anchor="end">skill-everything  /  docs/cost-comparison.svg</text>
+
+</svg>

@@ -1,0 +1,18 @@
+# Bypass list for the rule validator.
+#
+# When a rule legitimately needs to mention a forbidden pattern (e.g. a rule
+# about preventing `subprocess` misuse that itself contains the word
+# `subprocess`), add the error ID here with a rationale.
+#
+# CODEOWNERS approval is required to merge changes to this file. The bypass
+# softens forbidden-pattern checks ONLY — schema validation and the verb
+# allow-list still apply.
+#
+# Example:
+#   allow_forbidden_pattern_for:
+#     - id: ERR-2026-099
+#       rationale: rule must mention `subprocess` to give a specific fix
+#     - id: ERR-2026-103
+#       rationale: rule about CSP requires the literal `<script>` token
+
+allow_forbidden_pattern_for: []

@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 580" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
+  <title id="title">Token comparison — monolithic vs skill-everything per message</title>
+  <desc id="desc">Two stacked boxes contrasting per-message input-token cost. Box 1 (Monolithic .cursorrules / system prompt): a single horizontal bar fills the full width, labelled 10,000+ tokens, with the note "Loaded EVERY message. Always. All of it." Box 2 (Skill-Everything router pattern): two short bars — the router (~800 tokens, always loaded) and one sub-skill (~800 tokens, loaded on demand) — totaling about 1,600 tokens per message, an 84% reduction.</desc>
+
+  <style>
+    :root {
+      --bg:        #fbfbfa;
+      --ink:       #1a1d21;
+      --muted:     #5a6470;
+      --hairline:  #cfd5dc;
+      --rule:      #8b95a0;
+      --agent:     #3a5a7a;
+      --agent-fill:#eaf0f5;
+      --ci:        #1f7a4a;
+      --ci-fill:   #e6f3ec;
+      --human:     #b46a00;
+      --human-fill:#fbeed1;
+      --git:       #2b2f33;
+      --git-fill:  #eef0f2;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:        #11141a;
+        --ink:       #e6e9ee;
+        --muted:     #8a93a0;
+        --hairline:  #3a424d;
+        --rule:      #5a6470;
+        --agent:     #88aed3;
+        --agent-fill:#1a2330;
+        --ci:        #6fc093;
+        --ci-fill:   #14241c;
+        --human:     #e3a154;
+        --human-fill:#2a2014;
+        --git:       #c8cdd4;
+        --git-fill:  #181c22;
+      }
+    }
+
+    .frame      { fill: var(--bg); stroke: var(--hairline); }
+    .lane-label { font: 700 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 0.8px; fill: var(--muted); }
+
+    .h-title    { font: 700 13px -apple-system, system-ui, sans-serif; letter-spacing: 2px; fill: var(--ink); }
+    .h-sub      { font: 400 11px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+
+    .hero       { font: 700 26px -apple-system, system-ui, sans-serif; letter-spacing: -0.4px; fill: var(--ink); }
+    .hero-sub   { font: 400 13px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+
+    /* Box 1 — monolithic (warning / pain) */
+    .box-mono       { fill: var(--bg); stroke: var(--human); stroke-width: 1.5; }
+    .box-mono-head  { font: 700 16px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .label-mono-tok { font: 700 14px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--human); }
+    .note-mono      { font: 500 12px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+    .note-mono-emph { font: 700 12px -apple-system, system-ui, sans-serif; fill: var(--human); letter-spacing: 0.5px; }
+
+    /* ASCII bar glyphs — monolithic */
+    .ascii-mono-fill  { font: 700 22px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--human); letter-spacing: 0; }
+
+    /* Box 2 — skill-everything (success) */
+    .box-ci         { fill: var(--bg); stroke: var(--ci); stroke-width: 1.5; }
+    .box-ci-head    { font: 700 16px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .label-ci-tok   { font: 700 14px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--ci); }
+    .note-ci        { font: 500 12px -apple-system, system-ui, sans-serif; fill: var(--muted); }
+
+    /* ASCII bar glyphs — skill-everything */
+    .ascii-ci-fill  { font: 700 22px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--ci); letter-spacing: 0; }
+    .ascii-empty    { font: 700 22px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--rule); opacity: 0.55; letter-spacing: 0; }
+
+    /* track behind ASCII-empty for light-mode visibility */
+    .track-ci       { fill: var(--ci-fill); }
+
+    /* highlight chip — "= ~1,600 tokens per message  ·  84% less" */
+    .badge-bg       { fill: var(--ci-fill); stroke: var(--ci); stroke-width: 1.2; }
+    .highlight-line { font: 700 18px -apple-system, system-ui, sans-serif; fill: var(--ci); }
+
+    /* inter-box arrow */
+    .arrow-mid      { stroke: var(--rule); stroke-width: 1.5; fill: none; }
+    .arrow-mid-text { font: 600 11px -apple-system, system-ui, sans-serif; fill: var(--muted); font-style: italic; }
+
+    .footer     { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
+  </style>
+
+  <defs>
+    <marker id="a-rule" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 z" fill="var(--rule)"/>
+    </marker>
+  </defs>
+
+  <rect class="frame" x="0.5" y="0.5" width="1199" height="579" rx="6"/>
+
+  <!-- ============== HEADER ============== -->
+  <text class="lane-label" x="24" y="28">TOKEN COMPARISON  /  ONE MESSAGE  /  MONOLITHIC  vs  SKILL-EVERYTHING</text>
+  <text class="hero"       x="24" y="64">Same task. Same agent. 84% fewer input tokens.</text>
+  <text class="hero-sub"   x="24" y="86">Monolithic prompts ship the whole rulebook every turn. Skill-Everything ships a router and one sub-skill.</text>
+
+  <!--
+    ASCII bar geometry — 36-char track using textLength to lock to 792px.
+    char_w = 22 px effective.
+    Box 1: 36/36 filled  → all blocks
+    Box 2 row 1 (router): 2/36 filled
+    Box 2 row 2 (sub-skill): 4/36 filled
+    Origin x=64 (inner left padding of each box).
+    Track-rect behind ASCII-empty makes the empty cells visible in light-mode
+    (the ░ glyph alone reads too pale on light backgrounds).
+  -->
+
+  <!-- ============== BOX 1 — MONOLITHIC ============== -->
+  <rect class="box-mono" x="40" y="120" width="1120" height="130" rx="6"/>
+
+  <!-- header label -->
+  <text class="box-mono-head" x="64" y="148">Monolithic .cursorrules / system prompt</text>
+
+  <!-- ASCII bar: 36 filled blocks, locked to 792 px via textLength -->
+  <text class="ascii-mono-fill" x="64" y="190" textLength="792" lengthAdjust="spacingAndGlyphs">████████████████████████████████████</text>
+
+  <!-- token label right of bar -->
+  <text class="label-mono-tok" x="872" y="190">10,000+ tok</text>
+
+  <!-- sub-note: emphasised "EVERY" + plain rest -->
+  <text x="64" y="226">
+    <tspan class="note-mono">Loaded </tspan><tspan class="note-mono-emph">EVERY</tspan><tspan class="note-mono"> message. Always. All of it.</tspan>
+  </text>
+
+  <!-- ============== INTER-BOX ARROW ============== -->
+  <line class="arrow-mid" x1="600" y1="258" x2="600" y2="290" marker-end="url(#a-rule)"/>
+  <text class="arrow-mid-text" x="612" y="278">same task, same agent</text>
+
+  <!-- ============== BOX 2 — SKILL-EVERYTHING ============== -->
+  <rect class="box-ci" x="40" y="298" width="1120" height="220" rx="6"/>
+
+  <!-- header label -->
+  <text class="box-ci-head" x="64" y="326">Skill-Everything (router pattern)</text>
+
+  <!-- ROW 1 — router (~800 tok)  → 2/36 chars filled -->
+  <!-- track background covering the full 792 px (visible in light mode) -->
+  <rect class="track-ci" x="64" y="350" width="792" height="22" rx="2"/>
+  <!-- ASCII glyphs on top of the track -->
+  <text class="ascii-ci-fill" x="64" y="368" textLength="44" lengthAdjust="spacingAndGlyphs">██</text>
+  <text class="ascii-empty"   x="108" y="368" textLength="748" lengthAdjust="spacingAndGlyphs">░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░</text>
+  <text class="label-ci-tok"  x="872" y="368">~800 tok</text>
+  <text class="note-ci"       x="64" y="394">SKILL.md router (always loaded)</text>
+
+  <!-- ROW 2 — sub-skill (~800 tok)  → 4/36 chars filled -->
+  <rect class="track-ci" x="64" y="416" width="792" height="22" rx="2"/>
+  <text class="ascii-ci-fill" x="64" y="434" textLength="88" lengthAdjust="spacingAndGlyphs">████</text>
+  <text class="ascii-empty"   x="152" y="434" textLength="704" lengthAdjust="spacingAndGlyphs">░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░</text>
+  <text class="label-ci-tok"  x="872" y="434">+ ~800 tok</text>
+  <text class="note-ci"       x="64" y="460">One sub-skill loaded on demand</text>
+
+  <!-- highlight: "= ~1,600 tokens per message  ·  84% less" -->
+  <rect class="badge-bg" x="64" y="478" width="430" height="28" rx="4"/>
+  <text class="highlight-line" x="76" y="498">= ~1,600 tokens per message  ·  84% less</text>
+
+  <!-- ============== FOOTER ============== -->
+  <text class="footer" x="24"   y="560">router (~800 tok) + 1 sub-skill (~800 tok)  ·  monolithic baseline 10k tok  ·  (10000−1600)/10000 = 84%</text>
+  <text class="footer" x="1176" y="560" text-anchor="end">skill-everything  /  docs/token-comparison.svg</text>
+
+</svg>

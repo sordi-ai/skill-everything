@@ -1,0 +1,25 @@
+id: 02-python-mutable-default
+title: Python — mutable default argument
+mistake_class: mutable_default_argument
+rule_under_test: |
+  Never use mutable default arguments. If a function takes an optional
+  list/dict, default it to None and create the empty container inside.
+prompt: |
+  Write a Python function `add_item(value, items=...)` that appends `value`
+  to the `items` list and returns the list. Make it ready for a multi-call
+  example like:
+      a = add_item(1); b = add_item(2)
+  where a and b are independent.
+mistake_signature:
+  type: regex
+  pattern: 'def\s+add_item\([^)]*items\s*=\s*\['
+pass_signature:
+  type: regex
+  pattern: 'def\s+add_item\([^)]*items\s*=\s*None\b'
+references:
+  - references/development/python.md
+notes: |
+  Mutable defaults survive across calls because Python evaluates the default
+  once at definition. The mistake regex matches `items=[`; the pass regex
+  requires `items=None` and (separately, by manual inspection) the in-body
+  `if items is None: items = []` pattern.

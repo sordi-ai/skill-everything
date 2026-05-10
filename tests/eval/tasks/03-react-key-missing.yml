@@ -1,0 +1,21 @@
+id: 03-react-key-missing
+title: React — missing key in list render
+mistake_class: missing_list_key
+rule_under_test: |
+  Always add a stable `key` prop when rendering a list with .map().
+prompt: |
+  Write a React function component `<UserList users={users}>` that maps over
+  a `users` array (each user has `id` and `name`) and renders one
+  `<li>{user.name}</li>` per user. Wrap them in a `<ul>`. Use TypeScript.
+mistake_signature:
+  type: regex
+  pattern: '\.map\([^)]*=>\s*<li(?![^>]*\bkey=)'
+pass_signature:
+  type: regex
+  pattern: '\.map\([^)]*=>\s*<li[^>]*\bkey=\{[^}]+\}'
+references:
+  - references/development/react.md
+notes: |
+  Mistake: `<li>{u.name}</li>` without key. Pass: `<li key={u.id}>{u.name}</li>`.
+  Note this regex misses the very rare case where `key` is set conditionally —
+  acceptable for n≥30 tasks.
