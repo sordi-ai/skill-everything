@@ -1,6 +1,6 @@
 <div align="center">
 
-<sub>🧠 SELF-LEARNING · ⚡ TOKEN-EFFICIENT · 🚀 MULTI-AGENT</sub>
+<sub>🧠 SELF-LEARNING · ⚡ SAVE TOKENS · 🚀 SKILLS TO GO · ✨ QUALITY COMPOUNDS</sub>
 
 # skill-everything
 
@@ -42,21 +42,25 @@
 
 ---
 
-## THE PITCH IN 30 SECONDS
-*Self-learning skills. One paragraph. One terminal command.*
+## THE PITCH
+*Selbstlernend · Token sparen · Skills to GO · Qualität die compoundet.*
 
-**Self-learning skills — beyond fine-tuning.** Your domain knowledge, local, in one place, organised as composable sub-skills in plain Markdown, versioned in Git. The router loads only the matching sub-skill: ~800 tokens for the router, ~800 tokens for the sub-skill — **84 % fewer input tokens per message, $28 saved per 1,000 messages**. Add the 50th skill, the 200th skill — your per-message bill stays flat.
+**Self-learning skills for AI agents.** **Beyond fine-tuning, beyond vector DBs, beyond black-box memory.** Your domain knowledge — local, in plain Markdown, versioned in Git, hot-loaded as composable sub-skills.
 
-The same memory ships across **Claude Code, Cursor, Gemini CLI, and OpenCode** — generated from a single source of truth. **Same Markdown. Four agent runtimes. Zero re-authoring.** Self-extending and modular — your agent's domain knowledge compounds in `git`, not in opaque weights.
+⚡ **Save tokens.** 84 % fewer input tokens. $28 saved per 1,000 messages. Per-message bill stays flat as your library grows.
+
+🚀 **Skills to GO.** Same Markdown across `Claude Code`, `Cursor`, `Gemini CLI`, `OpenCode`. Switch tools — your skills come with.
+
+✨ **Quality compounds.** Every commit makes the next session smarter. Automatically.
 
 ```bash
 git clone https://github.com/sordi-ai/skill-everything.git
 ```
 
-That is the entire setup. **Star this repo to ship smarter agents — beyond fine-tuning, beyond vector DBs, beyond black-box memory.**
+**Star this repo to ship smarter agents.**
 
 > [!NOTE]
-> **Built on top of the formats your tools already read.** Skill-everything generates `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, and `SKILL.md` from one `references/_index.yml` — same domain knowledge, four agent runtimes.
+> **Drop-in compatible.** Generates `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, and `SKILL.md` from one `references/_index.yml` — same domain knowledge, four agent runtimes.
 
 ---
 
