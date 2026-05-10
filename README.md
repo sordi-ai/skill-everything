@@ -148,9 +148,9 @@ A CI no-drift job runs `git diff --exit-code` against the regenerated loaders on
 | `git-conventions` | `skills/git-conventions/SKILL.md` | ~550 |
 | `review-deployment` | `skills/review-deployment/SKILL.md` | ~650 |
 | `domain-template` | `skills/domain-template/SKILL.md` | ~900 |
-| `error-log` | `skills/error-log/SKILL.md` | ~2,050 |
+| `error-log` | `skills/error-log/SKILL.md` | ~2,150 |
 | `self-extension-workflow` | `skills/self-extension-workflow/SKILL.md` | ~1,850 |
-| **Total if all loaded** | — | **~12,500** |
+| **Total if all loaded** | — | **~12,600** |
 | **Typical (router + 1–2 skills)** | depends on task | **~1,800–3,500** |
 
 <!-- token-table:end -->
@@ -259,9 +259,14 @@ Same as above. Use `/memory show` to verify the loaded context. Use `/memory ref
 
 <br>
 
-Cursor reads `.cursorrules` automatically when the file sits at your project root. **Either commit our generated [`.cursorrules`](./.cursorrules) next to your code**, or for older Cursor builds paste `SKILL.md` content into **Settings → Rules for AI**. Same Markdown, either way.
+Two flavours, both generated from the same source — pick the one your Cursor build supports:
 
-> **Token reality.** Cursor reads `.cursorrules` whole every turn; selective sub-skill loading via `@file:` is build-dependent — newer builds resolve the reference, older builds treat it as text. The token saving comes from the compact router; on builds without `@file:` resolution there is no on-demand sub-skill loop. See [Per-tool token reality](#per-tool-token-reality).
+- **Modern (recommended)** — [`.cursor/rules/<name>.mdc`](./.cursor/rules/) — one MDC file per sub-skill, each with `description` + `alwaysApply: false` frontmatter. Cursor surfaces them in the rule catalogue; users invoke per task.
+- **Classic** — [`.cursorrules`](./.cursorrules) — single file at the project root, auto-discovered by older builds.
+
+Both are regenerated from `skills/_index.yml` + the source `SKILL.md` files, drift-checked in CI. For older Cursor builds without `.cursor/rules/` support, paste `SKILL.md` content into **Settings → Rules for AI**.
+
+> **Token reality.** Cursor reads `.cursorrules` whole every turn; selective sub-skill loading via `@file:` is build-dependent. The MDC variant lets users pick rules per task instead of loading everything. See [Per-tool token reality](#per-tool-token-reality).
 
 </details>
 
@@ -304,7 +309,18 @@ skill-everything/
 ├── SKILL.md                       # Router for OpenCode (generated)
 ├── CLAUDE.md                      # Router for Claude Code (generated)
 ├── GEMINI.md                      # Router for Gemini CLI (generated)
-├── .cursorrules                   # Router for Cursor (generated)
+├── AGENTS.md                      # Cross-tool agent instructions (generated)
+├── .cursorrules                   # Cursor router, classic single-file (generated)
+├── .cursor/rules/                 # Cursor MDC rules — one per skill (generated)
+│   ├── code-quality.mdc
+│   ├── python.mdc
+│   ├── typescript.mdc
+│   ├── react.mdc
+│   ├── git-conventions.mdc
+│   ├── review-deployment.mdc
+│   ├── domain-template.mdc
+│   ├── error-log.mdc
+│   └── self-extension-workflow.mdc
 ├── DISCLAIMER.md                  # Independent project, no employer endorsement
 ├── SECURITY.md                    # Threat model + responsible-disclosure
 ├── skills/                        # Anthropic Skills layout (one folder per sub-skill)

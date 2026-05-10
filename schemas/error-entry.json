@@ -86,6 +86,37 @@
       "type": "string",
       "pattern": "^skills/[a-z][a-z0-9-]{1,30}/SKILL\\.md$",
       "description": "Where the derived rule was added. Format: skills/<skill-name>/SKILL.md."
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional evidence linking this entry to real artefacts: commits, PRs, or CI runs that prove the bug existed and was fixed. All sub-fields are optional; include whatever is verifiable.",
+      "properties": {
+        "commit_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{7,40}$",
+          "description": "Short or full hex SHA of the commit where the bug landed (or was fixed)."
+        },
+        "pr_number": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "PR number where the issue was discussed or the fix landed."
+        },
+        "failing_run_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the CI run that reproduces the failing state."
+        },
+        "fixed_run_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the CI run that demonstrates the fix is in effect."
+        },
+        "reproduced_by_test": {
+          "type": "boolean",
+          "description": "True if a regression test exists in the repo that reproduces the original bug."
+        }
+      }
     }
   }
 }

@@ -22,6 +22,13 @@ Copy this block and fill in all fields:
     new_rule: |
       [Action directive: "Always X before Y" or "Never Z without W".]
     target_file: skills/[name]/SKILL.md
+    # Optional: link this entry to real artefacts. Include whatever is verifiable.
+    evidence:
+      commit_sha: "[full or short hex SHA, e.g. a84741d]"
+      pr_number: 0                     # PR where the fix landed
+      failing_run_url: "[URL of CI run that reproduces the failing state]"
+      fixed_run_url: "[URL of CI run that demonstrates the fix]"
+      reproduced_by_test: false        # true if a regression test exists
 ```
 
 ## Checklist Before Inserting
@@ -30,3 +37,4 @@ Copy this block and fill in all fields:
 - [ ] Is `new_rule` an action directive (not just a description)?
 - [ ] Was the rule added to the matching target file?
 - [ ] Is the next available ERR-ID correct?
+- [ ] Are evidence fields filled in for fields you can actually verify? (Optional but strengthens the audit trail.)

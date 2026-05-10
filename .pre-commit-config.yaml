@@ -21,11 +21,13 @@ repos:
         pass_filenames: false
 
       - id: render-loaders
-        name: render-loaders (regenerate SKILL.md / CLAUDE.md / GEMINI.md from _index.yml)
+        name: render-loaders (regenerate SKILL.md / CLAUDE.md / GEMINI.md / AGENTS.md / .cursor/rules/*)
         entry: python tools/render_loaders.py
         language: system
         pass_filenames: false
-        files: ^(skills/_index\.yml|tools/templates/.*\.j2)$
+        # Per-skill .mdc outputs depend on each skills/<name>/SKILL.md body, so
+        # changing any sub-skill source must trigger a re-render too.
+        files: ^(skills/_index\.yml|skills/[^/]+/SKILL\.md|tools/templates/.*\.j2)$
 
       - id: render-readme-table
         name: render-readme-table (token table from skill manifests)

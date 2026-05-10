@@ -1,0 +1,34 @@
+# AGENTS.md
+*Cross-tool agent instructions for {{ meta.name }}.*
+
+> This file follows the [AGENTS.md convention](https://agents.md) — a universal Markdown file AI coding agents read for project-specific instructions. Generated from `skills/_index.yml`; edit the index, then run `python tools/render_loaders.py`.
+
+## What this project is
+
+{{ meta.description }}
+
+## Sub-skill directory
+
+| Trigger | Sub-skill | Path |
+|---|---|---|
+{% for s in skills -%}
+| {{ s.triggers | join(", ") }} | {{ s.title }} | `{{ s.path }}` |
+{% endfor %}
+
+## How to use
+
+1. Match your task to a trigger above.
+2. Read the matching `skills/<name>/SKILL.md` before writing code.
+3. Apply the rules in that sub-skill.
+4. After a mistake, follow `skills/self-extension-workflow/SKILL.md`:
+   - Search the existing error log for similar entries.
+   - If found, increment `count`. If not, add a new entry.
+   - Update the matching target sub-skill with the derived rule.
+   - Open a PR labelled `needs-rule-review`. CI runs `lint-rules` + `auto-approve-rule-pr` gates; CODEOWNERS approval is required.
+
+## Important
+
+- **Search before write.** Duplicates in the error log destroy the signal.
+- **Action directives, not descriptions.** Rules start with: Always, Never, Before, After, Prefer, Avoid, Use, Do, Ensure.
+- **Stay compact.** Each sub-skill stays under 3,000 tokens. Split if it grows.
+- **PR-flow is mandatory.** Self-extension commits open PRs; never push to `main` directly.
