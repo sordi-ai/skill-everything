@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
   <title id="title">Token math — add a skill, pay nothing</title>
-  <desc id="desc">A line chart comparing input tokens per message between a monolithic prompt and skill-everything as the skill library grows from 0 to 50 skills. Monolithic rises from 0 to about 30000 tokens at 50 skills; skill-everything stays flat at about 2400 tokens, just below the 3000-token per-skill CI cap. Real tiktoken anchor at n=9: monolithic 12300, skill-everything 2400. The shaded wedge between the two lines represents the cost you don't pay.</desc>
+  <desc id="desc">A line chart comparing input tokens per message between a monolithic prompt and skill-everything as the skill library grows from 0 to 50 skills. Monolithic rises from 0 to about 30000 tokens at 50 skills; skill-everything stays flat at about 2400 tokens, just below the 3000-token per-skill CI cap. Real tiktoken anchor at n=9: monolithic 11550, skill-everything 2400. The shaded wedge between the two lines represents the cost you don't pay.</desc>
 
   <style>
     :root {
@@ -155,7 +155,7 @@
   <line x1="277.6" y1="257.5" x2="277.6" y2="340" class="anchor-tick"/>
 
   <circle class="anchor-dot-mono" cx="277.6" cy="257.5" r="5"/>
-  <text class="anchor-mono-text" x="290" y="176">12,300 tok</text>
+  <text class="anchor-mono-text" x="290" y="176">11,550 tok</text>
   <text class="anchor-meta"      x="290" y="189">monolithic at n=9</text>
   <text class="anchor-meta"      x="290" y="201">real tiktoken (cl100k)</text>
 
