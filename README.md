@@ -229,11 +229,11 @@ Same as above. Use `/memory show` to verify the loaded context. Use `/memory ref
 </details>
 
 <details>
-<summary><strong>Cursor</strong> — paste <code>SKILL.md</code> into Settings → Rules for AI</summary>
+<summary><strong>Cursor</strong> — auto-discovers <code>.cursorrules</code></summary>
 
 <br>
 
-Cursor does not auto-discover `CLAUDE.md` / `GEMINI.md` files. Either paste `SKILL.md` content directly into **Settings → Rules for AI**, or maintain a `.cursorrules` file with `@file:./skill-everything/SKILL.md` if your Cursor build supports it.
+Cursor reads `.cursorrules` automatically when the file sits at your project root. **Either commit our generated [`.cursorrules`](./.cursorrules) next to your code**, or for older Cursor builds paste `SKILL.md` content into **Settings → Rules for AI**. Same Markdown, either way.
 
 </details>
 
@@ -334,7 +334,7 @@ Each sub-skill has a [skill-manifest frontmatter block](./schemas/skill-manifest
 |---|:---:|---|
 | **`v1.0` — Foundation** | 🟢 **STABLE** | `lint-rules` CI · JSON-Schema validator · XSS hardening · single-source-of-truth loader sync · `learn(errors):` PR convention · CODEOWNERS + branch protection · 9 sub-skills shipped · 5 production diagrams · adversarial test suite. **You're using it now.** |
 | **`v1.1` — Eval that earns the claim** | 🟡 In development | Eval-framework MVP for re-mistake rate · methodology contract (n ≥ 30, multi-model, prompt hash pinned) · 30 days of real errors logged from production usage · published benchmark numbers. |
-| **`v1.2` — Community ecosystem** | 🔵 Planned | First external sub-skills merged (Go, Rust, Java, TypeScript) · sub-skill PR template institutionalised · public skill catalogue with usage stats · `learn(errors):` going wild on a public commit graph. |
+| **`v1.2` — Community ecosystem** | 🔵 Planned | First external sub-skills merged (Go, Rust, Java, Swift) · sub-skill PR template institutionalised · public skill catalogue with usage stats · `learn(errors):` going wild on a public commit graph. |
 | **`v2.0` — Marketplace + trust layer** | ⚪ Vision | Signed skills with reputation graph · sandboxed execution · semantic versioning · license management · cross-repo skill imports. The skill library becomes a public dataset others ship on top of. |
 
 *Feature requests and roadmap updates land as PRs against [`ROADMAP.md`](./ROADMAP.md) in `main` — same loop as the rest of the repo: every change is a commit, every commit is reviewed, every release is auditable.*
