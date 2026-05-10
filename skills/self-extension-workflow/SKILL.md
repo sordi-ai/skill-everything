@@ -3,7 +3,7 @@ name: self-extension-workflow
 description: Apply when executing the self-extension workflow. Six steps from a mistake to a merged rule, with CI gates and CODEOWNERS approval.
 license: MIT
 version: 1.0.0
-tokens_target: 1750
+tokens_target: 2000
 triggers:
   - executing self-extension
 loads_after: [error-log]

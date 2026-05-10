@@ -77,6 +77,24 @@ jobs:
           name: gitleaks-report
           path: gitleaks-report.json
 
+  check-token-budgets:
+    name: per-skill token budgets
+    runs-on: ubuntu-latest
+    # Blocking: enforces the README's "per-skill 3K-token cap, CI-enforced"
+    # claim at content level. Reads each skills/<name>/SKILL.md, computes
+    # the real tiktoken cl100k count, and fails when it exceeds the
+    # frontmatter tokens_target. Schema enforces tokens_target <= 3000;
+    # this job ensures the actual content honours the declared budget.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - name: per-skill token budgets
+        run: python tools/check_token_budgets.py
+
   loaders-and-table-no-drift:
     name: loaders + readme-table no-drift
     runs-on: ubuntu-latest

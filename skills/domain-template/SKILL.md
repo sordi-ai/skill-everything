@@ -3,7 +3,7 @@ name: domain-template
 description: Apply when documenting project-specific knowledge. Template for ADRs, naming conventions, business rules, and tech-stack quirks.
 license: MIT
 version: 1.0.0
-tokens_target: 850
+tokens_target: 1000
 triggers:
   - project-specific knowledge
   - business rules

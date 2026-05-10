@@ -35,3 +35,10 @@ repos:
         language: system
         pass_filenames: false
         files: ^(skills/.*\.md|README\.md|tools/render_readme_table\.py)$
+
+      - id: check-token-budgets
+        name: check-token-budgets (per-skill tiktoken count vs tokens_target)
+        entry: python tools/check_token_budgets.py
+        language: system
+        pass_filenames: false
+        files: ^skills/[^/]+/SKILL\.md$

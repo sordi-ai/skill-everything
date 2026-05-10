@@ -3,7 +3,7 @@ name: code-quality
 description: Apply when writing or refactoring code. Generic rules to prevent the most common review comments — function length, naming, error handling, security, and tooling.
 license: MIT
 version: 1.0.0
-tokens_target: 1000
+tokens_target: 1100
 triggers:
   - writing code
   - refactoring

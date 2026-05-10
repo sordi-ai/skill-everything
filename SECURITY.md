@@ -44,7 +44,7 @@ The contents of `skills/**`. Every rule is consumed as instruction by downstream
 
 | Adversary | Goal | Mitigations |
 |---|---|---|
-| External PR contributor | Insert a rule that exfiltrates credentials, runs shell, or nudges next-session agent toward bad actions | `lint-rules` CI · CODEOWNERS approval for `skills/error-log/` · branch protection · human PR review |
+| External PR contributor | Insert a rule that exfiltrates credentials, runs shell, or nudges next-session agent toward bad actions | `lint-rules` CI · `.github/CODEOWNERS` requires maintainer approval on `skills/error-log/` · branch protection (see required GitHub setting below) · human PR review |
 | Prompt-injection via task input | Trick the running agent into writing a poisoned `new_rule` that gets committed | Same as above; the lint-rules CI is best-effort, not airtight (see Limitations below) |
 | Honest contributor pasting prod data | Leak PII / secrets into `error-log.md` | `gitleaks` pre-commit · explicit redaction reminder in `.github/ISSUE_TEMPLATE/error-capture.md` |
 
@@ -61,7 +61,7 @@ The CI rule validator (`tools/validate_rules.py`) implements deterministic check
 - It is a static check, paired with required CODEOWNERS review for semantic coverage.
 
 > [!NOTE]
-> **CI-validated · CODEOWNERS-gated.** Every rule passes the deterministic validator before merge, and [`.github/CODEOWNERS`](./.github/CODEOWNERS) requires maintainer approval on `skills/error-log/`. The adversarial test suite is part of the public engineering record and runs on every PR.
+> **CI-validated. CODEOWNERS-required when branch protection is enabled.** Every rule passes the deterministic validator before merge. [`.github/CODEOWNERS`](./.github/CODEOWNERS) declares maintainer approval on `skills/error-log/`, but this declaration only blocks merges if the repository's branch protection is configured to "Require review from Code Owners" — that is a GitHub setting, not a committed file. See [Required GitHub branch-protection on `main`](#required-github-branch-protection-on-main) below for the exact list. The adversarial test suite is part of the public engineering record and runs on every PR.
 
 ---
 

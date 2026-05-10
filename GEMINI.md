@@ -6,7 +6,7 @@ as committed rules.
 
 ## Your responsibilities
 
-1. **Before every implementation:** check the sub-skill directory below, load the matching skill using `@skills/<name>/SKILL.md` imports.
+1. **Before every implementation:** check the sub-skill directory below, reference the matching skill via `@skills/<name>/SKILL.md` (Gemini imports merge file content into context — see "Token reality" note below; this is modularization, not lazy loading).
 2. **After every mistake:** execute the self-extension workflow.
 3. **When you learn something new:** add it to the appropriate category.
 
