@@ -14,7 +14,7 @@
 
 **Self-extending skills in plain Markdown. Save tokens. Enhance quality. Ship smarter agents — across Claude Code, Cursor, Gemini CLI, and OpenCode.**
 
-[![Release v1.0 STABLE](https://img.shields.io/badge/Release-v1.0_STABLE-success?style=for-the-badge&logo=git&logoColor=white)](./ROADMAP.md)
+[![Release v0.75.0 PREVIEW](https://img.shields.io/badge/Release-v0.75.0_PREVIEW-yellow?style=for-the-badge&logo=git&logoColor=white)](./ROADMAP.md)
 [![GitHub stars](https://img.shields.io/github/stars/sordi-ai/skill-everything?style=for-the-badge&logo=github&color=gold)](https://github.com/sordi-ai/skill-everything/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](./LICENSE)
 
@@ -375,13 +375,13 @@ Each sub-skill has a [skill-manifest frontmatter block](./schemas/skill-manifest
 
 ## VERSIONS
 
-> **`v1.0` is stable and released.** New features land in `main` via PR — watch the repo to see them ship.
+> **`v0.75` is the current preview release.** Foundation work is done; `v1.0` ships only when the eval framework earns the claim. New features land in `main` via PR — watch the repo to see them ship.
 
 | Version | Status | What |
 |---|:---:|---|
-| **`v1.0` — Foundation** | 🟢 **STABLE** | `lint-rules` CI · JSON-Schema validator · XSS hardening · single-source-of-truth loader sync · `learn(errors):` PR convention · CODEOWNERS + branch protection · 9 sub-skills shipped · 5 production diagrams · adversarial test suite. **You're using it now.** |
-| **`v1.1` — Eval that earns the claim** | 🟡 In development | Eval-framework MVP for re-mistake rate · methodology contract (n ≥ 30, multi-model, prompt hash pinned) · 30 days of real errors logged from production usage · published benchmark numbers. |
-| **`v1.2` — Community ecosystem** | 🔵 Planned | First external sub-skills merged (Go, Rust, Java, Swift) · sub-skill PR template institutionalised · public skill catalogue with usage stats · `learn(errors):` going wild on a public commit graph. |
+| **`v0.75` — Foundation** | 🟡 **PREVIEW** | `lint-rules` CI · JSON-Schema validator · XSS hardening · single-source-of-truth loader sync · `learn(errors):` PR convention · CODEOWNERS + branch protection · 9 sub-skills shipped · 5 production diagrams · adversarial test suite (15/20 caught) · per-skill token budget hard-checked · MUST/SHOULD/AVOID rule classification. **You're using it now.** |
+| **`v1.0` — Eval that earns the claim** | 🟡 In development | Eval-framework MVP for re-mistake rate · methodology contract (n ≥ 30, multi-model, prompt hash pinned) · 30 days of real errors logged from production usage · published benchmark numbers. The first stable release ships only after the claim is measured, not before. |
+| **`v1.1` — Community ecosystem** | 🔵 Planned | First external sub-skills merged (Go, Rust, Java, Swift) · sub-skill PR template institutionalised · public skill catalogue with usage stats · `learn(errors):` going wild on a public commit graph. |
 | **`v2.0` — Marketplace + trust layer** | ⚪ Vision | Signed skills with reputation graph · sandboxed execution · semantic versioning · license management · cross-repo skill imports. The skill library becomes a public dataset others ship on top of. |
 
 *Feature requests and roadmap updates land as PRs against [`ROADMAP.md`](./ROADMAP.md) in `main` — same loop as the rest of the repo: every change is a commit, every commit is reviewed, every release is auditable.*
@@ -472,7 +472,7 @@ The architectural lever — **flat per-message input cost as the library grows**
 
 <div align="center">
 
-<sub>MIT · plain Markdown · plain Git · v1.0 STABLE</sub>
+<sub>MIT · plain Markdown · plain Git · v0.75 preview</sub>
 
 `LICENSE` · [Disclaimer](./DISCLAIMER.md) · [Contributing](./CONTRIBUTING.md) · [Security](./SECURITY.md) · [Browse the public error log →](./skills/error-log/SKILL.md) · [Issue](https://github.com/sordi-ai/skill-everything/issues)
 

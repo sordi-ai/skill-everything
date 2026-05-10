@@ -1,7 +1,7 @@
 ---
 name: skill-everything
 description: Git-versioned agent memory — agents that never make the same mistake twice.
-version: 1.0.0
+version: 0.75.0
 license: MIT
 compatibility:
   opencode: ">=0.1"
