@@ -80,12 +80,12 @@ jobs:
   loaders-and-table-no-drift:
     name: loaders + readme-table no-drift
     runs-on: ubuntu-latest
-    # Advisory only: this job warns about drift but does not block merges.
-    # The pre-commit hook regenerates loaders + table locally; the CI run
-    # is here to surface the issue in PR conversation, not to gate merges.
-    # Promote to required check once the maintainer has run the generator
-    # at least once on the canonical branch and the outputs are stable.
-    continue-on-error: true
+    # Blocking: outputs of render_loaders.py and render_readme_table.py must
+    # match what is committed. The pre-commit hook regenerates locally; this
+    # CI gate is the single source of truth for the four loader files plus
+    # the README token table. Was advisory before the skills/ migration; now
+    # blocking, because the post-migration outputs are stable and any drift
+    # indicates a real source/template mismatch.
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

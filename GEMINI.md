@@ -12,6 +12,8 @@ as committed rules.
 
 Use `/memory show` to verify the loaded context. Use `/memory refresh` after edits.
 
+> **Token reality (Gemini-specific).** `@skills/<name>/SKILL.md` references modularize this file; Gemini parses GEMINI.md with the imported sub-skill content included, not lazily on demand. The token saving comes from the compact router (~800 tokens vs `10,000+` monolithic), not selective sub-skill loading. See README → [Per-tool token reality](./README.md#per-tool-token-reality).
+
 ## Sub-skill directory
 
 | Trigger | Sub-skill | Load via |

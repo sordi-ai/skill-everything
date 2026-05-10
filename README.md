@@ -6,7 +6,7 @@
 
 ### The memory layer for AI agents — self-learning instead of fine-tuning.
 
-### **84 % fewer input tokens · `$28` saved per 1,000 messages · same Markdown across four agent runtimes.**
+### **Up to 84 % fewer input tokens · `$28` saved per 1,000 messages · same Markdown across four agent runtimes.**
 
 <sub>* in Claude Code & OpenCode (selective sub-skill loading); Cursor & Gemini CLI realise a smaller share through the compact router — see [Per-tool token reality](#per-tool-token-reality). Cost vs. 10k-token monolithic baseline at Sonnet-class pricing.</sub>
 
@@ -56,7 +56,7 @@
 
 **Self-learning skills for AI agents.** **Beyond fine-tuning, beyond vector DBs, beyond black-box memory.** Your domain knowledge — local, in plain Markdown, versioned in Git, hot-loaded as composable sub-skills.
 
-⚡ **Save tokens.** 84 % fewer input tokens. $28 saved per 1,000 messages. Per-message bill stays flat as your library grows.
+⚡ **Save tokens.** Up to 84 % fewer input tokens. $28 saved per 1,000 messages on Claude Code & OpenCode (selective sub-skill loading); compact-router savings on Cursor & Gemini CLI. Per-message bill stays flat as your library grows.
 
 🚀 **Skills to GO.** Same Markdown across `Claude Code`, `Cursor`, `Gemini CLI`, `OpenCode`. Switch tools — your skills come with.
 

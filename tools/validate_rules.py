@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+# ruff: noqa: RUF001
+# RUF001 disabled: this module intentionally uses Cyrillic homoglyphs
+# in the homoglyph_map below to fold visually-identical Cyrillic letters
+# into their Latin look-alikes before forbidden-pattern matching. That
+# is the whole point — see test_validate_rules_adversarial.py for the
+# bypasses this closes (B01 cyrillic, B04 zero-width, B05 html-entity).
 """
 validate_rules.py - Schema + lint validator for skills/error-log/SKILL.md
                     and sub-skill manifest frontmatter.
@@ -35,12 +41,18 @@ Bypass mechanism:
 from __future__ import annotations
 
 import argparse
+import html
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 import yaml
 from jsonschema import Draft202012Validator
+
+# Zero-width and bidi-control codepoints stripped before pattern matching.
+# Each was a documented bypass in the adversarial suite.
+_INVISIBLE_CHARS = re.compile(r"[​‌‍⁠﻿‪-‮⁦-⁩]")
 
 ROOT = Path(__file__).resolve().parent.parent
 ERROR_LOG = ROOT / "skills" / "error-log" / "SKILL.md"
@@ -98,8 +110,34 @@ def load_exceptions() -> set[str]:
     return set(ids) if isinstance(ids, list) else set()
 
 
+def _normalize_for_pattern_check(rule: str) -> str:
+    """Normalize text before forbidden-pattern matching to harden against
+    documented bypasses: NFKC folds compatibility variants and full-width
+    digits; invisible chars (zero-width spaces, BOM, bidi controls) are
+    stripped; HTML entities are unescaped (so `&lt;script&gt;` becomes
+    `<script>` for the html-tag pattern). Cyrillic homoglyphs are folded
+    to their Latin look-alikes via a small targeted map — NFKC alone
+    does not handle that case."""
+    text = unicodedata.normalize("NFKC", rule)
+    text = _INVISIBLE_CHARS.sub("", text)
+    text = html.unescape(text)
+    # Cyrillic-to-Latin homoglyph fold, restricted to letters that visually
+    # collide with ASCII identifiers used in our forbidden-pattern set.
+    homoglyph_map = str.maketrans({
+        "а": "a", "е": "e", "о": "o", "р": "p", "с": "c", "у": "y", "х": "x",
+        "А": "A", "В": "B", "Е": "E", "К": "K", "М": "M", "Н": "H", "О": "O",
+        "Р": "P", "С": "C", "Т": "T", "Х": "X",
+    })
+    return text.translate(homoglyph_map)
+
+
 def lint_rule_text(rule: str, eid: str, allow_forbidden: bool) -> list[str]:
-    """Verb allow-list + forbidden-pattern checks. Returns list of error strings."""
+    """Verb allow-list + forbidden-pattern checks. Returns list of error strings.
+
+    The verb check runs against the original rule (allow-list is ASCII-only
+    and case-sensitive by design). The forbidden-pattern check runs against
+    the normalized form so homoglyph, zero-width, and HTML-entity bypasses
+    are caught — see test_validate_rules_adversarial.py."""
     errs: list[str] = []
     head = (rule.strip().split() or [""])[0]
     if head not in ALLOWED_VERBS:
@@ -108,8 +146,9 @@ def lint_rule_text(rule: str, eid: str, allow_forbidden: bool) -> list[str]:
             f"{sorted(ALLOWED_VERBS)} (got {head!r})"
         )
     if not allow_forbidden:
+        normalized = _normalize_for_pattern_check(rule)
         for pattern, tag in FORBIDDEN_PATTERNS:
-            if pattern.search(rule):
+            if pattern.search(normalized):
                 errs.append(f"{eid}: forbidden pattern [{tag}]")
     return errs
 

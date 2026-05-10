@@ -134,7 +134,7 @@ gh pr create --label needs-rule-review \
 | Layer | What it gates | Where |
 |---|---|---|
 | `lint-rules` | Schema + verb allow-list + forbidden patterns | [`schemas/error-entry.json`](../../schemas/error-entry.json) |
-| `auto-approve-rule-pr` | Diff scope (`skills/error-log/**`) and `Co-Authored-By:` trailer | `.github/workflows/auto-approve-rule-pr.yml` |
+| `auto-approve-rule-pr` | Diff scope (`skills/**` — error-log entry plus the target sub-skill) and `Co-Authored-By:` trailer | `.github/workflows/auto-approve-rule-pr.yml` |
 | Branch protection | CODEOWNERS approval for `skills/error-log/` | `.github/CODEOWNERS` |
 | Human review | Final read of rule wording and target file | maintainer |
 
