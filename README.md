@@ -4,6 +4,8 @@
 
 # skill-everything
 
+### **84 % fewer input tokens · `$28` saved per 1,000 messages · same Markdown across four agent runtimes.**
+
 ### Never make the same mistake twice.
 
 ### The self-learning memory layer for AI agents — beyond fine-tuning.
@@ -27,6 +29,8 @@
 ♻️ **Errors become commits · Commits become skills · Skills make agents smarter**
 
 </div>
+
+![Token comparison — same task, same agent: monolithic ships the whole rulebook every turn (10,000+ tokens), skill-everything ships a router plus one sub-skill (~1,600 tokens). 84% fewer input tokens per message.](./docs/token-comparison.svg)
 
 ---
 
