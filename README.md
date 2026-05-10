@@ -160,7 +160,7 @@ This is portable agent memory done the boring way: plain Markdown, git-versioned
 
 <!-- token-table:start -->
 
-| Sub-skill | Path | Tokens (tiktoken cl100k) |
+| Sub-skill | Path | Tokens (real, tiktoken cl100k) |
 |---|---|---:|
 | `code-quality` | `references/development/code-quality.md` | ~1,000 |
 | `python` | `references/development/python.md` | ~2,000 |
