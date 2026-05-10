@@ -140,6 +140,43 @@ errors:
       migration job to completion first. Do not rely on pod startup to
       apply migrations.
     target_file: references/process/review-deployment.md
+
+  - id: ERR-2026-013
+    date: 2026-05-10
+    last_seen: 2026-05-10
+    count: 1
+    category: development
+    severity: low
+    context: |
+      Running tools/render_loaders.py via Docker on a Windows host (Git
+      Bash / MSYS environment) to validate render-drift without local
+      Python. Repo path was C:/skill-everything/repo.
+    what_happened: |
+      Agent ran `docker run --rm -v "$(pwd):/repo" -w /repo python:3.12`
+      from inside Git Bash. Docker exited with: "Error response from
+      daemon: the working directory 'C:/Program Files/Git/repo' is
+      invalid, it needs to be an absolute path". MSYS had auto-converted
+      the Linux-style /repo path to a Windows-style "C:/Program Files/
+      Git/repo" before passing it to docker.exe.
+    root_cause: |
+      MSYS / Git Bash on Windows aggressively converts unquoted Linux
+      paths to Windows paths when calling native binaries. Bind-mount
+      arguments to docker.exe pass through this layer and get mangled.
+      The agent assumed the path syntax that works in plain bash also
+      works in Git Bash unmodified.
+    impact: |
+      One minute lost re-typing the command. No data loss. Confused
+      error message that initially looked like a docker volume issue.
+    resolution: |
+      Re-ran the command with MSYS_NO_PATHCONV=1 prefix:
+      `MSYS_NO_PATHCONV=1 docker run --rm -v "C:/skill-everything/repo:/repo" ...`
+      Plus quoted the volume mount with explicit Windows-style absolute
+      path on the host side.
+    new_rule: |
+      Always prefix `docker run -v` calls from Git Bash / MSYS on Windows
+      with `MSYS_NO_PATHCONV=1` to disable automatic path conversion.
+      Use explicit Windows-style paths on the host side of bind-mounts.
+    target_file: references/development/code-quality.md
 ```
 
 ---

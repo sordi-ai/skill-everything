@@ -64,6 +64,10 @@ Concrete rules from real projects — no boilerplate.
 22. **Never put secrets in code.** No API keys, passwords, or tokens in source code or comments. Always use environment variables.
 23. **Validate and sanitize user input.** At the system boundary (API entry): check type, length, format. Never trust blindly.
 
+### Tooling & Cross-Platform
+
+24. **Always prefix `docker run -v` from Git Bash / MSYS on Windows with `MSYS_NO_PATHCONV=1`.** MSYS auto-converts unquoted Linux paths to Windows paths before passing them to `docker.exe`, mangling bind-mount arguments. Use `MSYS_NO_PATHCONV=1 docker run -v "C:/path:/repo" ...` with explicit Windows-style host paths. Derived from `ERR-2026-013`.
+
 ---
 
 ## Why This Sub-Skill Earns Stars
