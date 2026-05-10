@@ -30,7 +30,7 @@
 
 </div>
 
-![Token comparison — same task, same agent: monolithic ships the whole rulebook every turn (10,000+ tokens), skill-everything ships a router plus one sub-skill (~1,600 tokens). 84% fewer input tokens per message.](./docs/token-comparison.svg)
+![Capability matrix — skill-everything carries 9 of 9 capabilities: plain Markdown · git-versioned · cross-tool portable · per-skill 3k-token cap CI-enforced · schema-validated rule entries · versioned skill-manifest frontmatter · self-extending via PR · skill-router auto-loads on trigger · audit trail in git history. AGENTS.md 3 of 9, Cursor Rules 2 of 9, mem0 / MemGPT 1 of 9.](./docs/comparison.svg)
 
 ---
 
@@ -151,7 +151,7 @@ This is portable agent memory done the boring way: plain Markdown, git-versioned
 
 ![Token comparison — monolithic ships the whole rulebook every turn (10,000+ tokens), skill-everything ships a router plus one sub-skill (~1,600 tokens), 84% less per message](./docs/token-comparison.svg)
 
-**The single-message punch:** monolithic prompts load `.cursorrules` *every turn, all of it*. Skill-everything loads the router (`SKILL.md`, ~800 tokens) plus exactly one sub-skill on demand (~800 tokens). Same task, same agent, **84 % fewer input tokens per message**.
+**The single-message punch:** monolithic prompts load `.cursorrules` *every turn, all of it*. Skill-everything loads the router (`SKILL.md`, ~800 tokens) plus exactly one sub-skill on demand (~800 tokens) — **84 % fewer input tokens per message**.
 
 ![Token-math chart — monolithic prompts grow with skill count, skill-everything stays flat](./docs/token-math.svg)
 
