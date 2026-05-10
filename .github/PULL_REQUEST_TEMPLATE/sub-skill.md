@@ -1,5 +1,5 @@
 <!--
-Use this template when adding a new sub-skill (e.g. references/development/go.md).
+Use this template when adding a new sub-skill (e.g. skills/go/SKILL.md).
 Title: feat(skills): add <id>
 Label: new-skill
 -->
@@ -9,7 +9,7 @@ Label: new-skill
 | | |
 |---|---|
 | `id` | `<kebab-case-id>` |
-| Path | `references/<category>/<id>.md` |
+| Path | `skills/<id>/SKILL.md` |
 | `tokens_target` | `<n>` (max 3000) |
 | Real token count | `<n from python tools/render_readme_table.py>` |
 | `triggers` | `<comma-separated short phrases>` |
@@ -32,7 +32,7 @@ For each rule in the new file, fill one row. **Each rule must be grounded in eit
 
 ## Loader sync
 
-- [ ] Added entry to `references/_index.yml` with `claude` / `gemini` / `skill_resource` loader strings
+- [ ] Added entry to `skills/_index.yml` with `claude` / `gemini` / `skill_resource` loader strings
 - [ ] Ran `python tools/render_loaders.py` and committed regenerated `SKILL.md` / `CLAUDE.md` / `GEMINI.md`
 - [ ] Ran `python tools/render_readme_table.py` and committed the README table update
 

@@ -1,5 +1,7 @@
 ---
-id: error-log
+name: error-log
+description: Apply when learning from a mistake. Central memory of past errors and derived rules; consult before logging a new error to avoid duplicates.
+license: MIT
 version: 1.0.0
 tokens_target: 1500
 triggers:
@@ -43,7 +45,7 @@ Every error entry follows this YAML format. The schema is enforced — see [`sch
     [The concrete rule derived from this error.
     Phrased as action directive: "Always X before Y" or "Never Z without W".
     Must start with: Always, Never, Before, After, Prefer, Avoid, Use, Do, or Ensure.]
-  target_file: references/[category]/[filename].md
+  target_file: skills/[name]/SKILL.md
 ```
 
 ---
@@ -84,7 +86,7 @@ errors:
       Never disable strict type-checks "just for this file" to make a demo
       green. Either handle the null path or document why the value is
       provably non-null with a comment.
-    target_file: references/development/typescript.md
+    target_file: skills/typescript/SKILL.md
 
   - id: ERR-2026-007
     date: 2026-04-21
@@ -116,7 +118,7 @@ errors:
       After any rename, run a project-wide grep for the old name before
       claiming the rename is complete. In monorepos, local tsc scope is
       not enough.
-    target_file: references/development/code-quality.md
+    target_file: skills/code-quality/SKILL.md
 
   - id: ERR-2026-012
     date: 2026-05-04
@@ -150,7 +152,7 @@ errors:
       Before any deployment that includes a database migration, run the
       migration job to completion first. Do not rely on pod startup to
       apply migrations.
-    target_file: references/process/review-deployment.md
+    target_file: skills/review-deployment/SKILL.md
 
   - id: ERR-2026-013
     date: 2026-05-10
@@ -187,7 +189,7 @@ errors:
       Always prefix `docker run -v` calls from Git Bash / MSYS on Windows
       with `MSYS_NO_PATHCONV=1` to disable automatic path conversion.
       Use explicit Windows-style paths on the host side of bind-mounts.
-    target_file: references/development/code-quality.md
+    target_file: skills/code-quality/SKILL.md
 ```
 
 ---

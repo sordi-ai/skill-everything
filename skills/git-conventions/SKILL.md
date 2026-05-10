@@ -1,5 +1,7 @@
 ---
-id: git-conventions
+name: git-conventions
+description: Apply when committing, branching, or opening a pull request. Conventional commit format, branch naming, PR scope.
+license: MIT
 version: 1.0.0
 tokens_target: 650
 triggers:

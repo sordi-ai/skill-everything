@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-validate_rules.py - Schema + lint validator for references/errors/error-log.md
+validate_rules.py - Schema + lint validator for skills/error-log/SKILL.md
                     and sub-skill manifest frontmatter.
 
 Usage:
@@ -15,7 +15,8 @@ Validation layers (all run independently):
     3. Forbidden-pattern check on `new_rule` (URLs, shell binaries, credential
        paths, base64-shaped strings, <script> tags, fs-mutation commands).
     4. JSON-Schema validation against schemas/skill-manifest.json for every
-       sub-skill frontmatter block.
+       sub-skill SKILL.md frontmatter block, plus a name == directory-name
+       check (Anthropic Skills invariant).
 
 Honest limitations (also documented in SECURITY.md):
     * The verb allow-list and forbidden patterns are best-effort, not airtight.
@@ -26,7 +27,7 @@ Honest limitations (also documented in SECURITY.md):
     See tests/test_validate_rules_adversarial.py for the documented bypass set.
 
 Bypass mechanism:
-    Add an entry to references/errors/exceptions.yml with a rationale and
+    Add an entry to skills/error-log/exceptions.yml with a rationale and
     require CODEOWNERS approval to merge it. The validator soft-fails for
     listed IDs (forbidden-pattern violations only; schema errors stay hard).
 """
@@ -42,10 +43,10 @@ import yaml
 from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parent.parent
-ERROR_LOG = ROOT / "references" / "errors" / "error-log.md"
+ERROR_LOG = ROOT / "skills" / "error-log" / "SKILL.md"
 ERROR_SCHEMA = ROOT / "schemas" / "error-entry.json"
 SKILL_SCHEMA = ROOT / "schemas" / "skill-manifest.json"
-EXCEPTIONS = ROOT / "references" / "errors" / "exceptions.yml"
+EXCEPTIONS = ROOT / "skills" / "error-log" / "exceptions.yml"
 
 ALLOWED_VERBS = {
     "Always", "Never", "Before", "After",
@@ -69,7 +70,7 @@ FORBIDDEN_PATTERNS = [
      "html-tag"),
 ]
 
-SUB_SKILL_DIRS = ["development", "git", "process", "domain", "errors"]
+SKILLS_DIR = ROOT / "skills"
 
 
 def load_yaml_file(path: Path):
@@ -173,25 +174,35 @@ def parse_frontmatter(path: Path) -> dict | None:
 
 
 def validate_sub_skills() -> list[str]:
-    """Run skill-manifest.json schema over every sub-skill's frontmatter."""
+    """Run skill-manifest.json schema over every skills/*/SKILL.md frontmatter,
+    plus enforce the Anthropic invariant that `name` matches the directory name."""
     if not SKILL_SCHEMA.exists():
         return [f"schema not found: {SKILL_SCHEMA}"]
     schema = load_yaml_file(SKILL_SCHEMA)
     validator = Draft202012Validator(schema)
     errors: list[str] = []
-    references = ROOT / "references"
-    for sub_dir in SUB_SKILL_DIRS:
-        for path in (references / sub_dir).glob("*.md"):
-            # Skip templates and READMEs
-            if path.name.startswith("_") or path.name.lower() == "readme.md":
-                continue
-            fm = parse_frontmatter(path)
-            if fm is None:
-                errors.append(f"{path.relative_to(ROOT)}: missing frontmatter")
-                continue
-            fm_for_schema = _stringify_dates(fm)
-            for v in validator.iter_errors(fm_for_schema):
-                errors.append(f"{path.relative_to(ROOT)}: schema: {v.message}")
+    if not SKILLS_DIR.is_dir():
+        return [f"skills directory not found: {SKILLS_DIR}"]
+    for skill_md in sorted(SKILLS_DIR.glob("*/SKILL.md")):
+        # Skip placeholder templates (e.g. skills/_template/SKILL.md).
+        if skill_md.parent.name.startswith("_"):
+            continue
+        rel = skill_md.relative_to(ROOT).as_posix()
+        fm = parse_frontmatter(skill_md)
+        if fm is None:
+            errors.append(f"{rel}: missing frontmatter")
+            continue
+        # Anthropic Skills invariant: `name` must match the directory name.
+        expected_name = skill_md.parent.name
+        actual_name = fm.get("name") if isinstance(fm, dict) else None
+        if actual_name != expected_name:
+            errors.append(
+                f"{rel}: frontmatter name {actual_name!r} does not match "
+                f"directory name {expected_name!r}"
+            )
+        fm_for_schema = _stringify_dates(fm)
+        for v in validator.iter_errors(fm_for_schema):
+            errors.append(f"{rel}: schema: {v.message}")
     return errors
 
 

@@ -1,0 +1,122 @@
+# Single source of truth for sub-skill index.
+# tools/render_loaders.py reads this and regenerates SKILL.md, CLAUDE.md, GEMINI.md, .cursorrules.
+# CI fails if the regenerated files differ from what's in git (drift detection).
+
+meta:
+  name: skill-everything
+  version: 1.0.0
+  description: Git-versioned agent memory — agents that never make the same mistake twice.
+
+skills:
+  - id: code-quality
+    title: Code Quality
+    path: skills/code-quality/SKILL.md
+    triggers:
+      - writing code
+      - refactoring
+      - review
+    loaders:
+      claude:  '@skills/code-quality/SKILL.md'
+      gemini:  '@skills/code-quality/SKILL.md'
+      cursor:  '@file:./skills/code-quality/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="code-quality")'
+
+  - id: python
+    title: Python
+    path: skills/python/SKILL.md
+    triggers:
+      - python code
+      - type hints
+      - python packaging
+    loaders:
+      claude:  '@skills/python/SKILL.md'
+      gemini:  '@skills/python/SKILL.md'
+      cursor:  '@file:./skills/python/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="python")'
+
+  - id: typescript
+    title: TypeScript
+    path: skills/typescript/SKILL.md
+    triggers:
+      - typescript code
+      - strict types
+      - async typescript
+    loaders:
+      claude:  '@skills/typescript/SKILL.md'
+      gemini:  '@skills/typescript/SKILL.md'
+      cursor:  '@file:./skills/typescript/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="typescript")'
+
+  - id: react
+    title: React
+    path: skills/react/SKILL.md
+    triggers:
+      - react component
+      - react hooks
+      - react performance
+    loaders:
+      claude:  '@skills/react/SKILL.md'
+      gemini:  '@skills/react/SKILL.md'
+      cursor:  '@file:./skills/react/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="react")'
+
+  - id: git-conventions
+    title: Git Conventions
+    path: skills/git-conventions/SKILL.md
+    triggers:
+      - git commit
+      - branch
+      - pull request
+    loaders:
+      claude:  '@skills/git-conventions/SKILL.md'
+      gemini:  '@skills/git-conventions/SKILL.md'
+      cursor:  '@file:./skills/git-conventions/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="git-conventions")'
+
+  - id: review-deployment
+    title: Review & Deployment
+    path: skills/review-deployment/SKILL.md
+    triggers:
+      - creating PR
+      - deployment
+      - review checklist
+    loaders:
+      claude:  '@skills/review-deployment/SKILL.md'
+      gemini:  '@skills/review-deployment/SKILL.md'
+      cursor:  '@file:./skills/review-deployment/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="review-deployment")'
+
+  - id: domain-template
+    title: Domain Knowledge (template)
+    path: skills/domain-template/SKILL.md
+    triggers:
+      - project-specific knowledge
+      - business rules
+    loaders:
+      claude:  '@skills/domain-template/SKILL.md'
+      gemini:  '@skills/domain-template/SKILL.md'
+      cursor:  '@file:./skills/domain-template/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="domain-template")'
+
+  - id: error-log
+    title: Error Log
+    path: skills/error-log/SKILL.md
+    triggers:
+      - made or corrected a mistake
+      - learn from this
+    loaders:
+      claude:  '@skills/error-log/SKILL.md'
+      gemini:  '@skills/error-log/SKILL.md'
+      cursor:  '@file:./skills/error-log/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="error-log")'
+
+  - id: self-extension-workflow
+    title: Self-Extension Workflow
+    path: skills/self-extension-workflow/SKILL.md
+    triggers:
+      - executing self-extension
+    loaders:
+      claude:  '@skills/self-extension-workflow/SKILL.md'
+      gemini:  '@skills/self-extension-workflow/SKILL.md'
+      cursor:  '@file:./skills/self-extension-workflow/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="self-extension-workflow")'

@@ -9,7 +9,7 @@
 *A side project. Two engineers. Weekends. Independent OSS.*
 
 - A side project, built on weekends by two engineers.
-- Dogfooded daily by the maintainers. The [error log](./references/errors/error-log.md) is public and lists real errors we have made and learned from.
+- Dogfooded daily by the maintainers. The [error log](./skills/error-log/SKILL.md) is public and lists real errors we have made and learned from.
 
 ---
 

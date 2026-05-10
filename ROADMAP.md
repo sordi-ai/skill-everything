@@ -20,7 +20,11 @@
 
 ## How `v1.0` was shipped
 
-`v1.0` is the result of a tight pre-launch sprint that produced the foundation: validators, the `learn(errors):` self-extension loop, the cross-tool loader generator, and the five production diagrams in [`docs/`](./docs/). Every commit is in the public history; every architectural decision lives in the relevant `references/` sub-skill. There is nothing hidden — `git clone` is the entire setup and the entire story.
+`v1.0` is the result of a tight pre-launch sprint that produced the foundation: validators, the `learn(errors):` self-extension loop, the cross-tool loader generator, and the five production diagrams in [`docs/`](./docs/). Every commit is in the public history; every architectural decision lives in the relevant `skills/` sub-skill. There is nothing hidden — `git clone` is the entire setup and the entire story.
+
+## Known follow-ups
+
+- **Diagram sync to `skills/` paths.** The seven production SVGs in [`docs/`](./docs/) (`architecture`, `memory-to-go`, `comparison`, `error-log`, `pr-flow`, `how-it-works`, `how-it-works-mobile`) still display the legacy `references/...` path layout that v1.0 shipped with. The code, schemas, loaders, validator, CI, and CODEOWNERS were migrated to the Anthropic Skills folder standard (`skills/<name>/SKILL.md`); the SVGs lag behind because they require pixel-perfect Bo-design-system iteration with Playwright. Tracked as a v1.1 design sprint.
 
 ## What's not on the 2026 roadmap
 

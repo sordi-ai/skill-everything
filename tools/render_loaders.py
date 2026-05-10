@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 render_loaders.py - Regenerates SKILL.md, CLAUDE.md, GEMINI.md, .cursorrules
-                    from references/_index.yml. CI fails if outputs drift.
+                    from skills/_index.yml. CI fails if outputs drift.
 
 Usage:
     python tools/render_loaders.py
@@ -11,7 +11,7 @@ Templates live under tools/templates/*.j2.
 
 This is the single source of truth machinery: editing CLAUDE.md, GEMINI.md or
 .cursorrules directly will be overwritten on the next pre-commit / CI run.
-Edit references/_index.yml instead.
+Edit skills/_index.yml instead.
 """
 
 from __future__ import annotations
@@ -24,7 +24,7 @@ import jinja2
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
-INDEX = ROOT / "references" / "_index.yml"
+INDEX = ROOT / "skills" / "_index.yml"
 TEMPLATES = ROOT / "tools" / "templates"
 
 # Each tuple: (output filename, template filename).

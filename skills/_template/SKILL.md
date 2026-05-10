@@ -1,5 +1,7 @@
 ---
-id: <kebab-case-id>
+name: <kebab-case-name>
+description: <one-sentence trigger condition — when should this skill be loaded? Start with "Apply when ..." for consistency.>
+license: MIT
 version: 1.0.0
 tokens_target: 1500
 triggers:
@@ -33,8 +35,8 @@ supersedes: []
 
 ## See also
 
-- `references/development/code-quality.md` (when this skill specialises a generic rule, link to it)
-- `references/errors/error-log.md` (errors that motivated rules in this skill)
+- `skills/code-quality/SKILL.md` (when this skill specialises a generic rule, link to it)
+- `skills/error-log/SKILL.md` (errors that motivated rules in this skill)
 
 ---
 

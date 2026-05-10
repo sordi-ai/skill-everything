@@ -1,5 +1,7 @@
 ---
-id: python
+name: python
+description: Apply when writing Python code. Type hints, error handling, mutable defaults, async patterns, and packaging conventions.
+license: MIT
 version: 1.0.0
 tokens_target: 2000
 triggers:

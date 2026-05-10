@@ -8,7 +8,7 @@
 
 ### **84 % fewer input tokens · `$28` saved per 1,000 messages · same Markdown across four agent runtimes.**
 
-<sub>* vs. 10k-token monolithic baseline at Sonnet-class pricing — see [Token math](#token-math) for the assumptions.</sub>
+<sub>* in Claude Code & OpenCode (selective sub-skill loading); Cursor & Gemini CLI realise a smaller share through the compact router — see [Per-tool token reality](#per-tool-token-reality). Cost vs. 10k-token monolithic baseline at Sonnet-class pricing.</sub>
 
 ### Never make the same mistake twice.
 
@@ -69,17 +69,17 @@ git clone https://github.com/sordi-ai/skill-everything.git
 **Star this repo to ship smarter agents.**
 
 > [!NOTE]
-> **Drop-in compatible.** Generates `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, and `SKILL.md` from one `references/_index.yml` — same domain knowledge, four agent runtimes.
+> **Drop-in compatible.** Generates `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, and `SKILL.md` from one `skills/_index.yml` — same domain knowledge, four agent runtimes.
 
 ---
 
 ## WHY IT WINS
 *Six reasons skill-everything is the new standard for agent memory.*
 
-- **Cross-tool by design.** One source, four agent runtimes — `Claude Code`, `Cursor`, `Gemini CLI`, `OpenCode`. Generated from a single [`references/_index.yml`](./references/_index.yml), drift-checked in CI on every PR. **Same domain knowledge, four runtimes, zero re-authoring.**
-- **Beyond fine-tuning.** Domain knowledge compounds in plain Markdown — `git diff`-able, screenshot-shareable, instantly auditable. Your agent's brain lives in [`references/`](./references/), **versioned in Git, not in opaque weights**.
+- **Cross-tool by design.** One source, four agent runtimes — `Claude Code`, `Cursor`, `Gemini CLI`, `OpenCode`. Generated from a single [`skills/_index.yml`](./skills/_index.yml), drift-checked in CI on every PR. **Same domain knowledge, four runtimes, zero re-authoring.**
+- **Beyond fine-tuning.** Domain knowledge compounds in plain Markdown — `git diff`-able, screenshot-shareable, instantly auditable. Your agent's brain lives in [`skills/`](./skills/), **versioned in Git, not in opaque weights**.
 - **Self-extending memory.** Every accepted change makes the next session smarter. `git log --grep="learn("` is your agent's growth trail. **Quality compounds — commit by commit, automatically.**
-- **84 % fewer input tokens. $28 saved per 1,000 messages.** Per-skill 3k-token cap, CI-enforced by [`tools/validate_rules.py`](./tools/validate_rules.py). The router loads only the matching sub-skill. **Add the 50th skill, the 200th skill — your per-message bill stays flat.**
+- **84 % fewer input tokens. $28 saved per 1,000 messages.** Per-skill 3k-token cap, CI-enforced by [`tools/validate_rules.py`](./tools/validate_rules.py). On Claude Code & OpenCode the router loads only the matching sub-skill; on Cursor & Gemini CLI the saving comes from the compact router pattern (full breakdown in [Per-tool token reality](#per-tool-token-reality)). **Add the 50th skill, the 200th skill — your per-message bill stays flat where the runtime supports lazy loading.**
 - **Modular by design.** Composable sub-skills, hot-loaded on demand. Domain knowledge — local, in one place, organised by trigger. **The library grows; per-message cost doesn't.**
 - **Drop-in compatible with the agent ecosystem.** `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, and `SKILL.md` are all generated from the same source. **Works with the formats your tools already read — today.**
 
@@ -88,11 +88,11 @@ git clone https://github.com/sordi-ai/skill-everything.git
 ## ARCHITECTURE
 *One register. Four loaders. Same sub-skills across four agent runtimes.*
 
-[`references/_index.yml`](./references/_index.yml) is the **single source of truth**. Every sub-skill is declared once with its `id`, `tokens_target`, `triggers`, and load order. From it, [`tools/render_loaders.py`](./tools/render_loaders.py) regenerates **four loader files**: `SKILL.md` (OpenCode), `CLAUDE.md` (Claude Code), `GEMINI.md` (Gemini CLI), and `.cursorrules` (Cursor). **Edit the index, regenerate, done.**
+[`skills/_index.yml`](./skills/_index.yml) is the **single source of truth**. Every sub-skill is declared once with its `id`, `tokens_target`, `triggers`, and load order. From it, [`tools/render_loaders.py`](./tools/render_loaders.py) regenerates **four loader files**: `SKILL.md` (OpenCode), `CLAUDE.md` (Claude Code), `GEMINI.md` (Gemini CLI), and `.cursorrules` (Cursor). **Edit the index, regenerate, done.**
 
 A CI no-drift job runs `git diff --exit-code` against the regenerated loaders on every PR — **the four runtimes stay in lockstep, automatically**. One source updates them all.
 
-![Architecture — references/_index.yml as master, render_loaders.py as generator, four loaders rendering the same sub-skill directory](./docs/architecture.svg)
+![Architecture — skills/_index.yml as master, render_loaders.py as generator, four loaders rendering the same sub-skill directory](./docs/architecture.svg)
 
 *One source of truth. Four loaders. Zero drift.*
 
@@ -106,7 +106,7 @@ A CI no-drift job runs `git diff --exit-code` against the regenerated loaders on
 
 ![Token comparison — monolithic ships the whole rulebook every turn (10,000+ tokens), skill-everything ships a router plus one sub-skill (~1,600 tokens), 84% less per message](./docs/token-comparison.svg)
 
-**The single-message punch:** monolithic prompts load `.cursorrules` *every turn, all of it*. Skill-everything loads the router (`SKILL.md`, ~800 tokens) plus exactly one sub-skill on demand (~800 tokens) — **84 % fewer input tokens per message**.
+**The single-message punch:** monolithic prompts load `.cursorrules` *every turn, all of it*. With selective sub-skill loading (Claude Code, OpenCode), skill-everything loads the router (~800 tokens) plus exactly one sub-skill on demand (~800 tokens) — **84 % fewer input tokens per message**. On Cursor & Gemini CLI the router itself is the saving today (see [Per-tool token reality](#per-tool-token-reality)).
 
 ![Token-math chart — monolithic prompts grow with skill count, skill-everything stays flat](./docs/token-math.svg)
 
@@ -120,6 +120,18 @@ A CI no-drift job runs `git diff --exit-code` against the regenerated loaders on
 
 **Same architecture, every provider.** The 84 % input-token reduction is **architectural**, not pricing-conditional — switch from Sonnet to Opus, Kimi, or GPT-4o, the ratio stays. Per-message dollar amount scales with the provider tier; the proportional saving doesn't.
 
+### Per-tool token reality
+*The 84 % is architectural — it requires selective sub-skill loading. Here's what each runtime actually does today.*
+
+| Runtime | Selective loading | Realised reduction | Why |
+|---|:---:|:---:|---|
+| **Claude Code** | ✅ Native (`@skills/<name>/SKILL.md`) | **~84 %** | Router (`CLAUDE.md`) auto-discovers, `@-imports` lazy-load exactly the matching sub-skill. |
+| **OpenCode** | ✅ Native (`skill_resource()`) | **~80–84 %** | Skill auto-discovery + native loader pulls one sub-skill on demand; per-turn footprint matches Claude Code. |
+| **Cursor** | ⚠️ Build-dependent | **~30–50 %** | `.cursorrules` ships every turn (router + trigger table). `@file:` references load only on newer builds; on older builds the saving is the compact router itself. |
+| **Gemini CLI** | ❌ Not yet | **~20–30 %** | `GEMINI.md` ships every turn; `@skills/<name>/SKILL.md` is Anthropic-specific syntax. The saving is the compact router; sub-skills must be inlined or pasted manually for true lazy loading. |
+
+**Takeaway.** The architectural win is **identical** across all four runtimes — same sub-skills, same source of truth, same drift-checked CI. The **realisation** depends on what the runtime supports today: full lazy loading on Claude Code & OpenCode, compact-router savings on Cursor & Gemini CLI. Plain Markdown works everywhere; the loader maturity catches up over time.
+
 <details>
 <summary><strong>Per-skill token budgets — real tiktoken counts, CI-validated</strong></summary>
 
@@ -129,16 +141,16 @@ A CI no-drift job runs `git diff --exit-code` against the regenerated loaders on
 
 | Sub-skill | Path | Tokens (real, tiktoken cl100k) |
 |---|---|---:|
-| `code-quality` | `references/development/code-quality.md` | ~950 |
-| `python` | `references/development/python.md` | ~1,600 |
-| `typescript` | `references/development/typescript.md` | ~1,850 |
-| `react` | `references/development/react.md` | ~1,750 |
-| `git-conventions` | `references/git/conventions.md` | ~500 |
-| `review-deployment` | `references/process/review-deployment.md` | ~600 |
-| `domain-template` | `references/domain/template.md` | ~850 |
-| `error-log` | `references/errors/error-log.md` | ~2,000 |
-| `self-extension-workflow` | `references/errors/self-extension-workflow.md` | ~1,800 |
-| **Total if all loaded** | — | **~12,200** |
+| `code-quality` | `skills/code-quality/SKILL.md` | ~1,000 |
+| `python` | `skills/python/SKILL.md` | ~1,600 |
+| `typescript` | `skills/typescript/SKILL.md` | ~1,900 |
+| `react` | `skills/react/SKILL.md` | ~1,800 |
+| `git-conventions` | `skills/git-conventions/SKILL.md` | ~550 |
+| `review-deployment` | `skills/review-deployment/SKILL.md` | ~650 |
+| `domain-template` | `skills/domain-template/SKILL.md` | ~900 |
+| `error-log` | `skills/error-log/SKILL.md` | ~2,050 |
+| `self-extension-workflow` | `skills/self-extension-workflow/SKILL.md` | ~1,850 |
+| **Total if all loaded** | — | **~12,500** |
 | **Typical (router + 1–2 skills)** | depends on task | **~1,800–3,500** |
 
 <!-- token-table:end -->
@@ -175,22 +187,22 @@ learn(errors): ERR-2026-007 — grep before claiming a rename complete  (count 1
 learn(errors): ERR-2026-012 — order migrations before backend deploys
 ```
 
-**The full self-extension workflow** — including the CI gate, the `auto-approve-rule-pr` policy, and the schema-validated rule grammar — lives in [`references/errors/self-extension-workflow.md`](./references/errors/self-extension-workflow.md).
+**The full self-extension workflow** — including the CI gate, the `auto-approve-rule-pr` policy, and the schema-validated rule grammar — lives in [`skills/self-extension-workflow/SKILL.md`](./skills/self-extension-workflow/SKILL.md).
 
-[**Browse the full public error log →**](./references/errors/error-log.md) — every mistake captured and every rule derived, in plain Markdown.
+[**Browse the full public error log →**](./skills/error-log/SKILL.md) — every mistake captured and every rule derived, in plain Markdown.
 
 ---
 
 ## MEMORY TO GO
 *Switch tools. Your skills come with.*
 
-**Take your skills anywhere.** Your self-learning sub-skills live once in [`references/_index.yml`](./references/_index.yml) and travel with you across four agent runtimes — `Claude Code`, `Cursor`, `Gemini CLI`, `OpenCode` — with **zero re-authoring**.
+**Take your skills anywhere.** Your self-learning sub-skills live once in [`skills/_index.yml`](./skills/_index.yml) and travel with you across four agent runtimes — `Claude Code`, `Cursor`, `Gemini CLI`, `OpenCode` — with **zero re-authoring**.
 
 [`tools/render_loaders.py`](./tools/render_loaders.py) deterministically generates `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, and `SKILL.md` from the same index. Switch from a Claude Code session to Gemini CLI mid-project and your **composable sub-skills, your error log, your self-extension workflow are already loaded** — identical, token-capped, schema-validated. **No sync layer. No API lock-in. No proprietary memory store.**
 
 This is portable agent memory done the boring way: plain Markdown, git-versioned, CI-gated. **Beyond fine-tuning, beyond vector DBs, beyond black-box memory.** **One source. Four runtimes. Memory follows you.**
 
-![Memory to GO — switch tools, skills come with. Your sub-skills live once in references/_index.yml and travel with you across Claude Code, Cursor, Gemini CLI, and OpenCode with zero re-authoring.](./docs/memory-to-go.svg)
+![Memory to GO — switch tools, skills come with. Your sub-skills live once in skills/_index.yml and travel with you across Claude Code, Cursor, Gemini CLI, and OpenCode with zero re-authoring.](./docs/memory-to-go.svg)
 
 ---
 
@@ -225,8 +237,8 @@ git clone https://github.com/sordi-ai/skill-everything.git
 Add the repository as a submodule into your project, or clone it next to your project. Claude Code reads `CLAUDE.md` automatically. Or reference sub-skills directly:
 
 ```markdown
-@references/development/code-quality.md
-@references/errors/error-log.md
+@skills/code-quality/SKILL.md
+@skills/error-log/SKILL.md
 ```
 
 </details>
@@ -238,6 +250,8 @@ Add the repository as a submodule into your project, or clone it next to your pr
 
 Same as above. Use `/memory show` to verify the loaded context. Use `/memory refresh` after edits.
 
+> **Token reality.** Gemini CLI loads `GEMINI.md` whole — the `@skills/<name>/SKILL.md` import syntax is Anthropic-specific and is read as literal text. The token saving comes from the compact router (~800 tokens) versus a 10k-token monolithic rule-book; sub-skills inline manually for true lazy loading. See [Per-tool token reality](#per-tool-token-reality).
+
 </details>
 
 <details>
@@ -246,6 +260,8 @@ Same as above. Use `/memory show` to verify the loaded context. Use `/memory ref
 <br>
 
 Cursor reads `.cursorrules` automatically when the file sits at your project root. **Either commit our generated [`.cursorrules`](./.cursorrules) next to your code**, or for older Cursor builds paste `SKILL.md` content into **Settings → Rules for AI**. Same Markdown, either way.
+
+> **Token reality.** Cursor reads `.cursorrules` whole every turn; selective sub-skill loading via `@file:` is build-dependent — newer builds resolve the reference, older builds treat it as text. The token saving comes from the compact router; on builds without `@file:` resolution there is no on-demand sub-skill loop. See [Per-tool token reality](#per-tool-token-reality).
 
 </details>
 
@@ -291,21 +307,21 @@ skill-everything/
 ├── .cursorrules                   # Router for Cursor (generated)
 ├── DISCLAIMER.md                  # Independent project, no employer endorsement
 ├── SECURITY.md                    # Threat model + responsible-disclosure
-├── references/
+├── skills/                        # Anthropic Skills layout (one folder per sub-skill)
 │   ├── _index.yml                 # Single source of truth for the routers
-│   ├── development/               # Language sub-skills
-│   │   ├── code-quality.md        #   23 generic rules
-│   │   ├── python.md              #   20 Python-specific rules
-│   │   ├── typescript.md          #   17 TypeScript rules
-│   │   └── react.md               #   17 React rules
-│   ├── git/conventions.md
-│   ├── process/review-deployment.md
-│   ├── domain/template.md
-│   ├── errors/
-│   │   ├── error-log.md           # YAML entries (validated by CI)
+│   ├── _template/SKILL.md         # Copy this folder to start a new skill
+│   ├── code-quality/SKILL.md      #   23 generic rules
+│   ├── python/SKILL.md            #   20 Python-specific rules
+│   ├── typescript/SKILL.md        #   17 TypeScript rules
+│   ├── react/SKILL.md             #   17 React rules
+│   ├── git-conventions/SKILL.md   # commit, branch, PR conventions
+│   ├── review-deployment/SKILL.md # review + deployment checklists
+│   ├── domain-template/SKILL.md   # template for project-specific knowledge
+│   ├── error-log/
+│   │   ├── SKILL.md               # YAML entries (validated by CI)
 │   │   ├── exceptions.yml         # Forbidden-pattern bypass list
-│   │   └── self-extension-workflow.md
-│   └── _templates/
+│   │   └── _entry-template.md     # Error entry template
+│   └── self-extension-workflow/SKILL.md  # Six-step self-extension procedure
 ├── schemas/
 │   ├── error-entry.json           # JSON-Schema for log entries
 │   └── skill-manifest.json        # JSON-Schema for sub-skill frontmatter
@@ -332,11 +348,12 @@ skill-everything/
 *Copy the template, fill the frontmatter, open a PR. CI takes care of the rest.*
 
 ```bash
-cp references/_templates/sub-skill.template.md references/my-area/my-skill.md
-# Add frontmatter (id, version, tokens_target, triggers), fill in rules, open a PR.
+cp -r skills/_template skills/<your-skill-name>
+$EDITOR skills/<your-skill-name>/SKILL.md
+# Update frontmatter (name matching dir, description, version, tokens_target, triggers), fill in rules, open a PR.
 ```
 
-Each sub-skill has a [skill-manifest frontmatter block](./schemas/skill-manifest.json) declaring its `id`, `version`, `tokens_target`, `triggers`, and load order. CI validates the frontmatter on every PR. **Keep each skill under 3,000 tokens.** Split rather than bloat. Rules are action directives, not descriptions.
+Each sub-skill has a [skill-manifest frontmatter block](./schemas/skill-manifest.json) declaring its `name` (matching the directory), `description`, `version`, `tokens_target`, `triggers`, and load order. CI validates the frontmatter on every PR. **Keep each skill under 3,000 tokens.** Split rather than bloat. Rules are action directives, not descriptions.
 
 ---
 
@@ -381,7 +398,7 @@ If your agent reads Markdown, **yes**. **One repo, four loaders, zero re-authori
 
 <br>
 
-**Yes — every change ships as a CODEOWNERS-gated PR.** The workflow in [`references/errors/self-extension-workflow.md`](./references/errors/self-extension-workflow.md) describes exactly how the agent formulates entries, classifies them, and opens a PR labelled `needs-rule-review`. CI runs the deterministic validator (verb allow-list + schema + forbidden-pattern set), then CODEOWNERS approval is required. **The agent never pushes to `main`.** Standard version-control discipline applied to rule learning.
+**Yes — every change ships as a CODEOWNERS-gated PR.** The workflow in [`skills/self-extension-workflow/SKILL.md`](./skills/self-extension-workflow/SKILL.md) describes exactly how the agent formulates entries, classifies them, and opens a PR labelled `needs-rule-review`. CI runs the deterministic validator (verb allow-list + schema + forbidden-pattern set), then CODEOWNERS approval is required. **The agent never pushes to `main`.** Standard version-control discipline applied to rule learning.
 
 </details>
 
@@ -390,7 +407,7 @@ If your agent reads Markdown, **yes**. **One repo, four loaders, zero re-authori
 
 <br>
 
-**We sit on top of them, not next to them.** `.cursorrules`, `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` are static rule files. Skill-everything adds: structured error schema (JSON-Schema), versioned skill manifest, `learn(errors)` PR workflow, CI validator, per-skill token budget. **One source of truth in `references/_index.yml`. Four loaders. Zero drift.**
+**We sit on top of them, not next to them.** `.cursorrules`, `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` are static rule files. Skill-everything adds: structured error schema (JSON-Schema), versioned skill manifest, `learn(errors)` PR workflow, CI validator, per-skill token budget. **One source of truth in `skills/_index.yml`. Four loaders. Zero drift.**
 
 </details>
 
@@ -417,7 +434,7 @@ If your agent reads Markdown, **yes**. **One repo, four loaders, zero re-authori
 
 <br>
 
-See [SECURITY.md](./SECURITY.md) for the full threat model. **Defense-in-depth via deterministic validation:** the CI validator catches structurally bad patterns (URLs, shell binaries, credential paths, base64 blobs, `<script>` tags) and the [adversarial test suite](./tests/test_validate_rules_adversarial.py) covers documented bypass attempts. [`.github/CODEOWNERS`](./.github/CODEOWNERS) enforces required approval on `references/errors/` so every rule change goes through review.
+See [SECURITY.md](./SECURITY.md) for the full threat model. **Defense-in-depth via deterministic validation:** the CI validator catches structurally bad patterns (URLs, shell binaries, credential paths, base64 blobs, `<script>` tags) and the [adversarial test suite](./tests/test_validate_rules_adversarial.py) covers documented bypass attempts. [`.github/CODEOWNERS`](./.github/CODEOWNERS) enforces required approval on `skills/error-log/` so every rule change goes through review.
 
 </details>
 
@@ -426,7 +443,12 @@ See [SECURITY.md](./SECURITY.md) for the full threat model. **Defense-in-depth v
 
 <br>
 
-See the [Token math](#token-math) section. **Same task, same agent: 84% fewer input tokens** (`10,000+` monolithic vs `~1,600` skill-everything per message). At cost level: **`$28` saved per 1,000 messages, 37% cheaper than the painful baseline**. The architectural win is **flat per-message input cost as your skill library grows** — caching helps both, but only one stays flat.
+The saving depends on what the runtime supports — see [Per-tool token reality](#per-tool-token-reality) for the per-runtime breakdown.
+
+- **Claude Code & OpenCode** realise the full **~84 %** reduction through selective sub-skill loading (`@skills/<name>/SKILL.md` and `skill_resource()`): router (~800 tokens) + one matched sub-skill on demand vs `10,000+` monolithic — **`$28` saved per 1,000 messages**.
+- **Cursor & Gemini CLI** save **~20–50 %** through the compact router pattern; lazy on-demand sub-skill loading is build-dependent (Cursor) or not yet supported (Gemini CLI), so the architectural win is partial today.
+
+The architectural lever — **flat per-message input cost as the library grows** — applies in full where the runtime supports it, and partially where it doesn't. Plain Markdown stays portable across all four runtimes; loader maturity catches up over time.
 
 </details>
 
@@ -436,7 +458,7 @@ See the [Token math](#token-math) section. **Same task, same agent: 84% fewer in
 
 <sub>MIT · plain Markdown · plain Git · v1.0 STABLE</sub>
 
-`LICENSE` · [Disclaimer](./DISCLAIMER.md) · [Contributing](./CONTRIBUTING.md) · [Security](./SECURITY.md) · [Browse the public error log →](./references/errors/error-log.md) · [Issue](https://github.com/sordi-ai/skill-everything/issues)
+`LICENSE` · [Disclaimer](./DISCLAIMER.md) · [Contributing](./CONTRIBUTING.md) · [Security](./SECURITY.md) · [Browse the public error log →](./skills/error-log/SKILL.md) · [Issue](https://github.com/sordi-ai/skill-everything/issues)
 
 *Self-learning skills · beyond fine-tuning · same Markdown across four agent runtimes.*
 

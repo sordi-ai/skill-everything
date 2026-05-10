@@ -1,5 +1,7 @@
 ---
-id: self-extension-workflow
+name: self-extension-workflow
+description: Apply when executing the self-extension workflow. Six steps from a mistake to a merged rule, with CI gates and CODEOWNERS approval.
+license: MIT
 version: 1.0.0
 tokens_target: 1750
 triggers:
@@ -39,7 +41,7 @@ The agent starts this workflow when **any** of these is met:
 Before creating a new error entry, search the existing error log:
 
 ```text
-1. Read references/errors/error-log.md.
+1. Read skills/error-log/SKILL.md.
 2. Search for similar errors (same category + similar context).
 3. If a similar entry exists:
    - Increment its `count` field by 1.
@@ -72,14 +74,14 @@ Before creating a new error entry, search the existing error log:
 
 ```bash
 # Find last entry in error-log.md
-grep "id: ERR-" references/errors/error-log.md | tail -1
+grep "id: ERR-" skills/error-log/SKILL.md | tail -1
 # Take next number: ERR-2026-004 -> ERR-2026-005
 ```
 
 ### Step 3 — Formulate the entry
 *Action directive only. The CI verb allow-list rejects anything else.*
 
-Use the template at `references/_templates/error-entry.template.md`. The schema at [`schemas/error-entry.json`](../../schemas/error-entry.json) is enforced by CI.
+Use the template at `skills/error-log/_entry-template.md`. The schema at [`schemas/error-entry.json`](../../schemas/error-entry.json) is enforced by CI.
 
 > [!WARNING]
 > **CI GATE · verb allow-list** — `new_rule` must start with one of `Always`, `Never`, `Before`, `After`, `Prefer`, `Avoid`, `Use`, `Do`, `Ensure`. Anything else is rejected.
@@ -92,12 +94,12 @@ Good: `"Never concatenate user input directly into SQL queries. Always use prepa
 
 | Error category | Target file |
 |---|---|
-| `development` | `references/development/code-quality.md` |
-| `git` | `references/git/conventions.md` |
-| `deployment` | `references/process/review-deployment.md` |
-| `security` | `references/development/code-quality.md` (Security section) |
-| `performance` | `references/development/code-quality.md` (Performance section) |
-| `domain` | `references/domain/<project>.md` |
+| `development` | `skills/code-quality/SKILL.md` |
+| `git` | `skills/git-conventions/SKILL.md` |
+| `deployment` | `skills/review-deployment/SKILL.md` |
+| `security` | `skills/code-quality/SKILL.md` (Security section) |
+| `performance` | `skills/code-quality/SKILL.md` (Performance section) |
+| `domain` | `skills/<project>/SKILL.md` |
 
 ### Step 5 — Insert the rule
 *At the end of the matching section. Reference the ERR-ID.*
@@ -112,7 +114,7 @@ Good: `"Never concatenate user input directly into SQL queries. Always use prepa
 
 ```bash
 git checkout -b learn/ERR-YYYY-NNN
-git add references/
+git add skills/
 git diff --cached            # MANDATORY human review step
 git commit -m "learn(errors): ERR-YYYY-NNN — <short description>
 
@@ -132,8 +134,8 @@ gh pr create --label needs-rule-review \
 | Layer | What it gates | Where |
 |---|---|---|
 | `lint-rules` | Schema + verb allow-list + forbidden patterns | [`schemas/error-entry.json`](../../schemas/error-entry.json) |
-| `auto-approve-rule-pr` | Diff scope (`references/errors/**`) and `Co-Authored-By:` trailer | `.github/workflows/auto-approve-rule-pr.yml` |
-| Branch protection | CODEOWNERS approval for `references/errors/` | `.github/CODEOWNERS` |
+| `auto-approve-rule-pr` | Diff scope (`skills/error-log/**`) and `Co-Authored-By:` trailer | `.github/workflows/auto-approve-rule-pr.yml` |
+| Branch protection | CODEOWNERS approval for `skills/error-log/` | `.github/CODEOWNERS` |
 | Human review | Final read of rule wording and target file | maintainer |
 
 > [!NOTE]
@@ -146,7 +148,7 @@ The commit type `learn` makes self-extension visible in `git log --grep="learn("
 ## FALSE POSITIVES IN THE VALIDATOR
 *When a legitimate rule must mention a forbidden pattern (e.g. preventing `subprocess` misuse).*
 
-1. Add the new error ID to `references/errors/exceptions.yml`:
+1. Add the new error ID to `skills/error-log/exceptions.yml`:
    ```yaml
    allow_forbidden_pattern_for:
      - ERR-YYYY-NNN  # rationale: rule must mention `subprocess` to be specific
@@ -160,7 +162,7 @@ The commit type `learn` makes self-extension visible in `git log --grep="learn("
 *When the error log exceeds 50 entries. Manual diff review until eval framework lands.*
 
 ```text
-1. Read all entries in references/errors/error-log.md.
+1. Read all entries in skills/error-log/SKILL.md.
 2. Group by root_cause similarity.
 3. For groups with the same root cause:
    - Keep the most detailed entry.

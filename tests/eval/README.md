@@ -1,7 +1,7 @@
 # errors-bench (skeleton)
 
 A small evaluation harness for measuring whether the rules committed to
-`references/errors/error-log.md` actually prevent the mistakes they claim
+`skills/error-log/SKILL.md` actually prevent the mistakes they claim
 to prevent.
 
 ## Why this exists
@@ -37,7 +37,7 @@ For each task we define:
 - The expected mistake signature (a regex or AST query against the
   generated code).
 - The rule that should prevent the mistake (a real entry from
-  `references/errors/error-log.md`).
+  `skills/error-log/SKILL.md`).
 - A "with rule" prompt that includes the rule in context, and a
   "without rule" prompt that doesn't.
 

@@ -1,5 +1,7 @@
 ---
-id: react
+name: react
+description: Apply when writing React components. Hook discipline, state placement, performance, async cleanup, and list keys.
+license: MIT
 version: 1.0.0
 tokens_target: 2400
 triggers:

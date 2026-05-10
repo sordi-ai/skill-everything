@@ -17,7 +17,7 @@ repos:
         name: validate-rules (schema + lint of error-log.md)
         entry: python tools/validate_rules.py
         language: system
-        files: ^references/errors/.*\.md$
+        files: ^skills/error-log/.*\.md$
         pass_filenames: false
 
       - id: render-loaders
@@ -25,11 +25,11 @@ repos:
         entry: python tools/render_loaders.py
         language: system
         pass_filenames: false
-        files: ^(references/_index\.yml|tools/templates/.*\.j2)$
+        files: ^(skills/_index\.yml|tools/templates/.*\.j2)$
 
       - id: render-readme-table
         name: render-readme-table (token table from skill manifests)
         entry: python tools/render_readme_table.py
         language: system
         pass_filenames: false
-        files: ^(references/.*\.md|README\.md|tools/render_readme_table\.py)$
+        files: ^(skills/.*\.md|README\.md|tools/render_readme_table\.py)$

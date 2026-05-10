@@ -1,5 +1,7 @@
 ---
-id: typescript
+name: typescript
+description: Apply when writing TypeScript code. Strict types, discriminated unions, async patterns, and runtime safety.
+license: MIT
 version: 1.0.0
 tokens_target: 2300
 triggers:

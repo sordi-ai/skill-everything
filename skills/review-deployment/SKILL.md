@@ -1,5 +1,7 @@
 ---
-id: review-deployment
+name: review-deployment
+description: Apply when reviewing code or planning a deployment. Pre-merge checks, migration ordering, rollback strategy, post-deploy verification.
+license: MIT
 version: 1.0.0
 tokens_target: 800
 triggers:

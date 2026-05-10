@@ -17,7 +17,7 @@ pass_signature:
   type: regex
   pattern: 'def\s+add_item\([^)]*items\s*=\s*None\b'
 references:
-  - references/development/python.md
+  - skills/python/SKILL.md
 notes: |
   Mutable defaults survive across calls because Python evaluates the default
   once at definition. The mistake regex matches `items=[`; the pass regex

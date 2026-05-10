@@ -15,7 +15,7 @@ pass_signature:
   type: regex
   pattern: 'SELECT\s+(id|email|name)[^*]*FROM\s+users[^;]*LIMIT\s+%s'
 references:
-  - references/development/code-quality.md
+  - skills/code-quality/SKILL.md
 notes: |
   Catches both `SELECT * FROM users` and `SELECT *` with WHERE. Pass-regex
   requires explicit columns and a LIMIT placeholder. False-positive risk

@@ -38,7 +38,7 @@ except ImportError:
     _ENC = None
 
 ROOT = Path(__file__).resolve().parent.parent
-INDEX = ROOT / "references" / "_index.yml"
+INDEX = ROOT / "skills" / "_index.yml"
 README = ROOT / "README.md"
 START = "<!-- token-table:start -->"
 END = "<!-- token-table:end -->"

@@ -18,8 +18,8 @@ pass_signature:
   # Pass = the agent shows at least one of these search invocations before claiming done
   pattern: '(rg|grep|ag)\s+[-A-Za-z]*\s*.getUserById.'
 references:
-  - references/errors/error-log.md  # ERR-2026-007
-  - references/development/code-quality.md
+  - skills/error-log/SKILL.md  # ERR-2026-007
+  - skills/code-quality/SKILL.md
 notes: |
   Tests ERR-2026-007 directly. Pass = agent demonstrates a
   cross-package grep step. Note this is a process / response-content task,

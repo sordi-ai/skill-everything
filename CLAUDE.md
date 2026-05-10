@@ -6,7 +6,7 @@ as committed rules.
 
 ## Your responsibilities
 
-1. **Before every implementation:** check the sub-skill directory below, load the matching skill using `@references/...` imports.
+1. **Before every implementation:** check the sub-skill directory below, load the matching skill using `@skills/<name>/SKILL.md` imports.
 2. **After every mistake:** execute the self-extension workflow.
 3. **When you learn something new:** add it to the appropriate category.
 
@@ -14,15 +14,15 @@ as committed rules.
 
 | Trigger | Sub-skill | Load via |
 |---|---|---|
-| writing code, refactoring, review | Code Quality | `@references/development/code-quality.md` |
-| python code, type hints, python packaging | Python | `@references/development/python.md` |
-| typescript code, strict types, async typescript | TypeScript | `@references/development/typescript.md` |
-| react component, react hooks, react performance | React | `@references/development/react.md` |
-| git commit, branch, pull request | Git Conventions | `@references/git/conventions.md` |
-| creating PR, deployment, review checklist | Review & Deployment | `@references/process/review-deployment.md` |
-| project-specific knowledge, business rules | Domain Knowledge (template) | `@references/domain/template.md` |
-| made or corrected a mistake, learn from this | Error Log | `@references/errors/error-log.md` |
-| executing self-extension | Self-Extension Workflow | `@references/errors/self-extension-workflow.md` |
+| writing code, refactoring, review | Code Quality | `@skills/code-quality/SKILL.md` |
+| python code, type hints, python packaging | Python | `@skills/python/SKILL.md` |
+| typescript code, strict types, async typescript | TypeScript | `@skills/typescript/SKILL.md` |
+| react component, react hooks, react performance | React | `@skills/react/SKILL.md` |
+| git commit, branch, pull request | Git Conventions | `@skills/git-conventions/SKILL.md` |
+| creating PR, deployment, review checklist | Review & Deployment | `@skills/review-deployment/SKILL.md` |
+| project-specific knowledge, business rules | Domain Knowledge (template) | `@skills/domain-template/SKILL.md` |
+| made or corrected a mistake, learn from this | Error Log | `@skills/error-log/SKILL.md` |
+| executing self-extension | Self-Extension Workflow | `@skills/self-extension-workflow/SKILL.md` |
 
 ## Error capture triggers
 
@@ -36,7 +36,7 @@ Start the self-extension workflow when **any** of these is met:
 Load the workflow:
 
 ```
-@references/errors/self-extension-workflow.md
+@skills/self-extension-workflow/SKILL.md
 ```
 
 ## Important
@@ -46,4 +46,4 @@ Load the workflow:
 - **Stay compact.** Each sub-skill stays under 3,000 tokens. If exceeded, split.
 - **PR-flow is mandatory.** Self-extension commits are opened as PRs labelled `needs-rule-review`. Never push to `main`.
 
-> This file is generated from `references/_index.yml`. Edit the index, then run `python tools/render_loaders.py`.
+> This file is generated from `skills/_index.yml`. Edit the index, then run `python tools/render_loaders.py`.

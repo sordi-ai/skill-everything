@@ -24,7 +24,7 @@ Expected first reply: within 7 days. We are an independent two-person side proje
 ## THREAT MODEL
 *Self-extending memory means rules are executable input. This is the threat.*
 
-Skill-Everything is a self-extending memory system: an agent writes rules into `references/errors/*.md` and those rules are read by every subsequent agent session as instructions. **The rules are executable input.**
+Skill-Everything is a self-extending memory system: an agent writes rules into `skills/error-log/*.md` and those rules are read by every subsequent agent session as instructions. **The rules are executable input.**
 
 ![PR flow — agent branch through lint-rules and auto-approve-rule-pr CI gates, CODEOWNERS human gate, squash-merge into main behind branch protection](./docs/pr-flow.svg)
 
@@ -32,7 +32,7 @@ Skill-Everything is a self-extending memory system: an agent writes rules into `
 
 ### Asset
 
-The contents of `references/**`. Every rule is consumed as instruction by downstream consumers of this repository.
+The contents of `skills/**`. Every rule is consumed as instruction by downstream consumers of this repository.
 
 ### Trust boundaries
 
@@ -44,7 +44,7 @@ The contents of `references/**`. Every rule is consumed as instruction by downst
 
 | Adversary | Goal | Mitigations |
 |---|---|---|
-| External PR contributor | Insert a rule that exfiltrates credentials, runs shell, or nudges next-session agent toward bad actions | `lint-rules` CI · CODEOWNERS approval for `references/errors/` · branch protection · human PR review |
+| External PR contributor | Insert a rule that exfiltrates credentials, runs shell, or nudges next-session agent toward bad actions | `lint-rules` CI · CODEOWNERS approval for `skills/error-log/` · branch protection · human PR review |
 | Prompt-injection via task input | Trick the running agent into writing a poisoned `new_rule` that gets committed | Same as above; the lint-rules CI is best-effort, not airtight (see Limitations below) |
 | Honest contributor pasting prod data | Leak PII / secrets into `error-log.md` | `gitleaks` pre-commit · explicit redaction reminder in `.github/ISSUE_TEMPLATE/error-capture.md` |
 
@@ -61,7 +61,7 @@ The CI rule validator (`tools/validate_rules.py`) implements deterministic check
 - It is a static check, paired with required CODEOWNERS review for semantic coverage.
 
 > [!NOTE]
-> **CI-validated · CODEOWNERS-gated.** Every rule passes the deterministic validator before merge, and [`.github/CODEOWNERS`](./.github/CODEOWNERS) requires maintainer approval on `references/errors/`. The adversarial test suite is part of the public engineering record and runs on every PR.
+> **CI-validated · CODEOWNERS-gated.** Every rule passes the deterministic validator before merge, and [`.github/CODEOWNERS`](./.github/CODEOWNERS) requires maintainer approval on `skills/error-log/`. The adversarial test suite is part of the public engineering record and runs on every PR.
 
 ---
 

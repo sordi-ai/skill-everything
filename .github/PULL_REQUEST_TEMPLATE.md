@@ -20,7 +20,7 @@
 
 <!-- Be specific. "low risk" is not specific. -->
 
-- [ ] Touches `references/errors/` (CODEOWNERS required, lint-rules CI)
+- [ ] Touches `skills/error-log/` (CODEOWNERS required, lint-rules CI)
 - [ ] Touches `tools/` or `schemas/` (CODEOWNERS required)
 - [ ] Adds/changes `_index.yml` (loaders-and-table-no-drift CI must pass)
 - [ ] Affects security posture (please link to the relevant SECURITY.md section)

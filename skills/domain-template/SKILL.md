@@ -1,5 +1,7 @@
 ---
-id: domain-template
+name: domain-template
+description: Apply when documenting project-specific knowledge. Template for ADRs, naming conventions, business rules, and tech-stack quirks.
+license: MIT
 version: 1.0.0
 tokens_target: 850
 triggers:
@@ -19,7 +21,7 @@ that no public model can know — architecture decisions, naming conventions, bu
 
 ## Instructions: Fill Out This Template
 
-Copy this file to `references/domain/<project-name>.md` and fill in all sections.
+Copy this file to `skills/<project-name>/SKILL.md` and fill in all sections.
 Delete empty sections. Concrete > comprehensive.
 
 ---

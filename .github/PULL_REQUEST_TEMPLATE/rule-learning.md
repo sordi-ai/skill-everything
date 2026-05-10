@@ -3,7 +3,7 @@ Use this template when adding a rule from a real observed mistake.
 Title: learn(errors): ERR-YYYY-NNN — <short>
 Label: needs-rule-review
 The auto-approve-rule-pr workflow gates merge on:
-  1. Diff scope is references/errors/** only
+  1. Diff scope is skills/error-log/** only
   2. Head commit carries a Co-Authored-By: trailer
 -->
 
@@ -31,11 +31,11 @@ The auto-approve-rule-pr workflow gates merge on:
 [Always|Never|Before|After|Prefer|Avoid|Use|Do|Ensure] <action directive>
 ```
 
-Target file: `references/<category>/<filename>.md`
+Target file: `skills/<name>/SKILL.md`
 
 ## Has a similar error been logged before?
 
-- [ ] I searched `references/errors/error-log.md` for similar entries.
+- [ ] I searched `skills/error-log/SKILL.md` for similar entries.
 - [ ] If a similar entry exists, I incremented `count` instead of opening a new entry.
 - [ ] If it's truly new, the next sequential `ERR-YYYY-NNN` is used.
 

@@ -30,16 +30,16 @@ If `pytest` passes locally, you are ready. Branch off `main`, follow the relevan
 ### 1. `learn(errors)` — new rule from a real mistake
 *The primary contribution flow. Every rule should be born from a real observed mistake, not from opinion.*
 
-The full procedure with troubleshooting lives at [`references/errors/self-extension-workflow.md`](./references/errors/self-extension-workflow.md).
+The full procedure with troubleshooting lives at [`skills/self-extension-workflow/SKILL.md`](./skills/self-extension-workflow/SKILL.md).
 
-1. Copy [`references/_templates/error-entry.template.md`](./references/_templates/error-entry.template.md).
-2. Search [`references/errors/error-log.md`](./references/errors/error-log.md) for similar entries first. If you find one, increment its `count` and update `last_seen` instead of writing a new entry.
+1. Copy [`skills/error-log/_entry-template.md`](./skills/error-log/_entry-template.md).
+2. Search [`skills/error-log/SKILL.md`](./skills/error-log/SKILL.md) for similar entries first. If you find one, increment its `count` and update `last_seen` instead of writing a new entry.
 3. If no match: add a new YAML block at the end. Pick the next sequential `ERR-YYYY-NNN`.
 4. Add the derived rule to the matching sub-skill (development / git / process / domain / errors). The `target_file` field tells the validator where to look.
 5. Branch + commit + PR — never push to `main`:
    ```bash
    git checkout -b learn/ERR-YYYY-NNN
-   git add references/
+   git add skills/
    git diff --cached            # mandatory self-review
    git commit -m "learn(errors): ERR-YYYY-NNN — <short>
 
@@ -56,8 +56,8 @@ The full procedure with troubleshooting lives at [`references/errors/self-extens
 ### 2. `feat(skills)` — new sub-skill
 *When the existing sub-skills do not cover an area you need (Go, Rust, Java, IaC, etc.).*
 
-1. Copy [`references/_templates/sub-skill.template.md`](./references/_templates/sub-skill.template.md).
-2. Pick a kebab-case `id` and a target file path: `references/<category>/<id>.md`.
+1. Copy [`skills/_template/SKILL.md`](./skills/_template/SKILL.md).
+2. Pick a kebab-case `id` and a target file path: `skills/<id>/SKILL.md`.
 3. Fill in the YAML frontmatter — the schema is at [`schemas/skill-manifest.json`](./schemas/skill-manifest.json):
    ```yaml
    ---
@@ -74,7 +74,7 @@ The full procedure with troubleshooting lives at [`references/errors/self-extens
    ---
    ```
 4. Write **at least 8 concrete action-directive rules**, each grounded in a real mistake or convention you have observed.
-5. Add an entry to [`references/_index.yml`](./references/_index.yml) with the loader strings for `claude`, `gemini`, and `skill_resource`. Then run `python tools/render_loaders.py` so `SKILL.md`, `CLAUDE.md`, and `GEMINI.md` regenerate. Commit those changes — the CI no-drift job verifies them.
+5. Add an entry to [`skills/_index.yml`](./skills/_index.yml) with the loader strings for `claude`, `gemini`, and `skill_resource`. Then run `python tools/render_loaders.py` so `SKILL.md`, `CLAUDE.md`, and `GEMINI.md` regenerate. Commit those changes — the CI no-drift job verifies them.
 6. Branch as `feat/skill-<id>`, PR title `feat(skills): add <id>`, label `new-skill`.
 
 **Sub-skill PR review checklist.** *Six checks. Reviewers can copy-paste from the table into the PR conversation.*
@@ -85,7 +85,7 @@ The full procedure with troubleshooting lives at [`references/errors/self-extens
 | Token budget | `tokens_target` < 3000 and real count < `tokens_target` | `tools/render_readme_table.py` |
 | Verb allow-list | Every rule starts with `Always`, `Never`, `Before`, `After`, `Prefer`, `Avoid`, `Use`, `Do`, or `Ensure` | `tools/validate_rules.py` |
 | Cross-reference | At least one link to an existing sub-skill | reviewer reads diff |
-| Real grounding | At least one rule has `Reference: ERR-YYYY-NNN`, or a fresh ERR is added in the same PR | `references/errors/error-log.md` |
+| Real grounding | At least one rule has `Reference: ERR-YYYY-NNN`, or a fresh ERR is added in the same PR | `skills/error-log/SKILL.md` |
 | Re-mistake test | At least one task added to `tests/eval/tasks/` | `tests/eval/README.md` |
 
 ### 3. `feat` / `fix` / `chore` — tooling, docs, infrastructure
@@ -119,7 +119,7 @@ learn(errors): ERR-2026-014 — never inherit from concrete React components
 
 When a legitimate rule has to mention a forbidden pattern (e.g. a rule about preventing `subprocess` misuse that names `subprocess`):
 
-1. Add the new ERR-ID to [`references/errors/exceptions.yml`](./references/errors/exceptions.yml) with a one-line rationale.
+1. Add the new ERR-ID to [`skills/error-log/exceptions.yml`](./skills/error-log/exceptions.yml) with a one-line rationale.
 2. CODEOWNERS approval is required to merge changes to that file. The bypass is auditable in git.
 3. The verb allow-list still applies even with a bypass entry.
 
@@ -144,7 +144,7 @@ When a new rule lands, please add a re-mistake test to [`tests/eval/tasks/`](./t
 2. **Use a personal GitHub account** with your real name. We do not ship pseudonymous co-maintainer commits — `git shortlog -sne` is the first thing skeptical readers check.
 3. **Add yourself to `.github/CODEOWNERS`** under the `@sordi-ai/maintainers` team and confirm with the existing maintainer.
 4. **Read the threat model** in [SECURITY.md](./SECURITY.md). The self-extension workflow is the trust boundary. You are the human in "the human reviews the PR".
-5. **Workload expectation.** About 5 h / week. Split: code + eval (existing maintainer) and sub-skill content + issue triage (new co-maintainer). Do not sprint at the same time as the other maintainer — merge conflicts in `references/errors/` are nobody's friend.
+5. **Workload expectation.** About 5 h / week. Split: code + eval (existing maintainer) and sub-skill content + issue triage (new co-maintainer). Do not sprint at the same time as the other maintainer — merge conflicts in `skills/error-log/` are nobody's friend.
 
 ---
 
@@ -152,20 +152,24 @@ When a new rule lands, please add a re-mistake test to [`tests/eval/tasks/`](./t
 *Where things live. Adding a new top-level category needs two-of-two maintainer review.*
 
 ```text
-references/
-├── _index.yml          # source of truth for SKILL/CLAUDE/GEMINI
-├── _templates/         # copy these to start a new skill or error
-├── development/        # code-quality + per-language sub-skills
-├── git/                # commit, branch, PR conventions
-├── domain/             # template for project-specific knowledge
-├── process/            # review, deployment checklists
-└── errors/
-    ├── error-log.md            # YAML entries, schema-validated
-    ├── exceptions.yml          # validator bypass list
-    └── self-extension-workflow.md
+skills/
+├── _index.yml                       # source of truth for SKILL/CLAUDE/GEMINI/.cursorrules
+├── _template/SKILL.md               # copy this folder to start a new skill
+├── code-quality/SKILL.md            # generic code rules
+├── python/SKILL.md
+├── typescript/SKILL.md
+├── react/SKILL.md
+├── git-conventions/SKILL.md         # commit, branch, PR conventions
+├── review-deployment/SKILL.md       # review + deployment checklists
+├── domain-template/SKILL.md         # template for project-specific knowledge
+├── error-log/
+│   ├── SKILL.md                     # YAML entries, schema-validated
+│   ├── exceptions.yml               # validator bypass list
+│   └── _entry-template.md           # error entry template
+└── self-extension-workflow/SKILL.md # six-step self-extension workflow
 ```
 
-Adding a new top-level category? Open a PR that updates this README, `references/_index.yml`, and the relevant template.
+Adding a new top-level category? Open a PR that updates this README, `skills/_index.yml`, and the relevant template.
 
 ---
 

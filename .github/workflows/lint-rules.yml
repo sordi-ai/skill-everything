@@ -3,8 +3,8 @@ name: lint-rules
 on:
   pull_request:
     paths:
-      - "references/errors/**"
-      - "references/**/*.md"
+      - "skills/error-log/**"
+      - "skills/**/*.md"
       - "schemas/**"
       - "tools/validate_rules.py"
 

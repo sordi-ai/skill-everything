@@ -6,7 +6,7 @@ as committed rules.
 
 ## Your responsibilities
 
-1. **Before every implementation:** check the sub-skill directory below, load the matching skill using `@references/...` imports.
+1. **Before every implementation:** check the sub-skill directory below, load the matching skill using `@skills/<name>/SKILL.md` imports.
 2. **After every mistake:** execute the self-extension workflow.
 3. **When you learn something new:** add it to the appropriate category.
 
@@ -40,4 +40,4 @@ Load the workflow:
 - **Stay compact.** Each sub-skill stays under 3,000 tokens. If exceeded, split.
 - **PR-flow is mandatory.** Self-extension commits are opened as PRs labelled `needs-rule-review`. Never push to `main`.
 
-> This file is generated from `references/_index.yml`. Edit the index, then run `python tools/render_loaders.py`.
+> This file is generated from `skills/_index.yml`. Edit the index, then run `python tools/render_loaders.py`.

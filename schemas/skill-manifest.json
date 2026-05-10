@@ -2,15 +2,26 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/sordi-ai/skill-everything/schemas/skill-manifest.json",
   "title": "Sub-skill manifest (Markdown frontmatter)",
-  "description": "Frontmatter schema for every sub-skill file under references/. Validated in CI.",
+  "description": "Frontmatter schema for every SKILL.md under skills/. Validated in CI. Compatible with Anthropic Skills (name + description + license) plus our engineering layer (version + tokens_target + triggers).",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "version", "tokens_target", "triggers"],
+  "required": ["name", "description", "version", "tokens_target", "triggers"],
   "properties": {
-    "id": {
+    "name": {
       "type": "string",
       "pattern": "^[a-z][a-z0-9-]{1,30}$",
-      "description": "Stable identifier, kebab-case."
+      "description": "Stable kebab-case identifier. MUST match the parent directory name (e.g. skills/code-quality/SKILL.md -> name: code-quality)."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 300,
+      "description": "Single-sentence trigger condition: when should this skill be loaded? Anthropic-recognised field; surfaced to the agent for skill selection."
+    },
+    "license": {
+      "type": "string",
+      "default": "MIT",
+      "description": "SPDX license identifier or short name. Optional; defaults to MIT when omitted."
     },
     "version": {
       "type": "string",
@@ -28,7 +39,7 @@
       "minItems": 1,
       "maxItems": 10,
       "items": { "type": "string", "minLength": 3, "maxLength": 80 },
-      "description": "Short trigger phrases the router matches against to decide when to load this skill."
+      "description": "Short trigger phrases the router matches against to decide when to load this skill. Used by the parent skill-everything router; complements the Anthropic-standard description field."
     },
     "loads_after": {
       "type": "array",

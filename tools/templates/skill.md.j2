@@ -54,6 +54,6 @@ Load the workflow:
 - **Action directives, not descriptions.** Always formulate rules as "Always X before Y" or "Never Z without W".
 - **Stay compact.** Each sub-skill stays under 3,000 tokens. If exceeded, split.
 - **PR-flow is mandatory.** Self-extension commits are opened as PRs labelled `needs-rule-review`. Never push to `main`.
-- **Without `skill_resource`?** If your agent doesn't have the tool, load files directly via filesystem access from the `references/` folder.
+- **Without `skill_resource`?** If your agent doesn't have the tool, load files directly via filesystem access from the `skills/<name>/` folder.
 
-> This file is generated from `references/_index.yml`. Edit the index, then run `python tools/render_loaders.py`.
+> This file is generated from `skills/_index.yml`. Edit the index, then run `python tools/render_loaders.py`.

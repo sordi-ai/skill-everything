@@ -21,7 +21,7 @@ import render_loaders as rl  # noqa: E402
 
 
 def test_index_yml_exists():
-    assert rl.INDEX.exists(), "references/_index.yml is the source of truth"
+    assert rl.INDEX.exists(), "skills/_index.yml is the source of truth"
 
 
 def test_index_yml_is_valid():

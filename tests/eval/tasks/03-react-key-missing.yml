@@ -14,7 +14,7 @@ pass_signature:
   type: regex
   pattern: '\.map\([^)]*=>\s*<li[^>]*\bkey=\{[^}]+\}'
 references:
-  - references/development/react.md
+  - skills/react/SKILL.md
 notes: |
   Mistake: `<li>{u.name}</li>` without key. Pass: `<li key={u.id}>{u.name}</li>`.
   Note this regex misses the very rare case where `key` is set conditionally —

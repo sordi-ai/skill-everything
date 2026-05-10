@@ -21,7 +21,7 @@ paths = [
 
   # The error log schema documentation deliberately shows what a fake
   # JWT/API-key field looks like; gitleaks rules occasionally match.
-  '''references/_templates/error-entry\.template\.md''',
+  '''skills/error-log/_entry-template\.md''',
 
   # The HN comment templates discuss "include credentials" attack
   # scenarios; the strings used are obviously fake but match patterns.

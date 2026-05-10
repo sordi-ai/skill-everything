@@ -2,8 +2,10 @@
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
 # Rules and security baseline must be reviewed by maintainers
-references/errors/                          @sordi-ai/maintainers
-references/development/code-quality.md      @sordi-ai/maintainers
+skills/error-log/                           @sordi-ai/maintainers
+skills/self-extension-workflow/             @sordi-ai/maintainers
+skills/code-quality/SKILL.md                @sordi-ai/maintainers
+skills/_index.yml                           @sordi-ai/maintainers
 
 # Tooling and automation
 tools/                                      @sordi-ai/maintainers

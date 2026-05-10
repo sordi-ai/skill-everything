@@ -21,7 +21,7 @@ Copy this block and fill in all fields:
       [What was done to fix the error?]
     new_rule: |
       [Action directive: "Always X before Y" or "Never Z without W".]
-    target_file: references/[category]/[filename].md
+    target_file: skills/[name]/SKILL.md
 ```
 
 ## Checklist Before Inserting

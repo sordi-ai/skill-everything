@@ -22,7 +22,7 @@ labels: ["bug", "error-capture"]
 [Action directive: "Always X before Y" or "Never Z without W"]
 
 ## Affected Sub-Skill
-[Which file should the rule go into? e.g. references/development/code-quality.md]
+[Which file should the rule go into? e.g. skills/code-quality/SKILL.md]
 
 ## Severity
 - [ ] Critical (data loss, security vulnerability)

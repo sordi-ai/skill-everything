@@ -15,7 +15,7 @@ pass_signature:
   type: regex
   pattern: 'const\s+\w+\s*=\s*await\s+db\.findById\('
 references:
-  - references/development/typescript.md
+  - skills/typescript/SKILL.md
 notes: |
   Triggers the classic `return db.findById(id).name` mistake where the
   agent reads the Promise as if it were the resolved value. Mistake-detector

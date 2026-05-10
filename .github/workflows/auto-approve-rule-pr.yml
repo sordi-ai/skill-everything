@@ -2,7 +2,7 @@ name: auto-approve-rule-pr
 
 # Defense-in-depth gate for rule-learning PRs.
 # Runs on every PR. If the PR is labelled `needs-rule-review`, the gate enforces:
-#   1. The diff is scoped to references/errors/** only.
+#   1. The diff is scoped to skills/error-log/** only.
 #   2. The head commit carries a Co-Authored-By: trailer (the maintainer
 #      explicitly co-author-acknowledges the agent's work).
 # If the label is absent, the gate exits 0 (normal PR path).
@@ -38,14 +38,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Verify diff scope (only references/errors/** allowed)
+      - name: Verify diff scope (only skills/error-log/** allowed)
         if: steps.check_label.outputs.label_present == 'true'
         run: |
           set -e
           BAD=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD" \
-                | grep -vE '^references/errors/' || true)
+                | grep -vE '^skills/error-log/' || true)
           if [ -n "$BAD" ]; then
-            echo "::error::This PR touches files outside references/errors/. Rule-PRs must be scoped:"
+            echo "::error::This PR touches files outside skills/error-log/. Rule-PRs must be scoped:"
             echo "$BAD"
             exit 1
           fi

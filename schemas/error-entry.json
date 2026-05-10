@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/sordi-ai/skill-everything/schemas/error-entry.json",
   "title": "Error log entry",
-  "description": "Schema for entries in references/errors/error-log.md. Validated by tools/validate_rules.py in CI.",
+  "description": "Schema for entries in skills/error-log/SKILL.md. Validated by tools/validate_rules.py in CI.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -84,8 +84,8 @@
     },
     "target_file": {
       "type": "string",
-      "pattern": "^references/(development|git|process|domain|errors)/[a-z0-9_-]+\\.md$",
-      "description": "Where the derived rule was added."
+      "pattern": "^skills/[a-z][a-z0-9-]{1,30}/SKILL\\.md$",
+      "description": "Where the derived rule was added. Format: skills/<skill-name>/SKILL.md."
     }
   }
 }
