@@ -15,9 +15,12 @@ Profiles (CLI shorthand for common matrix combinations):
                          = 10 000 records. The v1.0 headline pass.
     --profile regression n=30, the publishability floor. Used between full passes.
 
-Real providers are stubbed in v0.75 PREVIEW; --profile full + --no-dry-run
-will fail with NotImplementedError from eval_runner. The pipeline shape is
-final — the wire-call implementation lands in v1.0.
+Real providers are implemented via thin SDK wrappers (anthropic + openai
++ requests). --profile full + --no-dry-run will call them in real,
+gated by API-key env-vars (ANTHROPIC_API_KEY, OPENAI_API_KEY, OLLAMA_HOST)
+and a fail-fast --max-usd budget cap. Tier-3 tasks use the --judge-model
+provider for criterion verdicts and run the 20-row calibration corpus
+once per cell.
 
 Usage:
     python tools/run_eval.py --profile smoke --out tests/eval/results/run-001.jsonl
@@ -117,6 +120,9 @@ def main(argv: list[str] | None = None) -> int:
                         help="Fail-fast budget cap. Default 5 USD; smoke profile ignores it.")
     parser.add_argument("--no-dry-run", action="store_true",
                         help="Use real providers (requires API-key env vars). Default: dry-run.")
+    parser.add_argument("--judge-model", default="anthropic/claude-opus-4-7-20260301",
+                        help="Provider/SKU for tier-3 judge model. Default: "
+                             "anthropic/claude-opus-4-7-20260301. Ignored in dry-run.")
     parser.add_argument("--run-id", default=None)
     args = parser.parse_args(argv)
 
@@ -142,6 +148,24 @@ def main(argv: list[str] | None = None) -> int:
     )
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
+    # Construct the tier-3 judge provider once per orchestrator run.
+    judge_provider = None
+    judge_spec = None
+    if not dry_run:
+        try:
+            jp_name, jp_sku = eval_runner._parse_model_arg(args.judge_model)
+            judge_provider = eval_runner.make_provider(jp_name)
+            judge_spec = eval_runner.ModelSpec(
+                provider=jp_name, model_sku=jp_sku,
+                temperature=0.0, max_tokens=512, top_p=1.0,
+            )
+        except Exception as e:
+            print(
+                f"warning: judge model setup failed ({type(e).__name__}: {e}). "
+                f"Tier-3 tasks will report criterion_pass=False with stub rationale.",
+                file=sys.stderr,
+            )
+
     n_records = 0
     total_cost = 0.0
     t0 = time.monotonic()
@@ -159,7 +183,10 @@ def main(argv: list[str] | None = None) -> int:
                             top_p=1.0,
                         )
                         results = eval_runner.run_task(
-                            task, spec, profile["n"], rule_state, run_id, dry_run=dry_run,
+                            task, spec, profile["n"], rule_state, run_id,
+                            dry_run=dry_run,
+                            judge_provider=judge_provider,
+                            judge_spec=judge_spec,
                         )
                         for r in results:
                             f.write(json.dumps(dataclasses.asdict(r), ensure_ascii=False) + "\n")

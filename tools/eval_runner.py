@@ -13,11 +13,16 @@ orchestrator that fans out the matrix (5 tasks x 5 models x 2 temps x
 2 rule-states) is tools/run_eval.py. The JSONL validator is
 tools/validate_eval_results.py.
 
-Real-provider calls (Anthropic / OpenAI / Ollama) are stubbed in v0.75
-PREVIEW. The harness runs end-to-end in --dry-run mode so the full
-pipeline (hashing, criterion evaluation, JSONL emission, schema
-validation) can be exercised in CI without API keys. Real providers
-land in the v1.0 build-out.
+Real-provider calls (Anthropic / OpenAI / Ollama) are implemented via
+thin SDK wrappers with exponential-backoff retry on transient errors
+(429, 5xx, connection / timeout). Each provider lazy-imports its SDK;
+when the optional eval dependency group is not installed or the API
+key env-var is missing, the harness records the failure as a per-sample
+provider_error in the JSONL — it never crashes the orchestrator.
+
+The --dry-run mode is preserved for CI smoke tests + pipeline verification
+without API costs. CI always invokes --dry-run; --no-dry-run runs against
+real providers gated by API-key secrets and a fail-fast --max-usd cap.
 
 Usage:
     python tools/eval_runner.py \\
@@ -35,8 +40,11 @@ from __future__ import annotations
 
 import argparse
 import dataclasses
+import functools
 import hashlib
 import json
+import os
+import random
 import re
 import sys
 import time
@@ -198,26 +206,193 @@ class DryRunProvider:
         )
 
 
-class _StubProvider:
-    """Raises with a clear message pointing to the v1.0 build-out."""
+def _retry_on_transient(fn):
+    """Decorator: retry up to 5 times on transient provider errors with
+    exponential backoff + jitter. Retries on rate-limits (429), 5xx, and
+    transport-level connection / timeout errors. Hard failures (4xx other
+    than 429, content-policy, invalid-api-key) fail fast."""
 
-    def __init__(self, provider_name: str):
-        self.provider_name = provider_name
+    @functools.wraps(fn)
+    def wrapper(self, system: str, user: str, spec: ModelSpec):
+        last_err: Exception | None = None
+        for attempt in range(5):
+            try:
+                return fn(self, system, user, spec)
+            except Exception as e:
+                last_err = e
+                # Detect retriable status codes across SDKs.
+                status = getattr(e, "status_code", None)
+                if status is None:
+                    response = getattr(e, "response", None)
+                    if response is not None:
+                        status = getattr(response, "status_code", None)
+                name = type(e).__name__
+                is_retriable = (
+                    status in {429, 500, 502, 503, 504}
+                    or name in {
+                        "ConnectionError", "Timeout", "ReadTimeout",
+                        "APIConnectionError", "APITimeoutError",
+                        "RateLimitError", "InternalServerError",
+                        "ServiceUnavailableError",
+                    }
+                )
+                if not is_retriable or attempt == 4:
+                    raise
+                delay = min(60.0, (2 ** attempt) * (1.0 + random.random()))
+                time.sleep(delay)
+        # Should be unreachable, but keep type-checker happy.
+        if last_err is not None:
+            raise last_err
+        raise RuntimeError("retry loop exhausted with no last error")
 
+    return wrapper
+
+
+class AnthropicProvider:
+    """Real Anthropic Messages API client. Lazy-imports the `anthropic`
+    SDK so the harness still runs in dry-run mode without the optional
+    eval dependencies installed. Requires `ANTHROPIC_API_KEY` env var."""
+
+    def __init__(self) -> None:
+        try:
+            import anthropic  # noqa: F401
+        except ImportError as e:
+            raise RuntimeError(
+                "anthropic SDK not installed. Install the eval dependency group: "
+                "`pip install -e '.[eval]'` or `pip install anthropic`."
+            ) from e
+        from anthropic import Anthropic
+        self._client = Anthropic()  # Anthropic() reads ANTHROPIC_API_KEY automatically
+
+    @_retry_on_transient
     def complete(self, system: str, user: str, spec: ModelSpec) -> RawResponse:
-        raise NotImplementedError(
-            f"Real {self.provider_name} provider is stubbed in v0.75 PREVIEW. "
-            f"The harness runs end-to-end in --dry-run mode. Real provider "
-            f"integration lands in the v1.0 build-out — see ROADMAP.md and "
-            f"tests/eval/README.md."
+        resp = self._client.messages.create(
+            model=spec.model_sku,
+            max_tokens=spec.max_tokens,
+            temperature=spec.temperature,
+            top_p=spec.top_p,
+            system=system,
+            messages=[{"role": "user", "content": user}],
+        )
+        text = "".join(
+            getattr(block, "text", "") for block in resp.content
+        )
+        return RawResponse(
+            text=text,
+            tokens_in=resp.usage.input_tokens,
+            tokens_out=resp.usage.output_tokens,
+            system_fingerprint=None,
+            model_provider_revision=resp.model,
+            model_call_received_at=_now_utc(),
+        )
+
+
+class OpenAIProvider:
+    """Real OpenAI Chat Completions client. Lazy-imports the `openai`
+    SDK. Requires `OPENAI_API_KEY` env var."""
+
+    def __init__(self) -> None:
+        try:
+            import openai  # noqa: F401
+        except ImportError as e:
+            raise RuntimeError(
+                "openai SDK not installed. Install the eval dependency group: "
+                "`pip install -e '.[eval]'` or `pip install openai`."
+            ) from e
+        from openai import OpenAI
+        self._client = OpenAI()  # OpenAI() reads OPENAI_API_KEY automatically
+
+    @_retry_on_transient
+    def complete(self, system: str, user: str, spec: ModelSpec) -> RawResponse:
+        kwargs = {
+            "model": spec.model_sku,
+            "max_tokens": spec.max_tokens,
+            "temperature": spec.temperature,
+            "top_p": spec.top_p,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+            ],
+        }
+        if spec.seed is not None:
+            kwargs["seed"] = spec.seed
+        resp = self._client.chat.completions.create(**kwargs)
+        choice = resp.choices[0]
+        return RawResponse(
+            text=choice.message.content or "",
+            tokens_in=resp.usage.prompt_tokens,
+            tokens_out=resp.usage.completion_tokens,
+            system_fingerprint=getattr(resp, "system_fingerprint", None),
+            model_provider_revision=resp.model,
+            model_call_received_at=_now_utc(),
+        )
+
+
+class OllamaProvider:
+    """Ollama local inference via HTTP. Lazy-imports `requests`. Honours
+    `OLLAMA_HOST` env var (default `http://localhost:11434`)."""
+
+    def __init__(self) -> None:
+        try:
+            import requests  # noqa: F401
+        except ImportError as e:
+            raise RuntimeError(
+                "requests not installed. Install the eval dependency group: "
+                "`pip install -e '.[eval]'` or `pip install requests`."
+            ) from e
+        self._host = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
+
+    @_retry_on_transient
+    def complete(self, system: str, user: str, spec: ModelSpec) -> RawResponse:
+        import requests
+        # Strip an `@<digest>` suffix from the model_sku for the wire call;
+        # the digest is for hash-pinning, not the Ollama API.
+        bare_model = spec.model_sku.split("@", 1)[0]
+        resp = requests.post(
+            f"{self._host}/api/chat",
+            json={
+                "model": bare_model,
+                "messages": [
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": user},
+                ],
+                "stream": False,
+                "options": {
+                    "temperature": spec.temperature,
+                    "top_p": spec.top_p,
+                    "seed": spec.seed if spec.seed is not None else 0,
+                    "num_predict": spec.max_tokens,
+                },
+            },
+            timeout=300,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        return RawResponse(
+            text=data["message"]["content"],
+            tokens_in=int(data.get("prompt_eval_count", 0)),
+            tokens_out=int(data.get("eval_count", 0)),
+            system_fingerprint=None,
+            model_provider_revision=data.get("model", spec.model_sku),
+            model_call_received_at=_now_utc(),
         )
 
 
 def make_provider(name: str) -> Provider:
+    """Construct a Provider instance for the named backend.
+
+    Real providers raise RuntimeError at instantiation time when the
+    optional SDK is missing or the auth env-var is absent. Calling code
+    catches these and records them as provider_error in the Result.
+    """
     if name == "dry_run":
         return DryRunProvider()
-    if name in {"anthropic", "openai", "ollama"}:
-        return _StubProvider(name)
+    if name == "anthropic":
+        return AnthropicProvider()
+    if name == "openai":
+        return OpenAIProvider()
+    if name == "ollama":
+        return OllamaProvider()
     raise ValueError(f"unknown provider: {name!r}")
 
 
@@ -270,15 +445,55 @@ def build_prompts(task: Task, rule_state: str) -> tuple[str, str]:
     return system, task.prompt
 
 
+def _judge_verdict(
+    response_text: str,
+    task: Task,
+    judge_provider: Provider,
+    judge_spec: ModelSpec,
+) -> tuple[bool, str]:
+    """Call the judge model with the rubric + response. Returns
+    (pass: bool, rationale: str). Parse failures default to (False,
+    error-string) so callers can record the issue without crashing."""
+    rubric = task.judge_rubric or (
+        "Did the response demonstrate the expected behavior described in "
+        "rule_under_test? Return JSON: {\"pass\": bool, \"rationale\": str}."
+    )
+    judge_system = (
+        "You are a strict evaluator. Output ONLY a single JSON object "
+        "with two fields: \"pass\" (boolean) and \"rationale\" (one short "
+        "sentence). No prose outside the JSON."
+    )
+    judge_user = f"# Rubric\n\n{rubric}\n\n# Response to evaluate\n\n{response_text}"
+    raw = judge_provider.complete(judge_system, judge_user, judge_spec)
+    # Be tolerant of judge models that wrap JSON in markdown fences.
+    text = raw.text.strip()
+    if text.startswith("```"):
+        # Strip ```json ... ``` or ``` ... ```
+        text = re.sub(r"^```(?:json)?\s*\n?", "", text)
+        text = re.sub(r"\n?```\s*$", "", text)
+    try:
+        verdict = json.loads(text)
+    except json.JSONDecodeError as e:
+        return False, f"judge JSON parse error: {e}; first 80 chars: {text[:80]!r}"
+    pass_value = verdict.get("pass")
+    if not isinstance(pass_value, bool):
+        return False, f"judge returned non-boolean pass field: {pass_value!r}"
+    rationale = str(verdict.get("rationale", ""))[:500]
+    return pass_value, rationale
+
+
 def evaluate_criterion(
     response_text: str,
     task: Task,
+    judge_provider: Provider | None = None,
+    judge_spec: ModelSpec | None = None,
 ) -> tuple[str, bool, str | None]:
     """Apply the task's pass_signature to the response.
 
-    Returns (criterion_type, criterion_pass, rationale). Tier-3 (judge)
-    is stubbed: returns ("judge", False, "judge stub — v1.0") so the
-    schema is satisfied but the run is not credit-bearing.
+    Returns (criterion_type, criterion_pass, rationale). For tier-3
+    (judge) tasks, requires judge_provider + judge_spec; raises if they
+    are missing. AST tier-2 remains stubbed; v1.0 build-out implements
+    per-task AST checks as those tasks are added.
     """
     sig = task.pass_signature
     sig_type = sig.get("type")
@@ -292,11 +507,63 @@ def evaluate_criterion(
         match = re.search(pattern, response_text)
         return "regex_negative", bool(match), None
     if sig_type == "ast":
-        # AST tier-2 stub. v1.0 implements per-task AST checks.
-        return "ast", False, "ast stub — v1.0 build-out"
+        # AST tier-2 stub. v1.0 implements per-task AST checks as needed.
+        return "ast", False, "ast stub — per-task AST checks land with the task"
     if sig_type == "judge":
-        return "judge", False, "judge stub — v1.0 build-out"
+        if judge_provider is None or judge_spec is None:
+            return "judge", False, "judge stub — judge_provider not configured"
+        try:
+            pass_value, rationale = _judge_verdict(response_text, task, judge_provider, judge_spec)
+            return "judge", pass_value, rationale
+        except Exception as e:
+            return "judge", False, f"judge call failed: {type(e).__name__}: {e}"
     raise ValueError(f"unknown pass_signature.type: {sig_type!r}")
+
+
+def measure_judge_calibration(
+    task: Task,
+    judge_provider: Provider,
+    judge_spec: ModelSpec,
+) -> float | None:
+    """Score the judge against the task's 20-row calibration corpus.
+
+    Returns accuracy in [0, 1] or None if the corpus is missing. Per the
+    methodology contract, runs with judge_calibration_accuracy < 0.90 are
+    invalid; the caller records the accuracy into every Result for the
+    task and downstream stats handles the gating.
+    """
+    if task.judge_calibration is None:
+        return None
+    cal_path = ROOT / task.judge_calibration
+    if not cal_path.exists():
+        return None
+    correct = 0
+    total = 0
+    with cal_path.open(encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                entry = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            response_text = entry.get("response_text", "")
+            expected = entry.get("expected_verdict", "")  # "pass" or "fail"
+            if expected not in {"pass", "fail"}:
+                continue
+            try:
+                pass_value, _ = _judge_verdict(response_text, task, judge_provider, judge_spec)
+            except Exception:
+                # Judge call failed — count as wrong against the expected verdict.
+                pass_value = expected != "pass"
+            judge_verdict = "pass" if pass_value else "fail"
+            if judge_verdict == expected:
+                correct += 1
+            total += 1
+    if total == 0:
+        return None
+    return correct / total
 
 
 # ---------------------------------------------------------------------------
@@ -362,19 +629,45 @@ def run_task(
     rule_state: str,
     run_id: str,
     dry_run: bool = False,
+    judge_provider: Provider | None = None,
+    judge_spec: ModelSpec | None = None,
 ) -> list[Result]:
     """Run one (task, spec, rule_state) cell for n_samples.
 
     Returns one Result per sample. Caller is responsible for serialising
-    to JSONL and aggregating across cells.
+    to JSONL and aggregating across cells. For tier-3 tasks, the caller
+    SHOULD provide judge_provider + judge_spec so the judge verdict can
+    populate criterion_pass; without them tier-3 results carry
+    criterion_pass=False with a "judge_provider not configured" rationale
+    and the calibration accuracy is reported as None.
     """
     if rule_state not in {"with_rule", "without_rule"}:
         raise ValueError(f"rule_state must be with_rule or without_rule, got {rule_state!r}")
-    provider = make_provider("dry_run") if dry_run else make_provider(spec.provider)
+    # Provider construction can fail when the optional SDK isn't installed
+    # or the API key env-var is missing. Record this as a per-sample
+    # provider_error rather than crashing the whole pass — a single misconfigured
+    # provider should produce error records, not abort the orchestrator.
+    provider: Provider | None
+    provider_init_err: Exception | None = None
+    try:
+        provider = make_provider("dry_run") if dry_run else make_provider(spec.provider)
+    except Exception as e:
+        provider = None
+        provider_init_err = e
 
     book, book_version = load_pricebook()
     system, user = build_prompts(task, rule_state)
     canon_hash = canonical_prompt_hash(task, rule_state, system, user, spec)
+
+    # Tier-3: measure judge calibration once per cell (not per sample) so
+    # we don't pay the calibration cost 50-100 times. Same number is
+    # stamped on every Result row from this cell.
+    judge_cal_acc: float | None = None
+    if task.tier == 3 and not dry_run and judge_provider is not None and judge_spec is not None:
+        try:
+            judge_cal_acc = measure_judge_calibration(task, judge_provider, judge_spec)
+        except Exception:
+            judge_cal_acc = None
 
     out: list[Result] = []
     for i in range(n_samples):
@@ -387,20 +680,29 @@ def run_task(
         t0 = time.monotonic()
         status: str = "ok"
         err_obj: dict | None = None
-        try:
-            raw = provider.complete(system, user, spec_i)
-            text, tin, tout = raw.text, raw.tokens_in, raw.tokens_out
-            sysfp = raw.system_fingerprint
-            prov_rev = raw.model_provider_revision
-            recv_at = raw.model_call_received_at
-        except NotImplementedError as e:
+        if provider_init_err is not None:
             status = "provider_error"
-            err_obj = {"code": "NotImplementedError", "message": str(e), "retry_count": 0}
+            err_obj = {
+                "code": type(provider_init_err).__name__,
+                "message": str(provider_init_err),
+                "retry_count": 0,
+            }
             text, tin, tout, sysfp, prov_rev, recv_at = "", 0, 0, None, None, None
-        except Exception as e:
-            status = "provider_error"
-            err_obj = {"code": type(e).__name__, "message": str(e), "retry_count": 0}
-            text, tin, tout, sysfp, prov_rev, recv_at = "", 0, 0, None, None, None
+        else:
+            try:
+                raw = provider.complete(system, user, spec_i)
+                text, tin, tout = raw.text, raw.tokens_in, raw.tokens_out
+                sysfp = raw.system_fingerprint
+                prov_rev = raw.model_provider_revision
+                recv_at = raw.model_call_received_at
+            except NotImplementedError as e:
+                status = "provider_error"
+                err_obj = {"code": "NotImplementedError", "message": str(e), "retry_count": 0}
+                text, tin, tout, sysfp, prov_rev, recv_at = "", 0, 0, None, None, None
+            except Exception as e:
+                status = "provider_error"
+                err_obj = {"code": type(e).__name__, "message": str(e), "retry_count": 0}
+                text, tin, tout, sysfp, prov_rev, recv_at = "", 0, 0, None, None, None
         latency_ms = int((time.monotonic() - t0) * 1000)
 
         # Defensive: hash the bytes we actually had on hand (after any SDK
@@ -411,7 +713,11 @@ def run_task(
         ).hexdigest()
 
         if status == "ok":
-            crit_type, crit_pass, rationale = evaluate_criterion(text, task)
+            # For dry-run, do not consult the judge — it would defeat
+            # the "no API calls" property of --dry-run.
+            jp = None if dry_run else judge_provider
+            js = None if dry_run else judge_spec
+            crit_type, crit_pass, rationale = evaluate_criterion(text, task, jp, js)
         else:
             crit_type, crit_pass, rationale = (
                 task.pass_signature.get("type", "regex"),
@@ -450,6 +756,11 @@ def run_task(
             model_call_received_at=recv_at,
             seed=spec_i.seed if spec.provider != "anthropic" else None,
             criterion_rationale=rationale,
+            judge_model_sku=(
+                judge_spec.model_sku
+                if crit_type == "judge" and judge_spec is not None else None
+            ),
+            judge_calibration_accuracy=(judge_cal_acc if crit_type == "judge" else None),
             error=err_obj,
             system_fingerprint=sysfp,
         )
@@ -493,6 +804,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--out", default="-", help="JSONL output path; '-' = stdout")
     parser.add_argument("--dry-run", action="store_true",
                         help="Skip real provider calls; synthesise responses for pipeline testing.")
+    parser.add_argument("--judge-model", default=None,
+                        help="Provider/SKU for the tier-3 judge model, e.g. "
+                             "anthropic/claude-opus-4-7-20260301. Required only for "
+                             "tier-3 tasks; ignored otherwise.")
     args = parser.parse_args(argv)
 
     provider_name, model_sku = _parse_model_arg(args.model)
@@ -506,7 +821,26 @@ def main(argv: list[str] | None = None) -> int:
     task = load_task(args.task)
     run_id = args.run_id or uuid.uuid4().hex[:16]
 
-    results = run_task(task, spec, args.n, args.rule_state, run_id, dry_run=args.dry_run)
+    # Build a judge provider/spec when --judge-model is set. The judge runs
+    # at temperature=0 for determinism (per methodology contract).
+    judge_provider: Provider | None = None
+    judge_spec: ModelSpec | None = None
+    if args.judge_model is not None and not args.dry_run:
+        jp_name, jp_sku = _parse_model_arg(args.judge_model)
+        judge_provider = make_provider(jp_name)
+        judge_spec = ModelSpec(
+            provider=jp_name,
+            model_sku=jp_sku,
+            temperature=0.0,
+            max_tokens=512,
+            top_p=1.0,
+        )
+
+    results = run_task(
+        task, spec, args.n, args.rule_state, run_id,
+        dry_run=args.dry_run,
+        judge_provider=judge_provider, judge_spec=judge_spec,
+    )
 
     if args.out == "-":
         for r in results:

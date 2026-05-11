@@ -89,9 +89,13 @@ def test_dry_run_provider_returns_no_cost():
         assert r.cost_usd == 0.0, f"dry-run cost must be zero, got {r.cost_usd}"
 
 
-def test_real_provider_call_is_stubbed_with_clear_error():
-    """Calling a real provider (without --dry-run) must raise NotImplementedError
-    pointing at the v1.0 build-out."""
+def test_real_provider_without_sdk_or_keys_is_recorded_as_error():
+    """When the eval[anthropic|openai|requests] optional deps are not
+    installed or the API key is missing, the harness still produces a
+    well-formed Result with status=provider_error — never crashes the run.
+    Either path is acceptable; CI installs the deps so the error is
+    likely 'authentication' rather than 'ImportError', but the contract
+    is just 'no crash, status=provider_error, error.code set'."""
     task = eval_runner.load_task("01-ts-async-without-await")
     spec = eval_runner.ModelSpec(
         provider="anthropic",
@@ -100,14 +104,53 @@ def test_real_provider_call_is_stubbed_with_clear_error():
         max_tokens=1024,
         top_p=1.0,
     )
-    results = eval_runner.run_task(task, spec, n_samples=1, rule_state="with_rule",
-                                   run_id="test-stub-1", dry_run=False)
+    # Force-clear the API key so the test is deterministic even on CI
+    # where ANTHROPIC_API_KEY might be set.
+    import os
+    saved = os.environ.pop("ANTHROPIC_API_KEY", None)
+    try:
+        results = eval_runner.run_task(
+            task, spec, n_samples=1, rule_state="with_rule",
+            run_id="test-real-1", dry_run=False,
+        )
+    finally:
+        if saved is not None:
+            os.environ["ANTHROPIC_API_KEY"] = saved
     assert len(results) == 1
     r = results[0]
-    assert r.status == "provider_error"
+    assert r.status == "provider_error", f"expected provider_error, got {r.status}"
     assert r.error is not None
-    assert "NotImplementedError" in r.error.get("code", "")
-    assert "v1.0" in r.error.get("message", "")
+    assert r.error.get("code"), "error.code must be set"
+
+
+def test_judge_calibration_jsonl_is_well_formed():
+    """The Tier-3 judge calibration corpus for task 05 must parse cleanly
+    and carry exactly the expected_verdict values."""
+    cal_path = ROOT / "tests" / "eval" / "tasks" / "05-judge-calibration.jsonl"
+    assert cal_path.exists(), "05-judge-calibration.jsonl must exist for tier-3 task 05"
+    n_pass = 0
+    n_fail = 0
+    with cal_path.open(encoding="utf-8") as f:
+        for line_no, raw in enumerate(f, start=1):
+            line = raw.strip()
+            if not line:
+                continue
+            entry = json.loads(line)  # JSONDecodeError surfaces directly
+            assert "response_text" in entry, f"line {line_no}: missing response_text"
+            assert "expected_verdict" in entry, f"line {line_no}: missing expected_verdict"
+            assert entry["expected_verdict"] in {"pass", "fail"}, (
+                f"line {line_no}: expected_verdict must be pass|fail"
+            )
+            assert len(entry["response_text"]) >= 30, (
+                f"line {line_no}: response_text suspiciously short"
+            )
+            if entry["expected_verdict"] == "pass":
+                n_pass += 1
+            else:
+                n_fail += 1
+    # Methodology contract: 10 known-pass + 10 known-fail per Tier-3 task.
+    assert n_pass == 10, f"expected 10 pass calibration entries, got {n_pass}"
+    assert n_fail == 10, f"expected 10 fail calibration entries, got {n_fail}"
 
 
 def test_evaluate_criterion_regex_pass_and_fail():

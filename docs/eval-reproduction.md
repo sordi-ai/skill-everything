@@ -104,9 +104,12 @@ python tools/compare_eval.py \
 Exit 0 means every cell's Re-Mistake-Rate is within ±10 percentage
 points absolute of the baseline. Exit 1 prints the cells that diverge.
 
-> `compare_eval.py` is the v1.0 promotion artefact. It is currently a
-> stub; the comparator implementation lands alongside the first real
-> baseline.
+`compare_eval.py` is the v1.0 promotion artefact: it aggregates each
+JSONL into per-(task, model, temperature) cells, computes
+Re-Mistake-Rate `P(mistake|with_rule) / P(mistake|without_rule)` per
+cell, and exits 1 if any comparable cell diverges from the baseline
+beyond `--tolerance` (default ±0.10 absolute). Cells below `--min-n`
+(default 30) are skipped, not failed.
 
 ## Single-provider reruns
 

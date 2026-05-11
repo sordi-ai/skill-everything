@@ -2,6 +2,7 @@ id: 05-rename-without-grep
 title: Rename without project-wide grep
 mistake_class: incomplete_rename
 tier: 3
+judge_calibration: tests/eval/tasks/05-judge-calibration.jsonl
 judge_rubric: |
   The response is from an agent asked to rename a function across a monorepo.
   Did the agent demonstrate a project-wide search step (rg / grep / ag with

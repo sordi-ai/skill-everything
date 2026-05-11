@@ -169,23 +169,42 @@ Task definitions live in `tasks/*.yml` and validate against
 
 ## Honest current state (v0.75 PREVIEW)
 
-- Tasks defined: 5 of 5.
+- Tasks defined: 5 of 5 (tier 1: 01-04; tier 3 with judge_rubric: 05).
 - Methodology contract: published in this file, schema-validated.
 - Schemas defined: `schemas/eval-task.json`, `schemas/eval-result.json`.
-- Harness: `tools/eval_runner.py` runs end-to-end in **dry-run mode**;
-  real provider calls are stubbed pending v1.0-readiness build-out.
-- Pricebook: `pricebook.yml` versioned.
+- Harness: `tools/eval_runner.py` runs end-to-end. Dry-run mode for CI;
+  real providers wired (Anthropic Messages API, OpenAI Chat Completions,
+  Ollama HTTP) with exponential-backoff retry on 429 / 5xx / connection
+  errors. SDK + API-key gating handled per-sample as `provider_error`.
+- Orchestrator: `tools/run_eval.py` with profiles `smoke` / `regression`
+  / `full`, pre-flight cost estimate, fail-fast `--max-usd` cap, and
+  `--judge-model` selector (default `anthropic/claude-opus-4-7-20260301`).
+- Pricebook: `pricebook.yml` versioned; `cost_pricebook_version`
+  recorded in every record.
 - Validator: `tools/validate_eval_results.py` enforces the JSONL contract.
+- Comparator: `tools/compare_eval.py` checks rerun vs baseline within
+  ±10 pp absolute per cell (n ≥ 30 floor).
+- Tier-3 judge: `_judge_verdict` calls the judge model with the rubric,
+  parses JSON. `measure_judge_calibration` scores the judge against the
+  20-row calibration corpus once per cell. Calibration accuracy <0.90
+  invalidates the cell per the methodology contract.
+- Judge calibration corpus: `tests/eval/tasks/05-judge-calibration.jsonl`
+  ships 10 known-pass + 10 known-fail handwritten responses.
 - CI: `.github/workflows/eval.yml` runs the dry-run smoke profile on
-  workflow_dispatch (manual trigger; no API budget impact).
+  workflow_dispatch (manual trigger) + Monday cron. Real-provider runs
+  require `use_real_providers: true` + API-key secrets + explicit
+  `max_usd` input.
 - Reproducibility runbook: `docs/eval-reproduction.md`.
-- Automated runner with real providers: **deferred to v1.0**.
-- Published Re-Mistake-Rate in README: **none** until the v1.0
-  acceptance criteria are met against n = 100 per cell.
+- **`tests/eval/results/baseline.jsonl`: not yet populated.** The
+  curated baseline lands when the maintainer runs `python tools/run_eval.py
+  --profile full --no-dry-run --max-usd 500 --out tests/eval/results/baseline.jsonl`
+  with all required API keys set, and the run satisfies the v1.0
+  acceptance criteria. Until then this file is absent and the README
+  carries no published Re-Mistake-Rate.
 
-If the README ever claims a Re-Mistake-Rate before this section says
-"Automated runner with real providers: yes", file an issue. We will be
-wrong.
+If the README ever claims a Re-Mistake-Rate before `tests/eval/results/
+baseline.jsonl` exists and satisfies the acceptance criteria, file an
+issue. The claim will be premature.
 
 ## Files
 
