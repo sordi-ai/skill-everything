@@ -190,7 +190,7 @@
     <rect class="node" x="0" y="0" width="200" height="68" rx="6"/>
     <text class="step-num" x="10" y="14">CLAUDE CODE</text>
     <text class="node-title" x="10" y="32">CLAUDE.md</text>
-    <text class="mono-tag"   x="10" y="48">@skills/<name>/SKILL.md</text>
+    <text class="mono-tag"   x="10" y="48">@skills/&lt;name&gt;/SKILL.md</text>
     <text class="mono-dim"   x="10" y="62">imports + sub-skill table</text>
   </g>
 
@@ -198,7 +198,7 @@
     <rect class="node" x="0" y="0" width="200" height="68" rx="6"/>
     <text class="step-num" x="10" y="14">GEMINI CLI</text>
     <text class="node-title" x="10" y="32">GEMINI.md</text>
-    <text class="mono-tag"   x="10" y="48">@skills/<name>/SKILL.md  ·  /memory show</text>
+    <text class="mono-tag"   x="10" y="48">@skills/&lt;name&gt;/SKILL.md  ·  /memory show</text>
     <text class="mono-dim"   x="10" y="62">imports + reload command</text>
   </g>
 
@@ -213,9 +213,9 @@
   <!-- ============== SUB-SKILL DIRECTORY  ·  folder-strip ==============
        Replaces the prior 2-row dotted-path chip with nine first-class
        folder glyphs. Each glyph is a small file-tray shape (tab + body)
-       in --agent stroke on --agent-fill, with the folder name centred
+       in var(agent) stroke on var(agent-fill), with the folder name centred
        inside the body and the /SKILL.md filename printed BELOW the
-       glyph in --muted (signalling "this folder contains a SKILL.md").
+       glyph in var(muted) (signalling "this folder contains a SKILL.md").
        The strip occupies the same 1040-wide slot the chip did, so the
        four loop-arrows (x=180, 430, 770, 1020) still terminate just
        above the strip — the architectural claim that all four loaders

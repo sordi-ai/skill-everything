@@ -175,7 +175,7 @@
     <rect class="node" x="0" y="0" width="200" height="62" rx="6"/>
     <text class="step-num"   x="12" y="14">CLAUDE CODE</text>
     <text class="node-title" x="12" y="32">CLAUDE.md</text>
-    <text class="mono-tag"   x="12" y="50">@skills/<name>/SKILL.md</text>
+    <text class="mono-tag"   x="12" y="50">@skills/&lt;name&gt;/SKILL.md</text>
   </g>
 
   <g transform="translate(330 294)">
@@ -189,7 +189,7 @@
     <rect class="node" x="0" y="0" width="200" height="62" rx="6"/>
     <text class="step-num"   x="12" y="14">GEMINI CLI</text>
     <text class="node-title" x="12" y="32">GEMINI.md</text>
-    <text class="mono-tag"   x="12" y="50">@skills/<name>/SKILL.md  ·  /memory show</text>
+    <text class="mono-tag"   x="12" y="50">@skills/&lt;name&gt;/SKILL.md  ·  /memory show</text>
   </g>
 
   <g transform="translate(940 294)">
