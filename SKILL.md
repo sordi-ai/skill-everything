@@ -35,6 +35,7 @@ as committed rules.
 | react component, react hooks, react performance | React | `skill_resource(skill_name="react")` |
 | git commit, branch, pull request | Git Conventions | `skill_resource(skill_name="git-conventions")` |
 | creating PR, deployment, review checklist | Review & Deployment | `skill_resource(skill_name="review-deployment")` |
+| svg edit, svg review, diagram, pixel review | SVG Check | `skill_resource(skill_name="svg-check")` |
 | project-specific knowledge, business rules | Domain Knowledge (template) | `skill_resource(skill_name="domain-template")` |
 | made or corrected a mistake, learn from this | Error Log | `skill_resource(skill_name="error-log")` |
 | executing self-extension | Self-Extension Workflow | `skill_resource(skill_name="self-extension-workflow")` |

@@ -20,6 +20,7 @@ as committed rules.
 | react component, react hooks, react performance | React | `@file:./skills/react/SKILL.md` |
 | git commit, branch, pull request | Git Conventions | `@file:./skills/git-conventions/SKILL.md` |
 | creating PR, deployment, review checklist | Review & Deployment | `@file:./skills/review-deployment/SKILL.md` |
+| svg edit, svg review, diagram, pixel review | SVG Check | `@file:./skills/svg-check/SKILL.md` |
 | project-specific knowledge, business rules | Domain Knowledge (template) | `@file:./skills/domain-template/SKILL.md` |
 | made or corrected a mistake, learn from this | Error Log | `@file:./skills/error-log/SKILL.md` |
 | executing self-extension | Self-Extension Workflow | `@file:./skills/self-extension-workflow/SKILL.md` |

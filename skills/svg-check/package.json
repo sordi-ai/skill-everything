@@ -1,0 +1,13 @@
+{
+  "name": "svg-check",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playwright bbox-check for SVG diagrams.",
+  "license": "MIT",
+  "scripts": {
+    "check": "node overflow-check.js"
+  },
+  "dependencies": {
+    "playwright": "^1.59.1"
+  }
+}

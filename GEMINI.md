@@ -24,6 +24,7 @@ Use `/memory show` to verify the loaded context. Use `/memory refresh` after edi
 | react component, react hooks, react performance | React | `@skills/react/SKILL.md` |
 | git commit, branch, pull request | Git Conventions | `@skills/git-conventions/SKILL.md` |
 | creating PR, deployment, review checklist | Review & Deployment | `@skills/review-deployment/SKILL.md` |
+| svg edit, svg review, diagram, pixel review | SVG Check | `@skills/svg-check/SKILL.md` |
 | project-specific knowledge, business rules | Domain Knowledge (template) | `@skills/domain-template/SKILL.md` |
 | made or corrected a mistake, learn from this | Error Log | `@skills/error-log/SKILL.md` |
 | executing self-extension | Self-Extension Workflow | `@skills/self-extension-workflow/SKILL.md` |

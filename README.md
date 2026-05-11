@@ -141,17 +141,20 @@ A CI no-drift job runs `git diff --exit-code` against the regenerated loaders on
 
 | Sub-skill | Path | Tokens (real, tiktoken cl100k) |
 |---|---|---:|
-| `code-quality` | `skills/code-quality/SKILL.md` | ~1,300 |
-| `python` | `skills/python/SKILL.md` | ~1,850 |
-| `typescript` | `skills/typescript/SKILL.md` | ~2,150 |
-| `react` | `skills/react/SKILL.md` | ~2,050 |
-| `git-conventions` | `skills/git-conventions/SKILL.md` | ~550 |
-| `review-deployment` | `skills/review-deployment/SKILL.md` | ~650 |
-| `domain-template` | `skills/domain-template/SKILL.md` | ~900 |
-| `error-log` | `skills/error-log/SKILL.md` | ~2,150 |
-| `self-extension-workflow` | `skills/self-extension-workflow/SKILL.md` | ~1,850 |
-| **Total if all loaded** | — | **~13,600** |
+| `code-quality` | `skills/code-quality/SKILL.md` | ~1,750 |
+| `python` | `skills/python/SKILL.md` | ~2,450 |
+| `typescript` | `skills/typescript/SKILL.md` | ~2,850 |
+| `react` | `skills/react/SKILL.md` | ~2,950 |
+| `git-conventions` | `skills/git-conventions/SKILL.md` | ~750 |
+| `review-deployment` | `skills/review-deployment/SKILL.md` | ~950 |
+| `svg-check` | `skills/svg-check/SKILL.md` | ~1,700 |
+| `domain-template` | `skills/domain-template/SKILL.md` | ~1,250 |
+| `error-log` | `skills/error-log/SKILL.md` | ~2,950 |
+| `self-extension-workflow` | `skills/self-extension-workflow/SKILL.md` | ~2,500 |
+| **Total if all loaded** | — | **~20,350** |
 | **Typical (router + 1–2 skills)** | depends on task | **~1,800–3,500** |
+
+> _Counts above use a chars/3 fallback because tiktoken is not installed. Install `tiktoken>=0.7` for accurate numbers._
 
 <!-- token-table:end -->
 

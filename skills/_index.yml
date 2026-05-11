@@ -86,6 +86,20 @@ skills:
       cursor:  '@file:./skills/review-deployment/SKILL.md'
       skill_resource: 'skill_resource(skill_name="review-deployment")'
 
+  - id: svg-check
+    title: SVG Check
+    path: skills/svg-check/SKILL.md
+    triggers:
+      - svg edit
+      - svg review
+      - diagram
+      - pixel review
+    loaders:
+      claude:  '@skills/svg-check/SKILL.md'
+      gemini:  '@skills/svg-check/SKILL.md'
+      cursor:  '@file:./skills/svg-check/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="svg-check")'
+
   - id: domain-template
     title: Domain Knowledge (template)
     path: skills/domain-template/SKILL.md
