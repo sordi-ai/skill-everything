@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 500" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 520" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
   <title id="title">skill-everything architecture — single source of truth, four loaders</title>
   <desc id="desc">skills/_index.yml is rendered by tools/render_loaders.py into four tool-specific loader files: SKILL.md (OpenCode), CLAUDE.md (Claude Code), GEMINI.md (Gemini CLI) and a Cursor stub. All four loaders point at the same sub-skill directory: a horizontal strip of nine first-class skill folders, each with SKILL.md inside, demonstrating the Anthropic Skills folder pattern. A loaders-and-table-no-drift CI gate fails the build if any loader file diverges from the index.</desc>
 
@@ -85,7 +85,7 @@
   </defs>
 
   <!-- ============== FRAME (viewBox 1280 hosts the CI-Gate sentinel) -->
-  <rect class="frame" x="0.5" y="0.5" width="1279" height="499" rx="6"/>
+  <rect class="frame" x="0.5" y="0.5" width="1279" height="519" rx="6"/>
 
   <!-- ============== HEADER ============== -->
   <text class="h-title" x="24" y="30">ARCHITECTURE  /  ONE INDEX, FOUR LOADERS</text>
@@ -352,6 +352,6 @@
   <line x1="1212" y1="310" x2="1212" y2="322" class="arrow ci" marker-end="url(#a-ci)"/>
 
   <!-- ============== TAGLINE ============== -->
-  <text class="tagline" x="1256" y="494" text-anchor="end">edit the index, regenerate, commit  ·  drift fails CI</text>
-  <text class="mono-dim" x="24"   y="494">skill-everything  /  docs/architecture.svg</text>
+  <text class="tagline" x="1256" y="510" text-anchor="end">edit the index, regenerate, commit  ·  drift fails CI</text>
+  <text class="mono-dim" x="24"   y="510">skill-everything  /  docs/architecture.svg</text>
 </svg>
