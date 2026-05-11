@@ -17,7 +17,7 @@ Email `security@sordi.ai` (PGP key on request) with:
 2. A reproducer if possible.
 3. Whether you have already disclosed the issue elsewhere.
 
-Expected first reply: within 7 days. We are an independent two-person side project — we do not have an SLA, but we take reports seriously. `blank_issues_enabled` is set to `false` in `.github/ISSUE_TEMPLATE/config.yml` to keep accidental security disclosures from landing in public issues.
+Expected first reply: within 7 days. This is a small independent maintainer team — there is no formal SLA, but reports are taken seriously. `blank_issues_enabled` is set to `false` in `.github/ISSUE_TEMPLATE/config.yml` to keep accidental security disclosures from landing in public issues.
 
 ---
 
@@ -38,7 +38,7 @@ The contents of `skills/**`. Every rule is consumed as instruction by downstream
 
 - `main` branch is trusted. Anyone who can land a commit on `main` can re-program every consumer.
 - PR contributions are untrusted until reviewed.
-- Self-extension commits authored by an agent are untrusted until a human reviews the PR.
+- Self-extension commits authored by an agent are untrusted until CODEOWNERS approves the PR.
 
 ### Adversaries
 

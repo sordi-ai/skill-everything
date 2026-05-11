@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 500" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
   <title id="title">skill-everything architecture — single source of truth, four loaders</title>
-  <desc id="desc">skills/_index.yml is rendered by tools/render_loaders.py into four tool-specific loader files: SKILL.md (OpenCode), CLAUDE.md (Claude Code), GEMINI.md (Gemini CLI) and a Cursor stub. All four loaders point at the same sub-skill directory. A loaders-and-table-no-drift CI gate fails the build if any loader file diverges from the index.</desc>
+  <desc id="desc">skills/_index.yml is rendered by tools/render_loaders.py into four tool-specific loader files: SKILL.md (OpenCode), CLAUDE.md (Claude Code), GEMINI.md (Gemini CLI) and a Cursor stub. All four loaders point at the same sub-skill directory: a horizontal strip of nine first-class skill folders, each with SKILL.md inside, demonstrating the Anthropic Skills folder pattern. A loaders-and-table-no-drift CI gate fails the build if any loader file diverges from the index.</desc>
 
   <style>
     :root {
@@ -210,11 +210,114 @@
     <text class="mono-dim"   x="10" y="62">no native @-imports yet</text>
   </g>
 
-  <!-- ============== SUB-SKILL DIRECTORY (shared) ============== -->
+  <!-- ============== SUB-SKILL DIRECTORY  ·  folder-strip ==============
+       Replaces the prior 2-row dotted-path chip with nine first-class
+       folder glyphs. Each glyph is a small file-tray shape (tab + body)
+       in --agent stroke on --agent-fill, with the folder name centred
+       inside the body and the /SKILL.md filename printed BELOW the
+       glyph in --muted (signalling "this folder contains a SKILL.md").
+       The strip occupies the same 1040-wide slot the chip did, so the
+       four loop-arrows (x=180, 430, 770, 1020) still terminate just
+       above the strip — the architectural claim that all four loaders
+       point at the same nine folders is now VISIBLE: nine sibling
+       folders, each holding a SKILL.md (the Anthropic Skills folder
+       pattern).
+
+       Slot math: 1040 / 9 = 115.5 px per slot. Folder body 95 px wide,
+       tab 30 × 6 px. Two-line folder-name labels where the name is
+       too long for one line at 11 px mono (>12 chars). Glyph height
+       40 px (tab 6 + body 34). /SKILL.md sits in the strip's bottom
+       row, outside the body, so all 9 folders read as equal-height
+       siblings regardless of name length. Strip ends y=487 abs;
+       tagline moved to y=494 to keep ≥12 px text-vs-text clearance. -->
   <g transform="translate(80 425)">
-    <rect class="chip" x="0" y="0" width="1040" height="40" rx="3"/>
-    <text class="mono-tag" x="12" y="16">skills/{code-quality,python,typescript,react}/SKILL.md</text>
-    <text class="mono-tag" x="12" y="32">skills/{git-conventions,review-deployment,domain-template,error-log,self-extension-workflow}/SKILL.md</text>
+    <!-- container frame: a subtle outer rect so the strip reads as a
+         single grouped target (echoes the old chip's role)            -->
+    <rect class="chip" x="0" y="0" width="1040" height="62" rx="4"/>
+
+    <!-- 9 folder glyphs, each in its own 115.5 px slot.
+         Folder path: tab (30 × 6) on top-left + body (95 × 34).
+         Local-y origin of each glyph-g is 4 (4 px top margin inside
+         container). Path uses LOCAL coords: tab 0..6, body 0..40.
+         Glyph bottom at container-y = 4 + 40 = 44.
+         /SKILL.md baseline at container-y = 56 (12 px below glyph
+         bottom — well clear of the body border).                    -->
+
+    <!-- 1 · code-quality (1 line) -->
+    <g transform="translate(10 4)">
+      <path d="M 0,6 L 30,6 L 34,0 L 93,0 a2,2 0 0 1 2,2 L 95,38 a2,2 0 0 1 -2,2 L 2,40 a2,2 0 0 1 -2,-2 Z"
+            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.2"/>
+      <text class="mono-tag" x="47.5" y="26" text-anchor="middle">code-quality</text>
+    </g>
+    <text class="mono-dim" x="57.5" y="56" text-anchor="middle">/SKILL.md</text>
+
+    <!-- 2 · python (1 line) -->
+    <g transform="translate(126 4)">
+      <path d="M 0,6 L 30,6 L 34,0 L 93,0 a2,2 0 0 1 2,2 L 95,38 a2,2 0 0 1 -2,2 L 2,40 a2,2 0 0 1 -2,-2 Z"
+            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.2"/>
+      <text class="mono-tag" x="47.5" y="26" text-anchor="middle">python</text>
+    </g>
+    <text class="mono-dim" x="173.5" y="56" text-anchor="middle">/SKILL.md</text>
+
+    <!-- 3 · typescript (1 line) -->
+    <g transform="translate(241 4)">
+      <path d="M 0,6 L 30,6 L 34,0 L 93,0 a2,2 0 0 1 2,2 L 95,38 a2,2 0 0 1 -2,2 L 2,40 a2,2 0 0 1 -2,-2 Z"
+            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.2"/>
+      <text class="mono-tag" x="47.5" y="26" text-anchor="middle">typescript</text>
+    </g>
+    <text class="mono-dim" x="288.5" y="56" text-anchor="middle">/SKILL.md</text>
+
+    <!-- 4 · react (1 line) -->
+    <g transform="translate(357 4)">
+      <path d="M 0,6 L 30,6 L 34,0 L 93,0 a2,2 0 0 1 2,2 L 95,38 a2,2 0 0 1 -2,2 L 2,40 a2,2 0 0 1 -2,-2 Z"
+            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.2"/>
+      <text class="mono-tag" x="47.5" y="26" text-anchor="middle">react</text>
+    </g>
+    <text class="mono-dim" x="404.5" y="56" text-anchor="middle">/SKILL.md</text>
+
+    <!-- 5 · git-conventions (2 lines) -->
+    <g transform="translate(472 4)">
+      <path d="M 0,6 L 30,6 L 34,0 L 93,0 a2,2 0 0 1 2,2 L 95,38 a2,2 0 0 1 -2,2 L 2,40 a2,2 0 0 1 -2,-2 Z"
+            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.2"/>
+      <text class="mono-tag" x="47.5" y="22" text-anchor="middle">git-</text>
+      <text class="mono-tag" x="47.5" y="33" text-anchor="middle">conventions</text>
+    </g>
+    <text class="mono-dim" x="519.5" y="56" text-anchor="middle">/SKILL.md</text>
+
+    <!-- 6 · review-deployment (2 lines) -->
+    <g transform="translate(588 4)">
+      <path d="M 0,6 L 30,6 L 34,0 L 93,0 a2,2 0 0 1 2,2 L 95,38 a2,2 0 0 1 -2,2 L 2,40 a2,2 0 0 1 -2,-2 Z"
+            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.2"/>
+      <text class="mono-tag" x="47.5" y="22" text-anchor="middle">review-</text>
+      <text class="mono-tag" x="47.5" y="33" text-anchor="middle">deployment</text>
+    </g>
+    <text class="mono-dim" x="635.5" y="56" text-anchor="middle">/SKILL.md</text>
+
+    <!-- 7 · domain-template (2 lines) -->
+    <g transform="translate(703 4)">
+      <path d="M 0,6 L 30,6 L 34,0 L 93,0 a2,2 0 0 1 2,2 L 95,38 a2,2 0 0 1 -2,2 L 2,40 a2,2 0 0 1 -2,-2 Z"
+            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.2"/>
+      <text class="mono-tag" x="47.5" y="22" text-anchor="middle">domain-</text>
+      <text class="mono-tag" x="47.5" y="33" text-anchor="middle">template</text>
+    </g>
+    <text class="mono-dim" x="750.5" y="56" text-anchor="middle">/SKILL.md</text>
+
+    <!-- 8 · error-log (1 line) -->
+    <g transform="translate(819 4)">
+      <path d="M 0,6 L 30,6 L 34,0 L 93,0 a2,2 0 0 1 2,2 L 95,38 a2,2 0 0 1 -2,2 L 2,40 a2,2 0 0 1 -2,-2 Z"
+            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.2"/>
+      <text class="mono-tag" x="47.5" y="26" text-anchor="middle">error-log</text>
+    </g>
+    <text class="mono-dim" x="866.5" y="56" text-anchor="middle">/SKILL.md</text>
+
+    <!-- 9 · self-extension-workflow (2 lines) -->
+    <g transform="translate(934 4)">
+      <path d="M 0,6 L 30,6 L 34,0 L 93,0 a2,2 0 0 1 2,2 L 95,38 a2,2 0 0 1 -2,2 L 2,40 a2,2 0 0 1 -2,-2 Z"
+            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.2"/>
+      <text class="mono-tag" x="47.5" y="22" text-anchor="middle">self-extension-</text>
+      <text class="mono-tag" x="47.5" y="33" text-anchor="middle">workflow</text>
+    </g>
+    <text class="mono-dim" x="981.5" y="56" text-anchor="middle">/SKILL.md</text>
   </g>
 
   <!-- "same sub-skill" loop arrows from each loader to the directory -->
@@ -262,6 +365,6 @@
   <path d="M 710 270 L 1140 270 L 1140 240 L 1160 240" class="arrow" stroke="var(--ci)" fill="none" marker-end="url(#a-ci)"/>
 
   <!-- ============== TAGLINE ============== -->
-  <text class="tagline" x="1256" y="488" text-anchor="end">edit the index, regenerate, commit  ·  drift fails CI</text>
-  <text class="mono-dim" x="24"   y="488">skill-everything  /  docs/architecture.svg</text>
+  <text class="tagline" x="1256" y="494" text-anchor="end">edit the index, regenerate, commit  ·  drift fails CI</text>
+  <text class="mono-dim" x="24"   y="494">skill-everything  /  docs/architecture.svg</text>
 </svg>

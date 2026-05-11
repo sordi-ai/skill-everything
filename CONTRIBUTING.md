@@ -109,8 +109,10 @@ For everything that is not a rule — fixes to `tools/`, docs, CI — the normal
 Subject in the imperative. ≤ 72 characters. Body explains *why*, not *what*.
 
 ```text
-learn(errors): ERR-2026-014 — never inherit from concrete React components
+learn(errors): ERR-YYYY-NNN — never inherit from concrete React components
 ```
+
+(Replace `ERR-YYYY-NNN` with the next sequential error ID from `skills/error-log/SKILL.md`.)
 
 ---
 
@@ -138,13 +140,13 @@ When a new rule lands, please add a re-mistake test to [`tests/eval/tasks/`](./t
 *Five steps before your first push, if you become one of us.*
 
 > [!WARNING]
-> **HUMAN GATE · employer compliance side-letter** — Compliance side-letter required before first push. If your day-job employer has a side-project policy (most large tech employers, including BMW and Google), file the personal-open-source disclosure first. We will not ship a PR signed by your work account.
+> **CODEOWNERS gate · employer compliance disclosure** — Compliance disclosure required before first push. If your employer has a personal-open-source disclosure policy, file it first. We will not ship a PR signed by your work account.
 
-1. **Compliance check.** File a personal-open-source disclosure with your employer. The `DISCLAIMER.md` is the public-facing doc; the side-letter is the private one.
-2. **Use a personal GitHub account** with your real name. We do not ship pseudonymous co-maintainer commits — `git shortlog -sne` is the first thing skeptical readers check.
+1. **Compliance check.** File a personal-open-source disclosure with your employer. The `DISCLAIMER.md` is the public-facing doc; the disclosure is the private one.
+2. **Use a personal GitHub account** with your real name. Pseudonymous co-maintainer commits are not accepted — `git shortlog -sne` is the first thing skeptical readers check.
 3. **Add yourself to `.github/CODEOWNERS`** under the `@sordi-ai/maintainers` team and confirm with the existing maintainer.
-4. **Read the threat model** in [SECURITY.md](./SECURITY.md). The self-extension workflow is the trust boundary. You are the human in "the human reviews the PR".
-5. **Workload expectation.** About 5 h / week. Split: code + eval (existing maintainer) and sub-skill content + issue triage (new co-maintainer). Do not sprint at the same time as the other maintainer — merge conflicts in `skills/error-log/` are nobody's friend.
+4. **Read the threat model** in [SECURITY.md](./SECURITY.md). The self-extension workflow runs against `.github/CODEOWNERS`. You are responsible for the CODEOWNERS approval gate on the paths assigned to your handle.
+5. **Workload expectation.** Split: code + eval (existing maintainer) and sub-skill content + issue triage (new co-maintainer). Coordinate on `skills/error-log/` so concurrent edits don't conflict.
 
 ---
 

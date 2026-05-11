@@ -100,7 +100,7 @@
     <rect class="node ci"    x="100" y="0" width="14" height="10" rx="2"/>
     <text class="legend-t"   x="120" y="9">CI / automated</text>
     <rect class="node human" x="220" y="0" width="14" height="10" rx="2"/>
-    <text class="legend-t"   x="240" y="9">human-in-the-loop</text>
+    <text class="legend-t"   x="240" y="9">CODEOWNERS gated</text>
     <rect class="node git"   x="360" y="0" width="14" height="10" rx="2"/>
     <text class="legend-t"   x="380" y="9">main / substrate</text>
   </g>
@@ -126,7 +126,7 @@
 
   <text class="lane-label" x="30"  y="85">AGENT  ·  branch + commit + push + PR  ·  artefacts beneath</text>
   <text class="lane-label" x="30"  y="360">CI&#8201;/&#8201;AUTOMATED CHECKS  ·  parallel</text>
-  <text class="lane-label" x="30"  y="508">HUMAN-IN-THE-LOOP  ·  CODEOWNERS approval</text>
+  <text class="lane-label" x="30"  y="508">CODEOWNERS GATED  ·  approval required</text>
   <text class="lane-label" x="30"  y="595">REPO SUBSTRATE  ·  refs/heads/main</text>
 
   <!-- ============== AGENT LANE: 4 sub-steps + 2 artefact chips ============== -->

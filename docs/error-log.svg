@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
   <title id="title">Error log — the first three mistakes the system caught and turned into rules</title>
-  <desc id="desc">Three real error-log entries committed during dogfooding. ERR-2026-001: TypeScript strictNullChecks disabled to make a demo green; derived rule: never disable strict checks for convenience. ERR-2026-007: a refactor missed four imports after a rename; derived rule: after any rename, run a project-wide grep before claiming done. This entry is highlighted because its count jumped from 1 to 2 on a second occurrence — the system caught the repeat automatically. ERR-2026-012: a database migration ran after the backend deploy and broke prod; derived rule: always order migrations before backend deploy in domain runbooks. Bottom strap: the system catches repeats. Quality compounds, automatically.</desc>
+  <desc id="desc">Three real error-log entries committed during maintainer use. ERR-2026-001: TypeScript strictNullChecks disabled to make a demo green; derived rule: never disable strict checks for convenience. ERR-2026-007: a refactor missed four imports after a rename; derived rule: after any rename, run a project-wide grep before claiming done. This entry is highlighted because its count jumped from 1 to 2 on a second occurrence — the system caught the repeat automatically. ERR-2026-012: a database migration ran after the backend deploy and broke prod; derived rule: always order migrations before backend deploy in domain runbooks. Bottom strap: the system catches repeats. Quality compounds, automatically.</desc>
 
   <style>
     :root {
@@ -107,7 +107,7 @@
   <rect class="frame" x="0.5" y="0.5" width="1199" height="719" rx="6"/>
 
   <!-- ============== HEADER ============== -->
-  <text class="lane-label" x="24" y="28">THE FIRST THREE COMMITTED  ·  ERROR LOG  ·  DOGFOODING</text>
+  <text class="lane-label" x="24" y="28">THE FIRST THREE COMMITTED  ·  ERROR LOG  ·  MAINTAINER USE</text>
   <text class="hero"       x="24" y="64">Real mistakes. Real commits. Compounding rules.</text>
   <text class="hero-sub"   x="24" y="86">Every entry links a real commit SHA. The system catches repeats — automatically.</text>
 
@@ -230,7 +230,7 @@
   </text>
 
   <!-- ============== FOOTER ============== -->
-  <text class="footer" x="24"   y="708">3 entries committed during dogfooding  ·  ERR-2026-007 caught its own repeat (1 → 2)  ·  see skills/error-log/SKILL.md</text>
+  <text class="footer" x="24"   y="708">3 entries committed during maintainer use  ·  ERR-2026-007 caught its own repeat (1 → 2)  ·  see skills/error-log/SKILL.md</text>
   <text class="footer" x="1176" y="708" text-anchor="end">skill-everything  /  docs/error-log.svg</text>
 
 </svg>

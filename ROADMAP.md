@@ -24,7 +24,7 @@
 
 ## Known follow-ups
 
-- **Architecture diagram holistic upgrade (`v0.85+`).** Bo (senior diagrammatic designer) proposed a folder-strip visualisation at the bottom of `docs/architecture.svg` to make "composable sub-skills" visible rather than asserted (a row of nine mini-folder glyphs corresponding to the nine skills under `skills/<name>/SKILL.md`). Anya's minimal-diff string-only update has shipped; Bo's holistic upgrade needs its own Playwright iteration loop with maintainer pixel review before merging.
+- **Architecture diagram holistic upgrade (`v0.85+`).** The path-string sync for `docs/architecture.svg` has shipped. A follow-up design pass proposes replacing the flat "SUB-SKILL DIRECTORY" chip with a horizontal strip of nine mini-folder glyphs (one per skill under `skills/<name>/SKILL.md`) — making the Anthropic-Skill folder pattern visible rather than asserted. The upgrade ships when the iteration loop produces a clean light + dark rendering at the maintainer pixel-review bar.
 
 ## What's not on the 2026 roadmap
 

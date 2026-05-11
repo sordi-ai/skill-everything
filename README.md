@@ -52,7 +52,7 @@
 ---
 
 ## THE PITCH
-*Selbstlernend · Token sparen · Skills to GO · Qualität die compoundet.*
+*Self-learning · Save tokens · Skills to GO · Quality compounds.*
 
 **Self-learning skills for AI agents.** **Beyond fine-tuning, beyond vector DBs, beyond black-box memory.** Your domain knowledge — local, in plain Markdown, versioned in Git, hot-loaded as composable sub-skills.
 
@@ -102,9 +102,9 @@ A CI no-drift job runs `git diff --exit-code` against the regenerated loaders on
 ---
 
 ## TOKEN MATH
-*Same task. Same agent. **84% fewer input tokens.** Add a skill, pay nothing extra.*
+*Same task. Same agent. **Up to 84 % fewer input tokens.** Add a skill, pay nothing extra.*
 
-![Token comparison — monolithic ships the whole rulebook every turn (10,000+ tokens), skill-everything ships a router plus one sub-skill (~1,600 tokens), 84% less per message](./docs/token-comparison.svg)
+![Token comparison — monolithic ships the whole rulebook every turn (10,000+ tokens), skill-everything ships a router plus one sub-skill (~1,600 tokens), up to 84 % less per message in runtimes with selective sub-skill loading](./docs/token-comparison.svg)
 
 **The single-message punch:** monolithic prompts load `.cursorrules` *every turn, all of it*. With selective sub-skill loading (Claude Code, OpenCode), skill-everything loads the router (~800 tokens) plus exactly one sub-skill on demand (~800 tokens) — **84 % fewer input tokens per message**. On Cursor & Gemini CLI the router itself is the saving today (see [Per-tool token reality](#per-tool-token-reality)).
 
@@ -112,13 +112,13 @@ A CI no-drift job runs `git diff --exit-code` against the regenerated loaders on
 
 **The scaling promise:** monolithic prompts grow linearly with your skill library — every user, every message, every skill. Skill-everything stays flat as the library grows from 1 to 50 skills.
 
-![Cost per 1,000 messages — five setups, one winner: monolithic uncached $75 (painful baseline), monolithic with caching $48, skill-everything 2-3 sub-skills $55, skill-everything single sub-skill $50, skill-everything with caching $47 (winner). $28 saved per 1,000 messages, 37% cheaper than the painful baseline.](./docs/cost-comparison.svg)
+![Cost per 1,000 messages — five setups, one winner: monolithic uncached $75 (baseline), monolithic with caching $48, skill-everything 2-3 sub-skills $55, skill-everything single sub-skill $50, skill-everything with caching $47 (winner). $28 saved per 1,000 messages, 37% cheaper than uncached monolithic.](./docs/cost-comparison.svg)
 
-**The bottom line:** **`$47` with caching beats the `$75` painful baseline** — that's **`$28` saved per 1,000 messages**, **37 %** cheaper than uncached monolithic. And the architectural win **compounds**: at 30, 90, 200 skills, monolithic explodes — skill-everything stays flat. **Caching helps both. Only one of the two stays flat as your library grows.**
+**The bottom line:** **`$47` with caching beats the `$75` uncached-monolithic baseline** — that's **`$28` saved per 1,000 messages**, **37 %** cheaper. And the architectural win **compounds**: at 30, 90, 200 skills, monolithic explodes — skill-everything stays flat. **Caching helps both. Only one of the two stays flat as your library grows.**
 
-![Multi-LLM token-cost comparison across four cloud providers — Sonnet 4.5 ($75 → $47, $28 saved, 37% cheaper), Opus 4.7 ($375 → $226, $149 saved, 40% cheaper), Kimi 2.6 ($11 → $6.40, $4.60 saved, 42% cheaper), GPT-4o ($55 → $33, $22 saved, 40% cheaper). The 84% input-token reduction is constant across all four providers — same architecture, same ratio, every provider. Total: $203.60 saved per 1,000 messages across the 4-provider mix.](./docs/multi-llm-cost.svg)
+![Multi-LLM token-cost comparison across four cloud providers — Sonnet 4.5 ($75 → $47, $28 saved, 37% cheaper), Opus 4.7 ($375 → $226, $149 saved, 40% cheaper), Kimi 2.6 ($11 → $6.40, $4.60 saved, 42% cheaper), GPT-4o ($55 → $33, $22 saved, 40% cheaper). The up-to-84% input-token reduction is constant across all four providers in runtimes with selective sub-skill loading. Total: $203.60 saved per 1,000 messages across the 4-provider mix.](./docs/multi-llm-cost.svg)
 
-**Same architecture, every provider.** The 84 % input-token reduction is **architectural**, not pricing-conditional — switch from Sonnet to Opus, Kimi, or GPT-4o, the ratio stays. Per-message dollar amount scales with the provider tier; the proportional saving doesn't.
+**Same architecture, every provider.** The up-to-84 % input-token reduction is **architectural**, not pricing-conditional — switch from Sonnet to Opus, Kimi, or GPT-4o, the ratio stays where the runtime loads sub-skills selectively. Per-message dollar amount scales with the provider tier; the proportional saving doesn't.
 
 ### Per-tool token reality
 *The 84 % is architectural — it requires selective sub-skill loading. Here's what each runtime actually does today.*
@@ -198,7 +198,7 @@ learn(errors): ERR-2026-012 — order migrations before backend deploys
 
 **Take your skills anywhere.** Your self-learning sub-skills live once in [`skills/_index.yml`](./skills/_index.yml) and travel with you across four agent runtimes — `Claude Code`, `Cursor`, `Gemini CLI`, `OpenCode` — with **zero re-authoring**.
 
-[`tools/render_loaders.py`](./tools/render_loaders.py) deterministically generates `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, and `SKILL.md` from the same index. Switch from a Claude Code session to Gemini CLI mid-project and your **composable sub-skills, your error log, your self-extension workflow are already loaded** — identical, token-capped, schema-validated. **No sync layer. No API lock-in. No proprietary memory store.**
+[`tools/render_loaders.py`](./tools/render_loaders.py) deterministically generates `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, and `SKILL.md` from the same index. Switch from a Claude Code session to Gemini CLI mid-project and your **composable sub-skills, your error log, your self-extension workflow are already loaded** — identical, token-capped, schema-validated. **Plain Markdown sync. Open formats. Local-first memory.**
 
 This is portable agent memory done the boring way: plain Markdown, git-versioned, CI-gated. **Beyond fine-tuning, beyond vector DBs, beyond black-box memory.** **One source. Four runtimes. Memory follows you.**
 
@@ -214,7 +214,7 @@ Skill-everything's router pattern is **custom-made for self-hosted and quantized
 - **8k context fits.** A 10,000-token monolithic `.cursorrules` doesn't even load on a Llama 3 8B. Skill-everything's ~1,600-token footprint runs comfortably on **8k, 16k, or 32k** windows — with room left for the actual conversation, tool calls, and reasoning.
 - **No caching tax.** Cloud monolithic prompts lean on Anthropic prompt-caching to stay competitive. **Local models have no caching layer** — every token is paid in compute time and VRAM pressure. Skill-everything's flat per-message footprint translates directly into **faster inference, lower thermal pressure, fewer OOMs**.
 - **Sharper needle-in-haystack.** Smaller models lose accuracy fast as context grows. Loading exactly the matched sub-skill puts the **relevant rule on top, where the model can actually use it** — the difference between a hallucinated convention and a clean call.
-- **Self-hosted by design.** Plain Markdown, no SaaS, no API key, no vector DB. Drops into any local runtime — **your domain knowledge stays on your hardware, your agents stay private**.
+- **Self-hosted by design.** Plain Markdown, local-first, version-controlled. Drops into any local runtime — **your domain knowledge stays on your hardware, your agents stay private**.
 
 ![Self-hosted & smaller models — context-window comparison shows monolithic 10,000+ tokens overflowing the 8k Llama 3 8B window, while skill-everything's ~1,600-token footprint fits comfortably with ~6,400 tokens of headroom for conversation, tool calls, and reasoning. Plus four facts (8k fits, no caching tax, sharper needle, self-hosted) and a fan-out from skill-everything to five local runtimes: Ollama, llama.cpp, vLLM, LM Studio, MLX. The smaller your model, the bigger the win.](./docs/self-hosted-models.svg)
 
@@ -379,7 +379,7 @@ Each sub-skill has a [skill-manifest frontmatter block](./schemas/skill-manifest
 
 | Version | Status | What |
 |---|:---:|---|
-| **`v0.75` — Foundation** | 🟡 **PREVIEW** | `lint-rules` CI · JSON-Schema validator · XSS hardening · single-source-of-truth loader sync · `learn(errors):` PR convention · CODEOWNERS + branch protection · 9 sub-skills shipped · 7 production diagrams · adversarial test suite (15/20 caught) · per-skill token budget hard-checked · MUST/SHOULD/AVOID rule classification · **eval framework MVP wired (dry-run end-to-end, schema-validated, CI-gated, n=50/100 methodology contract published)**. **You're using it now.** |
+| **`v0.75` — Foundation** | 🟡 **PREVIEW** | `lint-rules` CI · JSON-Schema validator · XSS hardening · single-source-of-truth loader sync · `learn(errors):` PR convention · CODEOWNERS + branch protection · 9 sub-skills shipped · 13 production diagrams · adversarial test suite (15/20 caught) · per-skill token budget hard-checked · MUST/SHOULD/AVOID rule classification · **eval framework MVP wired** (dry-run end-to-end, schema-validated, CI-gated; [methodology contract](./tests/eval/README.md) at n=50/100, [reproduction runbook](./docs/eval-reproduction.md), [harness](./tools/eval_runner.py) + [orchestrator](./tools/run_eval.py)). |
 | **`v1.0` — Eval that earns the claim** | 🟡 In development | Real-provider integration (Anthropic + OpenAI + Ollama) for the eval harness · `tests/eval/results/baseline.jsonl` populated under the methodology contract (n ≥ 100, 5 dated-SKU models, T ∈ {0.0, 0.7}) · macro-Re-Mistake-Rate ≤ 0.40 with bootstrap 95 % CI upper ≤ 0.55 · published per-cell numbers in the README. The first stable release ships only after the claim is measured, not before. |
 | **`v1.1` — Community ecosystem** | 🔵 Planned | First external sub-skills merged (Go, Rust, Java, Swift) · sub-skill PR template institutionalised · public skill catalogue with usage stats · `learn(errors):` going wild on a public commit graph. |
 | **`v2.0` — Marketplace + trust layer** | ⚪ Vision | Signed skills with reputation graph · sandboxed execution · semantic versioning · license management · cross-repo skill imports. The skill library becomes a public dataset others ship on top of. |
