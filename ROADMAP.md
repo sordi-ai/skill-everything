@@ -20,7 +20,7 @@
 
 ## How `v0.75` was shipped
 
-`v0.75` is the result of a tight pre-launch sprint that produced the foundation: validators, the `learn(errors):` self-extension loop, the cross-tool loader generator, and the five production diagrams in [`docs/`](./docs/). Every commit is in the public history; every architectural decision lives in the relevant `skills/` sub-skill. There is nothing hidden — `git clone` is the entire setup and the entire story. The `v1.0` stable target is held back deliberately until the eval framework provides measured re-mistake numbers — claim and measurement ship together or not at all.
+`v0.75` is the result of a tight pre-launch sprint that produced the foundation: validators, the `learn(errors):` self-extension loop, the cross-tool loader generator, and the 13 production diagrams in [`docs/`](./docs/). Every commit is in the public history; every architectural decision lives in the relevant `skills/` sub-skill. There is nothing hidden — `git clone` is the entire setup and the entire story. The `v1.0` stable target is held back deliberately until the eval framework provides measured re-mistake numbers — claim and measurement ship together or not at all.
 
 ## Known follow-ups
 

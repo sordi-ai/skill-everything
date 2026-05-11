@@ -198,6 +198,8 @@ def main(argv: list[str] | None = None) -> int:
             )
 
     n_records = 0
+    n_ok = 0
+    n_provider_error = 0
     total_cost = 0.0
     t0 = time.monotonic()
     with out_path.open("w", encoding="utf-8") as f:
@@ -227,6 +229,10 @@ def main(argv: list[str] | None = None) -> int:
                             f.write(json.dumps(dataclasses.asdict(r), ensure_ascii=False) + "\n")
                             n_records += 1
                             total_cost += r.cost_usd
+                            if r.status == "ok":
+                                n_ok += 1
+                            elif r.status == "provider_error":
+                                n_provider_error += 1
                             if not dry_run and total_cost > args.max_usd:
                                 print(
                                     f"budget exhausted at ${total_cost:.2f} > "
@@ -242,8 +248,33 @@ def main(argv: list[str] | None = None) -> int:
     print(
         f"wrote {n_records} records to {display_path} "
         f"in {elapsed:.1f}s (total cost ${total_cost:.4f}, "
-        f"profile={args.profile}, dry_run={dry_run})"
+        f"profile={args.profile}, dry_run={dry_run}, "
+        f"ok={n_ok}, provider_error={n_provider_error})"
     )
+
+    # Real-provider validation: a run that produced zero successful records
+    # is a misconfigured setup (no API keys, no SDK, wrong endpoint), not a
+    # measurement. Fail hard so the caller can't accidentally promote an
+    # all-error JSONL to baseline.jsonl. Below 50% ok is a soft warning —
+    # the methodology layer decides per-cell whether the cell counts.
+    if not dry_run and n_records > 0:
+        ok_ratio = n_ok / n_records
+        if ok_ratio == 0.0:
+            print(
+                f"\nFAIL: real-provider run produced 0 of {n_records} successful records "
+                f"(all provider_error). This is a misconfigured run, not a measurement. "
+                f"Check API keys, SDK install, and the eval.yml secrets.",
+                file=sys.stderr,
+            )
+            return 4
+        if ok_ratio < 0.5:
+            print(
+                f"\nWARNING: only {n_ok} of {n_records} records succeeded "
+                f"({ok_ratio:.0%}). The methodology layer will down-rank "
+                f"cells with too many errors. Investigate provider failures "
+                f"before promoting this JSONL to baseline.",
+                file=sys.stderr,
+            )
     return 0
 
 

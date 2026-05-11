@@ -38,9 +38,9 @@
 
 ### *Your agent forgets everything tomorrow.*
 
-### **What if it didn't?**
+### **What if every accepted fix became a Git-versioned rule the next session reads?**
 
-### *Now it doesn't.* **Self-learning, by design.**
+### *That's the workflow.* **Self-extending skills, reviewed PR by PR.**
 
 </div>
 
@@ -74,7 +74,7 @@ git clone https://github.com/sordi-ai/skill-everything.git
 ---
 
 ## WHY IT WINS
-*Six reasons skill-everything is the new standard for agent memory.*
+*Six reasons skill-everything is a Git-native pattern for agent memory.*
 
 - **Cross-tool by design.** One source, four agent runtimes — `Claude Code`, `Cursor`, `Gemini CLI`, `OpenCode`. Generated from a single [`skills/_index.yml`](./skills/_index.yml), drift-checked in CI on every PR. **Same domain knowledge, four runtimes, zero re-authoring.**
 - **Beyond fine-tuning.** Domain knowledge compounds in plain Markdown — `git diff`-able, screenshot-shareable, instantly auditable. Your agent's brain lives in [`skills/`](./skills/), **versioned in Git, not in opaque weights**.

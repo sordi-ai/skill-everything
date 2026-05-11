@@ -2,9 +2,13 @@
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
 # Rules and security baseline must be reviewed by maintainers
+# Default skills/** rule must come first so later, more-specific rules
+# narrow it down rather than fall through (GitHub CODEOWNERS uses
+# last-match semantics — order matters).
+skills/**                                   @sordi-ai/maintainers
+skills/**/SKILL.md                          @sordi-ai/maintainers
 skills/error-log/                           @sordi-ai/maintainers
 skills/self-extension-workflow/             @sordi-ai/maintainers
-skills/code-quality/SKILL.md                @sordi-ai/maintainers
 skills/_index.yml                           @sordi-ai/maintainers
 
 # Tooling and automation
