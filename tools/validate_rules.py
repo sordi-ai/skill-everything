@@ -61,25 +61,25 @@ SKILL_SCHEMA = ROOT / "schemas" / "skill-manifest.json"
 EXCEPTIONS = ROOT / "skills" / "error-log" / "exceptions.yml"
 
 ALLOWED_VERBS = {
-    "Always", "Never", "Before", "After",
-    "Prefer", "Avoid", "Use", "Do", "Ensure",
+    "Always",
+    "Never",
+    "Before",
+    "After",
+    "Prefer",
+    "Avoid",
+    "Use",
+    "Do",
+    "Ensure",
 }
 
 FORBIDDEN_PATTERNS = [
-    (re.compile(r"\b(curl|wget|fetch|exec|eval|os\.system|subprocess|spawn|popen)\b", re.I),
-     "shell-exec"),
-    (re.compile(r"https?://"),
-     "url-in-rule"),
-    (re.compile(r"\b(cat|less|head|tail)\s+/", re.I),
-     "fs-read"),
-    (re.compile(r"\b(rm|chmod|chown|sudo)\b", re.I),
-     "fs-mutate"),
-    (re.compile(r"~/\.(ssh|aws|gcp|kube|gnupg|config)", re.I),
-     "credentials-path"),
-    (re.compile(r"[A-Za-z0-9+/]{40,}={0,2}"),
-     "base64-blob"),
-    (re.compile(r"<\s*script", re.I),
-     "html-tag"),
+    (re.compile(r"\b(curl|wget|fetch|exec|eval|os\.system|subprocess|spawn|popen)\b", re.I), "shell-exec"),
+    (re.compile(r"https?://"), "url-in-rule"),
+    (re.compile(r"\b(cat|less|head|tail)\s+/", re.I), "fs-read"),
+    (re.compile(r"\b(rm|chmod|chown|sudo)\b", re.I), "fs-mutate"),
+    (re.compile(r"~/\.(ssh|aws|gcp|kube|gnupg|config)", re.I), "credentials-path"),
+    (re.compile(r"[A-Za-z0-9+/]{40,}={0,2}"), "base64-blob"),
+    (re.compile(r"<\s*script", re.I), "html-tag"),
 ]
 
 SKILLS_DIR = ROOT / "skills"
@@ -93,6 +93,7 @@ def _stringify_dates(obj):
     """yaml.safe_load returns datetime.date for ISO date scalars; the JSON-Schema
     expects strings with format=date. Convert them in place before validation."""
     import datetime
+
     if isinstance(obj, dict):
         return {k: _stringify_dates(v) for k, v in obj.items()}
     if isinstance(obj, list):
@@ -123,11 +124,28 @@ def _normalize_for_pattern_check(rule: str) -> str:
     text = html.unescape(text)
     # Cyrillic-to-Latin homoglyph fold, restricted to letters that visually
     # collide with ASCII identifiers used in our forbidden-pattern set.
-    homoglyph_map = str.maketrans({
-        "а": "a", "е": "e", "о": "o", "р": "p", "с": "c", "у": "y", "х": "x",
-        "А": "A", "В": "B", "Е": "E", "К": "K", "М": "M", "Н": "H", "О": "O",
-        "Р": "P", "С": "C", "Т": "T", "Х": "X",
-    })
+    homoglyph_map = str.maketrans(
+        {
+            "а": "a",
+            "е": "e",
+            "о": "o",
+            "р": "p",
+            "с": "c",
+            "у": "y",
+            "х": "x",
+            "А": "A",
+            "В": "B",
+            "Е": "E",
+            "К": "K",
+            "М": "M",
+            "Н": "H",
+            "О": "O",
+            "Р": "P",
+            "С": "C",
+            "Т": "T",
+            "Х": "X",
+        }
+    )
     return text.translate(homoglyph_map)
 
 
@@ -141,10 +159,7 @@ def lint_rule_text(rule: str, eid: str, allow_forbidden: bool) -> list[str]:
     errs: list[str] = []
     head = (rule.strip().split() or [""])[0]
     if head not in ALLOWED_VERBS:
-        errs.append(
-            f"{eid}: new_rule must start with one of "
-            f"{sorted(ALLOWED_VERBS)} (got {head!r})"
-        )
+        errs.append(f"{eid}: new_rule must start with one of {sorted(ALLOWED_VERBS)} (got {head!r})")
     if not allow_forbidden:
         normalized = _normalize_for_pattern_check(rule)
         for pattern, tag in FORBIDDEN_PATTERNS:
@@ -236,8 +251,7 @@ def validate_sub_skills() -> list[str]:
         actual_name = fm.get("name") if isinstance(fm, dict) else None
         if actual_name != expected_name:
             errors.append(
-                f"{rel}: frontmatter name {actual_name!r} does not match "
-                f"directory name {expected_name!r}"
+                f"{rel}: frontmatter name {actual_name!r} does not match directory name {expected_name!r}"
             )
         fm_for_schema = _stringify_dates(fm)
         for v in validator.iter_errors(fm_for_schema):
@@ -248,7 +262,8 @@ def validate_sub_skills() -> list[str]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[1])
     parser.add_argument(
-        "--soft", action="store_true",
+        "--soft",
+        action="store_true",
         help="print errors but exit 0 (useful in pre-merge advisory mode)",
     )
     args = parser.parse_args()

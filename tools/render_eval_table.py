@@ -100,16 +100,11 @@ def update(check: bool = False) -> int:
         print("no eval-table markers in README; nothing to render.")
         return 0
     new_block = build_block()
-    new_text = (
-        text.split(START)[0]
-        + new_block
-        + text.split(END, 1)[1]
-    )
+    new_text = text.split(START)[0] + new_block + text.split(END, 1)[1]
     if check:
         if new_text != text:
             print(
-                "render_eval_table.py: drift detected. Run "
-                "`python tools/render_eval_table.py` and commit.",
+                "render_eval_table.py: drift detected. Run `python tools/render_eval_table.py` and commit.",
                 file=sys.stderr,
             )
             return 1
@@ -121,8 +116,9 @@ def update(check: bool = False) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[1])
-    parser.add_argument("--check", action="store_true",
-                        help="fail with exit 1 if README would change (CI use)")
+    parser.add_argument(
+        "--check", action="store_true", help="fail with exit 1 if README would change (CI use)"
+    )
     args = parser.parse_args()
     return update(check=args.check)
 

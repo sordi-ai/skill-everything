@@ -91,11 +91,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("baseline", type=Path, help="The curated baseline JSONL.")
     parser.add_argument("rerun", type=Path, help="The reproduction JSONL.")
     parser.add_argument(
-        "--tolerance", type=float, default=0.10,
+        "--tolerance",
+        type=float,
+        default=0.10,
         help="Maximum absolute Re-Mistake-Rate divergence per cell (default 0.10).",
     )
     parser.add_argument(
-        "--min-n", type=int, default=30,
+        "--min-n",
+        type=int,
+        default=30,
         help="Minimum sample count per cell to count toward comparison (default 30).",
     )
     args = parser.parse_args(argv)
@@ -111,9 +115,7 @@ def main(argv: list[str] | None = None) -> int:
     rerun = _aggregate(args.rerun)
 
     # Walk every (task, model, temp) triple that appears in the baseline.
-    base_triples: set[tuple[str, str, float]] = {
-        (t, m, temp) for (t, m, temp, _state) in base
-    }
+    base_triples: set[tuple[str, str, float]] = {(t, m, temp) for (t, m, temp, _state) in base}
 
     matched: list[tuple[str, str, float, float, float, float, int, int]] = []
     diverging: list[tuple[str, str, float, float, float, float, int, int]] = []

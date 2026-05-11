@@ -31,6 +31,7 @@ import yaml
 
 try:
     import tiktoken
+
     _ENC = tiktoken.get_encoding("cl100k_base")
 except ImportError:
     _ENC = None
@@ -51,7 +52,9 @@ def count_tokens(text: str) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[1])
     parser.add_argument(
-        "--tolerance", type=int, default=0,
+        "--tolerance",
+        type=int,
+        default=0,
         help="Allow actual count to exceed tokens_target by N tokens (default 0).",
     )
     args = parser.parse_args()
@@ -104,16 +107,17 @@ def main() -> int:
             mark = " " if actual <= target + args.tolerance else " *"
             print(f"{rel:<{col1}}  {actual:>6}  {target:>6}{mark}")
         if _ENC is None:
-            print("\n  Note: tiktoken not installed; using chars/3 fallback. "
-                  "Install `tiktoken>=0.7` for accurate numbers.")
+            print(
+                "\n  Note: tiktoken not installed; using chars/3 fallback. "
+                "Install `tiktoken>=0.7` for accurate numbers."
+            )
 
     if failures:
         print("", file=sys.stderr)
         for f in failures:
             print(f, file=sys.stderr)
         print(
-            f"\n{len(failures)} skill(s) over budget "
-            f"(tolerance {args.tolerance})",
+            f"\n{len(failures)} skill(s) over budget (tolerance {args.tolerance})",
             file=sys.stderr,
         )
         return 1

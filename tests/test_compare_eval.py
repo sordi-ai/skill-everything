@@ -41,8 +41,10 @@ def _make_record(
         "prompt_canon_hash": "a" * 64,
         "prompt_bytes_sha256": "b" * 64,
         "response_text": "x",
-        "tokens_in": 1, "tokens_out": 1,
-        "cost_usd": 0.0, "cost_pricebook_version": "v",
+        "tokens_in": 1,
+        "tokens_out": 1,
+        "cost_usd": 0.0,
+        "cost_pricebook_version": "v",
         "latency_ms": 1,
         "criterion_type": "regex",
         "criterion_pass": criterion_pass,
@@ -57,9 +59,9 @@ def _write_jsonl(path: Path, records: list[dict]) -> None:
             f.write(json.dumps(rec) + "\n")
 
 
-def _make_cell(task: str, sku: str, temp: float,
-               with_pass: int, with_fail: int,
-               without_pass: int, without_fail: int) -> list[dict]:
+def _make_cell(
+    task: str, sku: str, temp: float, with_pass: int, with_fail: int, without_pass: int, without_fail: int
+) -> list[dict]:
     """Helper: build a (task, sku, temp) cell with explicit pass/fail counts."""
     out: list[dict] = []
     for i in range(with_pass):
@@ -77,9 +79,9 @@ def test_clean_reproduction_exits_zero(tmp_path: Path) -> None:
     """Baseline RMR == rerun RMR, so all cells match the tolerance trivially."""
     # Cell: with_rule 70% pass (mistake 30%) / without_rule 30% pass (mistake 70%)
     # RMR = 0.30 / 0.70 = 0.428...
-    base_records = _make_cell("01-task", "model-a-1", 0.0,
-                              with_pass=70, with_fail=30,
-                              without_pass=30, without_fail=70)
+    base_records = _make_cell(
+        "01-task", "model-a-1", 0.0, with_pass=70, with_fail=30, without_pass=30, without_fail=70
+    )
     rerun_records = list(base_records)  # identical
     base = tmp_path / "base.jsonl"
     rerun = tmp_path / "rerun.jsonl"
@@ -92,14 +94,14 @@ def test_clean_reproduction_exits_zero(tmp_path: Path) -> None:
 def test_diverging_reproduction_exits_one(tmp_path: Path) -> None:
     """Rerun RMR drifts beyond tolerance — exit code 1."""
     # Baseline: RMR ≈ 0.30/0.70 = 0.428
-    base_records = _make_cell("01-task", "model-a-1", 0.0,
-                              with_pass=70, with_fail=30,
-                              without_pass=30, without_fail=70)
+    base_records = _make_cell(
+        "01-task", "model-a-1", 0.0, with_pass=70, with_fail=30, without_pass=30, without_fail=70
+    )
     # Rerun: with_rule mistake jumps to 60%, without_rule unchanged
     # RMR ≈ 0.60/0.70 = 0.857  -> Δ = 0.43 > 0.10
-    rerun_records = _make_cell("01-task", "model-a-1", 0.0,
-                               with_pass=40, with_fail=60,
-                               without_pass=30, without_fail=70)
+    rerun_records = _make_cell(
+        "01-task", "model-a-1", 0.0, with_pass=40, with_fail=60, without_pass=30, without_fail=70
+    )
     base = tmp_path / "base.jsonl"
     rerun = tmp_path / "rerun.jsonl"
     _write_jsonl(base, base_records)
@@ -110,9 +112,9 @@ def test_diverging_reproduction_exits_one(tmp_path: Path) -> None:
 
 def test_low_n_cells_are_skipped(tmp_path: Path) -> None:
     """Cells below --min-n are skipped, not failed."""
-    base_records = _make_cell("01-task", "model-a-1", 0.0,
-                              with_pass=5, with_fail=5,
-                              without_pass=5, without_fail=5)  # n=10 < 30
+    base_records = _make_cell(
+        "01-task", "model-a-1", 0.0, with_pass=5, with_fail=5, without_pass=5, without_fail=5
+    )  # n=10 < 30
     rerun_records = list(base_records)
     base = tmp_path / "base.jsonl"
     rerun = tmp_path / "rerun.jsonl"
@@ -124,8 +126,7 @@ def test_low_n_cells_are_skipped(tmp_path: Path) -> None:
 
 
 def test_missing_file_exits_two(tmp_path: Path) -> None:
-    rc = compare_eval.main([str(tmp_path / "missing-base.jsonl"),
-                            str(tmp_path / "missing-rerun.jsonl")])
+    rc = compare_eval.main([str(tmp_path / "missing-base.jsonl"), str(tmp_path / "missing-rerun.jsonl")])
     assert rc == 2
 
 

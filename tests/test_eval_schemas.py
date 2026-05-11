@@ -40,9 +40,7 @@ def test_tier_3_tasks_carry_judge_rubric():
     for yml in sorted(TASKS_DIR.glob("0[1-9]-*.yml")):
         data = yaml.safe_load(yml.read_text(encoding="utf-8"))
         if data.get("tier") == 3:
-            assert data.get("judge_rubric"), (
-                f"{yml.name}: tier=3 task must carry judge_rubric"
-            )
+            assert data.get("judge_rubric"), f"{yml.name}: tier=3 task must carry judge_rubric"
             # Schema's allOf conditional enforces this too — double-check:
             errs = list(validator.iter_errors(data))
             assert errs == [], f"{yml.name}: schema errors: {errs}"

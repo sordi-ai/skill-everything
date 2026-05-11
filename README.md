@@ -10,7 +10,7 @@
 
 <sub>* in Claude Code & OpenCode (selective sub-skill loading); Cursor & Gemini CLI realise a smaller share through the compact router — see [Per-tool token reality](#per-tool-token-reality). Cost vs. 10k-token monolithic baseline at Sonnet-class pricing.</sub>
 
-### Never make the same mistake twice.
+### Turn accepted agent mistakes into reviewable, Git-versioned skills.
 
 **Self-extending skills in plain Markdown. Save tokens. Enhance quality. Ship smarter agents — across Claude Code, Cursor, Gemini CLI, and OpenCode.**
 
@@ -60,7 +60,7 @@
 
 🚀 **Skills to GO.** Same Markdown across `Claude Code`, `Cursor`, `Gemini CLI`, `OpenCode`. Switch tools — your skills come with.
 
-✨ **Quality compounds.** Every commit makes the next session smarter. Automatically.
+✨ **Quality compounds.** Every accepted PR makes the next session smarter — through reviewed commits, not silent self-learning.
 
 ```bash
 git clone https://github.com/sordi-ai/skill-everything.git
@@ -78,7 +78,7 @@ git clone https://github.com/sordi-ai/skill-everything.git
 
 - **Cross-tool by design.** One source, four agent runtimes — `Claude Code`, `Cursor`, `Gemini CLI`, `OpenCode`. Generated from a single [`skills/_index.yml`](./skills/_index.yml), drift-checked in CI on every PR. **Same domain knowledge, four runtimes, zero re-authoring.**
 - **Beyond fine-tuning.** Domain knowledge compounds in plain Markdown — `git diff`-able, screenshot-shareable, instantly auditable. Your agent's brain lives in [`skills/`](./skills/), **versioned in Git, not in opaque weights**.
-- **Self-extending memory.** Every accepted change makes the next session smarter. `git log --grep="learn("` is your agent's growth trail. **Quality compounds — commit by commit, automatically.**
+- **Self-extending memory.** Every accepted change makes the next session smarter. `git log --grep="learn("` is your agent's growth trail. **Quality compounds — commit by commit, through reviewed PRs gated by `lint-rules` + CODEOWNERS.**
 - **84 % fewer input tokens. $28 saved per 1,000 messages.** Per-skill 3k-token cap, CI-enforced by [`tools/validate_rules.py`](./tools/validate_rules.py). On Claude Code & OpenCode the router loads only the matching sub-skill; on Cursor & Gemini CLI the saving comes from the compact router pattern (full breakdown in [Per-tool token reality](#per-tool-token-reality)). **Add the 50th skill, the 200th skill — your per-message bill stays flat where the runtime supports lazy loading.**
 - **Modular by design.** Composable sub-skills, hot-loaded on demand. Domain knowledge — local, in one place, organised by trigger. **The library grows; per-message cost doesn't.**
 - **Drop-in compatible with the agent ecosystem.** `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, and `SKILL.md` are all generated from the same source. **Works with the formats your tools already read — today.**
@@ -164,7 +164,7 @@ A CI no-drift job runs `git diff --exit-code` against the regenerated loaders on
 ## HOW IT WORKS
 *Five agent steps, three CI gates, one self-extending loop. Same Markdown across four agent runtimes.*
 
-*Trigger → Analyse → Formulate → PR → Lint → Merge. **The system catches every signal the agent picks up — errors, deployment gotchas, naming conventions, domain shorthand — and turns it into a versioned, schema-validated rule that ships to all four runtimes automatically.*** *(See the self-extension-loop diagram in the hero block above.)*
+*Trigger → Analyse → Formulate → PR → Lint → Merge. **The system captures every signal the agent picks up — errors, deployment gotchas, naming conventions, domain shorthand — and turns it into a versioned, schema-validated rule that ships to all four runtimes via the loader generator + drift-checked CI.*** *(See the self-extension-loop diagram in the hero block above.)*
 
 > [!NOTE]
 > **CI-validated, schema-checked, drift-detected.** Every rule passes `lint-rules` + `auto-approve-rule-pr` before landing in `main` — JSON-Schema-validated, verb-allow-listed, fully auditable. [SECURITY.md](./SECURITY.md) has the trust model.
@@ -174,9 +174,9 @@ A CI no-drift job runs `git diff --exit-code` against the regenerated loaders on
 ## SELF-EXTENSION
 *Self-learning skills — every commit makes the next session smarter.*
 
-The agent doesn't just *use* the skill set — it **grows it**. Trigger → search → analyse → formulate → PR. **The system catches repeats automatically. Quality compounds, commit by commit.**
+The agent doesn't just *use* the skill set — it **grows it**. Trigger → search → analyse → formulate → PR. **Repeats are captured by the validator and gated by CODEOWNERS review. Quality compounds, commit by commit — through reviewed PRs, not silent self-learning.**
 
-![Real error log entries — ERR-2026-001 (TypeScript strictNullChecks disabled, derived rule: never disable strict checks for convenience), ERR-2026-007 (refactor missed 4 imports after rename, REPEAT CAUGHT · COUNT 1 → 2, auto-merged into existing entry as self-extension trust proof, derived rule: after any rename run a project-wide grep), ERR-2026-012 (migration ran after backend deploy and broke prod, derived rule: always order migrations before backend deploy in domain runbooks). Each entry links a real commit SHA. The system catches repeats — quality compounds, automatically.](./docs/error-log.svg)
+![Real error log entries — ERR-2026-001 (TypeScript strictNullChecks disabled, derived rule: never disable strict checks for convenience), ERR-2026-007 (refactor missed 4 imports after rename, REPEAT CAUGHT · COUNT 1 → 2, merged into existing entry, derived rule: after any rename run a project-wide grep), ERR-2026-012 (migration ran after backend deploy and broke prod, derived rule: always order migrations before backend deploy in domain runbooks). Each entry links a real commit SHA. The validator + CODEOWNERS gate captures repeats; quality compounds through reviewed commits.](./docs/error-log.svg)
 
 `learn(errors):` is a commit-type that triggers `lint-rules` CI and validates every proposed rule against [`schemas/error-entry.json`](./schemas/error-entry.json) — a JSON-Schema with verb allow-list and pattern guards.
 
@@ -351,7 +351,8 @@ skill-everything/
 │   ├── CODEOWNERS
 │   ├── ISSUE_TEMPLATE/
 │   └── workflows/
-│       ├── ci.yml                 # ruff + pyright + pytest + secret-scan
+│       ├── ci.yml                 # ruff + pytest matrix + secret-scan + token-budget + drift-check
+│       ├── eval.yml                # workflow_dispatch eval pass + Monday cron smoke
 │       ├── lint-rules.yml         # validate_rules.py
 │       └── auto-approve-rule-pr.yml
 ├── CONTRIBUTING.md

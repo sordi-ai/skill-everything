@@ -37,8 +37,9 @@ def test_dry_run_produces_schema_valid_records():
     """Run task 01 in dry-run mode and validate every Result against the schema."""
     task = eval_runner.load_task("01-ts-async-without-await")
     spec = _spec()
-    results = eval_runner.run_task(task, spec, n_samples=3, rule_state="with_rule",
-                                   run_id="test-dry-1", dry_run=True)
+    results = eval_runner.run_task(
+        task, spec, n_samples=3, rule_state="with_rule", run_id="test-dry-1", dry_run=True
+    )
     assert len(results) == 3
     validator = Draft202012Validator(RESULT_SCHEMA)
     for r in results:
@@ -56,10 +57,12 @@ def test_canonical_hash_is_stable_across_calls():
     """Same inputs => same prompt_canon_hash. Different sample_index => same hash."""
     task = eval_runner.load_task("02-python-mutable-default")
     spec = _spec()
-    r1 = eval_runner.run_task(task, spec, n_samples=2, rule_state="with_rule",
-                              run_id="test-hash-1", dry_run=True)
-    r2 = eval_runner.run_task(task, spec, n_samples=2, rule_state="with_rule",
-                              run_id="test-hash-2", dry_run=True)
+    r1 = eval_runner.run_task(
+        task, spec, n_samples=2, rule_state="with_rule", run_id="test-hash-1", dry_run=True
+    )
+    r2 = eval_runner.run_task(
+        task, spec, n_samples=2, rule_state="with_rule", run_id="test-hash-2", dry_run=True
+    )
     # The hash binds task + rule_state + model + temp + max_tokens + top_p +
     # harness_version. Sample index is NOT in the hash. So r1[0] and r1[1]
     # and r2[0] and r2[1] all share the same prompt_canon_hash.
@@ -82,8 +85,9 @@ def test_dry_run_provider_returns_no_cost():
     """Dry-run mode must not incur any cost (pricebook entry for dry-run-stub is zero)."""
     task = eval_runner.load_task("04-sql-select-star")
     spec = _spec()
-    results = eval_runner.run_task(task, spec, n_samples=2, rule_state="with_rule",
-                                   run_id="test-cost-1", dry_run=True)
+    results = eval_runner.run_task(
+        task, spec, n_samples=2, rule_state="with_rule", run_id="test-cost-1", dry_run=True
+    )
     for r in results:
         # Dry-run uses the dry_run provider; pricebook has no entry, cost_for falls back to 0.
         assert r.cost_usd == 0.0, f"dry-run cost must be zero, got {r.cost_usd}"
@@ -107,11 +111,16 @@ def test_real_provider_without_sdk_or_keys_is_recorded_as_error():
     # Force-clear the API key so the test is deterministic even on CI
     # where ANTHROPIC_API_KEY might be set.
     import os
+
     saved = os.environ.pop("ANTHROPIC_API_KEY", None)
     try:
         results = eval_runner.run_task(
-            task, spec, n_samples=1, rule_state="with_rule",
-            run_id="test-real-1", dry_run=False,
+            task,
+            spec,
+            n_samples=1,
+            rule_state="with_rule",
+            run_id="test-real-1",
+            dry_run=False,
         )
     finally:
         if saved is not None:
@@ -141,9 +150,7 @@ def test_judge_calibration_jsonl_is_well_formed():
             assert entry["expected_verdict"] in {"pass", "fail"}, (
                 f"line {line_no}: expected_verdict must be pass|fail"
             )
-            assert len(entry["response_text"]) >= 30, (
-                f"line {line_no}: response_text suspiciously short"
-            )
+            assert len(entry["response_text"]) >= 30, f"line {line_no}: response_text suspiciously short"
             if entry["expected_verdict"] == "pass":
                 n_pass += 1
             else:

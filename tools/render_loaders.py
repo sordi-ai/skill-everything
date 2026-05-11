@@ -35,11 +35,11 @@ TEMPLATES = ROOT / "tools" / "templates"
 # (.cursorrules + .cursor/rules/) must live at the repo root because
 # Cursor only auto-discovers them when adjacent to the project root.
 STATIC_TARGETS = [
-    ("SKILL.md",     "skill.md.j2"),
-    ("CLAUDE.md",    "claude.md.j2"),
-    ("GEMINI.md",    "gemini.md.j2"),
+    ("SKILL.md", "skill.md.j2"),
+    ("CLAUDE.md", "claude.md.j2"),
+    ("GEMINI.md", "gemini.md.j2"),
     (".cursorrules", "cursorrules.j2"),
-    ("AGENTS.md",    "agents.md.j2"),
+    ("AGENTS.md", "agents.md.j2"),
 ]
 
 # Per-skill targets — one template renders one output per skill in
@@ -139,8 +139,9 @@ def render(check: bool = False) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[1])
-    parser.add_argument("--check", action="store_true",
-                        help="fail with exit 1 if outputs would change (CI use)")
+    parser.add_argument(
+        "--check", action="store_true", help="fail with exit 1 if outputs would change (CI use)"
+    )
     args = parser.parse_args()
     return render(check=args.check)
 

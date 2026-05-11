@@ -33,6 +33,7 @@ import yaml
 
 try:
     import tiktoken
+
     _ENC = tiktoken.get_encoding("cl100k_base")
 except ImportError:
     _ENC = None
@@ -82,12 +83,8 @@ def build_table() -> str:
         n = count_tokens(path.read_text(encoding="utf-8"))
         total += n
         rows.append(f"| `{sid}` | `{s['path']}` | ~{_bucket(n):,} |")
-    rows.append(
-        f"| **Total if all loaded** | — | **~{_bucket(total):,}** |"
-    )
-    rows.append(
-        "| **Typical (router + 1–2 skills)** | depends on task | **~1,800–3,500** |"
-    )
+    rows.append(f"| **Total if all loaded** | — | **~{_bucket(total):,}** |")
+    rows.append("| **Typical (router + 1–2 skills)** | depends on task | **~1,800–3,500** |")
     fallback_note = ""
     if _ENC is None:
         fallback_note = (
@@ -104,18 +101,13 @@ def update(check: bool = False) -> int:
     text = README.read_text(encoding="utf-8")
     if START not in text or END not in text:
         print(
-            f"README.md has no {START}/{END} markers; "
-            "add them around the token table block.",
+            f"README.md has no {START}/{END} markers; add them around the token table block.",
             file=sys.stderr,
         )
         return 1
     table = build_table()
     new_block = f"{START}\n\n{table}\n\n{END}"
-    new_text = (
-        text.split(START)[0]
-        + new_block
-        + text.split(END, 1)[1]
-    )
+    new_text = text.split(START)[0] + new_block + text.split(END, 1)[1]
     if check:
         if new_text != text:
             print(
@@ -132,8 +124,9 @@ def update(check: bool = False) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[1])
-    parser.add_argument("--check", action="store_true",
-                        help="fail with exit 1 if README would change (CI use)")
+    parser.add_argument(
+        "--check", action="store_true", help="fail with exit 1 if README would change (CI use)"
+    )
     args = parser.parse_args()
     return update(check=args.check)
 

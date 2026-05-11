@@ -43,8 +43,13 @@ import eval_runner
 
 PROFILES = {
     "smoke": {
-        "tasks": ["01-ts-async-without-await", "02-python-mutable-default",
-                  "03-react-key-missing", "04-sql-select-star", "05-rename-without-grep"],
+        "tasks": [
+            "01-ts-async-without-await",
+            "02-python-mutable-default",
+            "03-react-key-missing",
+            "04-sql-select-star",
+            "05-rename-without-grep",
+        ],
         "models": [("dry_run", "dry-run-stub-1.0.0")],
         "temperatures": [0.0],
         "rule_states": ["with_rule", "without_rule"],
@@ -52,12 +57,17 @@ PROFILES = {
         "dry_run_forced": True,
     },
     "regression": {
-        "tasks": ["01-ts-async-without-await", "02-python-mutable-default",
-                  "03-react-key-missing", "04-sql-select-star", "05-rename-without-grep"],
+        "tasks": [
+            "01-ts-async-without-await",
+            "02-python-mutable-default",
+            "03-react-key-missing",
+            "04-sql-select-star",
+            "05-rename-without-grep",
+        ],
         "models": [
             ("anthropic", "claude-sonnet-4-5-20251022"),
-            ("openai",    "gpt-4o-2024-08-06"),
-            ("ollama",    "qwen2.5-coder:32b"),
+            ("openai", "gpt-4o-2024-08-06"),
+            ("ollama", "qwen2.5-coder:32b"),
         ],
         "temperatures": [0.0, 0.7],
         "rule_states": ["with_rule", "without_rule"],
@@ -65,14 +75,19 @@ PROFILES = {
         "dry_run_forced": False,
     },
     "full": {
-        "tasks": ["01-ts-async-without-await", "02-python-mutable-default",
-                  "03-react-key-missing", "04-sql-select-star", "05-rename-without-grep"],
+        "tasks": [
+            "01-ts-async-without-await",
+            "02-python-mutable-default",
+            "03-react-key-missing",
+            "04-sql-select-star",
+            "05-rename-without-grep",
+        ],
         "models": [
             ("anthropic", "claude-opus-4-7-20260301"),
             ("anthropic", "claude-sonnet-4-5-20251022"),
-            ("openai",    "gpt-4o-2024-08-06"),
-            ("ollama",    "qwen2.5-coder:32b"),
-            ("ollama",    "llama-3.1-8b-instruct"),
+            ("openai", "gpt-4o-2024-08-06"),
+            ("ollama", "qwen2.5-coder:32b"),
+            ("ollama", "llama-3.1-8b-instruct"),
         ],
         "temperatures": [0.0, 0.7],
         "rule_states": ["with_rule", "without_rule"],
@@ -113,16 +128,27 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Orchestrate a full eval pass.")
     parser.add_argument("--profile", choices=list(PROFILES.keys()), required=True)
     parser.add_argument(
-        "--out", default=None,
+        "--out",
+        default=None,
         help="JSONL output path (default: tests/eval/results/run-<id>.jsonl)",
     )
-    parser.add_argument("--max-usd", type=float, default=5.0,
-                        help="Fail-fast budget cap. Default 5 USD; smoke profile ignores it.")
-    parser.add_argument("--no-dry-run", action="store_true",
-                        help="Use real providers (requires API-key env vars). Default: dry-run.")
-    parser.add_argument("--judge-model", default="anthropic/claude-opus-4-7-20260301",
-                        help="Provider/SKU for tier-3 judge model. Default: "
-                             "anthropic/claude-opus-4-7-20260301. Ignored in dry-run.")
+    parser.add_argument(
+        "--max-usd",
+        type=float,
+        default=5.0,
+        help="Fail-fast budget cap. Default 5 USD; smoke profile ignores it.",
+    )
+    parser.add_argument(
+        "--no-dry-run",
+        action="store_true",
+        help="Use real providers (requires API-key env vars). Default: dry-run.",
+    )
+    parser.add_argument(
+        "--judge-model",
+        default="anthropic/claude-opus-4-7-20260301",
+        help="Provider/SKU for tier-3 judge model. Default: "
+        "anthropic/claude-opus-4-7-20260301. Ignored in dry-run.",
+    )
     parser.add_argument("--run-id", default=None)
     args = parser.parse_args(argv)
 
@@ -143,8 +169,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"pre-flight estimate: ${est:.2f} (cap ${args.max_usd:.2f}). proceeding.")
 
     run_id = args.run_id or uuid.uuid4().hex[:16]
-    out_path = Path(args.out) if args.out else (
-        eval_runner.ROOT / "tests" / "eval" / "results" / f"run-{run_id}.jsonl"
+    out_path = (
+        Path(args.out)
+        if args.out
+        else (eval_runner.ROOT / "tests" / "eval" / "results" / f"run-{run_id}.jsonl")
     )
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -156,8 +184,11 @@ def main(argv: list[str] | None = None) -> int:
             jp_name, jp_sku = eval_runner._parse_model_arg(args.judge_model)
             judge_provider = eval_runner.make_provider(jp_name)
             judge_spec = eval_runner.ModelSpec(
-                provider=jp_name, model_sku=jp_sku,
-                temperature=0.0, max_tokens=512, top_p=1.0,
+                provider=jp_name,
+                model_sku=jp_sku,
+                temperature=0.0,
+                max_tokens=512,
+                top_p=1.0,
             )
         except Exception as e:
             print(
@@ -183,7 +214,11 @@ def main(argv: list[str] | None = None) -> int:
                             top_p=1.0,
                         )
                         results = eval_runner.run_task(
-                            task, spec, profile["n"], rule_state, run_id,
+                            task,
+                            spec,
+                            profile["n"],
+                            rule_state,
+                            run_id,
                             dry_run=dry_run,
                             judge_provider=judge_provider,
                             judge_spec=judge_spec,

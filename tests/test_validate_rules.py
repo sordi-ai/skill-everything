@@ -25,6 +25,7 @@ def test_committed_sub_skills_validate_clean():
 
 # ---------- lint_rule_text directly ----------
 
+
 def test_lint_rejects_unallowed_verb():
     errs = vr.lint_rule_text("Maybe avoid SQL injection sometimes.", "ERR-T-001", False)
     assert any("must start with one of" in e for e in errs)

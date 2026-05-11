@@ -66,8 +66,15 @@ PRICEBOOK_PATH = ROOT / "tests" / "eval" / "pricebook.yml"
 # Verb allow-list lifted from tools/validate_rules.py — used only to sanity
 # check that `rule_under_test` in a task is a real action directive.
 ALLOWED_VERBS = {
-    "Always", "Never", "Before", "After",
-    "Prefer", "Avoid", "Use", "Do", "Ensure",
+    "Always",
+    "Never",
+    "Before",
+    "After",
+    "Prefer",
+    "Avoid",
+    "Use",
+    "Do",
+    "Ensure",
 }
 
 
@@ -75,9 +82,11 @@ ALLOWED_VERBS = {
 # Dataclasses
 # ---------------------------------------------------------------------------
 
+
 @dataclass(frozen=True)
 class ModelSpec:
     """Pinned model identity. `model_sku` MUST be a dated SKU string."""
+
     provider: Literal["anthropic", "openai", "ollama", "dry_run"]
     model_sku: str
     temperature: float
@@ -89,6 +98,7 @@ class ModelSpec:
 @dataclass
 class Task:
     """In-memory representation of one tests/eval/tasks/*.yml fixture."""
+
     id: str
     title: str
     mistake_class: str
@@ -108,6 +118,7 @@ class Task:
 @dataclass
 class RawResponse:
     """Provider response after retries; what the harness records as wire output."""
+
     text: str
     tokens_in: int
     tokens_out: int
@@ -119,6 +130,7 @@ class RawResponse:
 @dataclass
 class Result:
     """One JSONL record. Field set matches schemas/eval-result.json exactly."""
+
     schema_version: str
     run_id: str
     harness_version: str
@@ -157,6 +169,7 @@ class Result:
 # ---------------------------------------------------------------------------
 # Providers
 # ---------------------------------------------------------------------------
+
 
 class Provider(Protocol):
     def complete(self, system: str, user: str, spec: ModelSpec) -> RawResponse: ...
@@ -227,18 +240,19 @@ def _retry_on_transient(fn):
                     if response is not None:
                         status = getattr(response, "status_code", None)
                 name = type(e).__name__
-                is_retriable = (
-                    status in {429, 500, 502, 503, 504}
-                    or name in {
-                        "ConnectionError", "Timeout", "ReadTimeout",
-                        "APIConnectionError", "APITimeoutError",
-                        "RateLimitError", "InternalServerError",
-                        "ServiceUnavailableError",
-                    }
-                )
+                is_retriable = status in {429, 500, 502, 503, 504} or name in {
+                    "ConnectionError",
+                    "Timeout",
+                    "ReadTimeout",
+                    "APIConnectionError",
+                    "APITimeoutError",
+                    "RateLimitError",
+                    "InternalServerError",
+                    "ServiceUnavailableError",
+                }
                 if not is_retriable or attempt == 4:
                     raise
-                delay = min(60.0, (2 ** attempt) * (1.0 + random.random()))
+                delay = min(60.0, (2**attempt) * (1.0 + random.random()))
                 time.sleep(delay)
         # Should be unreachable, but keep type-checker happy.
         if last_err is not None:
@@ -262,6 +276,7 @@ class AnthropicProvider:
                 "`pip install -e '.[eval]'` or `pip install anthropic`."
             ) from e
         from anthropic import Anthropic
+
         self._client = Anthropic()  # Anthropic() reads ANTHROPIC_API_KEY automatically
 
     @_retry_on_transient
@@ -274,9 +289,7 @@ class AnthropicProvider:
             system=system,
             messages=[{"role": "user", "content": user}],
         )
-        text = "".join(
-            getattr(block, "text", "") for block in resp.content
-        )
+        text = "".join(getattr(block, "text", "") for block in resp.content)
         return RawResponse(
             text=text,
             tokens_in=resp.usage.input_tokens,
@@ -300,6 +313,7 @@ class OpenAIProvider:
                 "`pip install -e '.[eval]'` or `pip install openai`."
             ) from e
         from openai import OpenAI
+
         self._client = OpenAI()  # OpenAI() reads OPENAI_API_KEY automatically
 
     @_retry_on_transient
@@ -345,6 +359,7 @@ class OllamaProvider:
     @_retry_on_transient
     def complete(self, system: str, user: str, spec: ModelSpec) -> RawResponse:
         import requests
+
         # Strip an `@<digest>` suffix from the model_sku for the wire call;
         # the digest is for hash-pinning, not the Ollama API.
         bare_model = spec.model_sku.split("@", 1)[0]
@@ -400,6 +415,7 @@ def make_provider(name: str) -> Provider:
 # Hashing, prompt building, criterion evaluation
 # ---------------------------------------------------------------------------
 
+
 def canonical_prompt_hash(
     task: Task,
     rule_state: str,
@@ -438,10 +454,7 @@ def build_prompts(task: Task, rule_state: str) -> tuple[str, str]:
             "Apply the rule. Produce code only; no commentary unless asked."
         )
     else:
-        system = (
-            "You are a careful senior engineer. "
-            "Produce code only; no commentary unless asked."
-        )
+        system = "You are a careful senior engineer. Produce code only; no commentary unless asked."
     return system, task.prompt
 
 
@@ -456,11 +469,11 @@ def _judge_verdict(
     error-string) so callers can record the issue without crashing."""
     rubric = task.judge_rubric or (
         "Did the response demonstrate the expected behavior described in "
-        "rule_under_test? Return JSON: {\"pass\": bool, \"rationale\": str}."
+        'rule_under_test? Return JSON: {"pass": bool, "rationale": str}.'
     )
     judge_system = (
         "You are a strict evaluator. Output ONLY a single JSON object "
-        "with two fields: \"pass\" (boolean) and \"rationale\" (one short "
+        'with two fields: "pass" (boolean) and "rationale" (one short '
         "sentence). No prose outside the JSON."
     )
     judge_user = f"# Rubric\n\n{rubric}\n\n# Response to evaluate\n\n{response_text}"
@@ -570,6 +583,7 @@ def measure_judge_calibration(
 # Pricebook
 # ---------------------------------------------------------------------------
 
+
 def load_pricebook(path: Path = PRICEBOOK_PATH) -> tuple[dict, str]:
     data = yaml.safe_load(path.read_text(encoding="utf-8"))
     return data["models"], str(data["version"])
@@ -590,6 +604,7 @@ def cost_for(spec: ModelSpec, tin: int, tout: int, book: dict) -> float:
 # ---------------------------------------------------------------------------
 # Task loading
 # ---------------------------------------------------------------------------
+
 
 def load_task(task_id: str) -> Task:
     """Load tests/eval/tasks/<task_id>.yml + compute yml_sha256."""
@@ -617,6 +632,7 @@ def load_task(task_id: str) -> Task:
 # ---------------------------------------------------------------------------
 # Core: run_task
 # ---------------------------------------------------------------------------
+
 
 def _now_utc() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -708,9 +724,7 @@ def run_task(
         # Defensive: hash the bytes we actually had on hand (after any SDK
         # serialisation a real provider would have done). In dry-run / stub
         # mode this equals canon_hash; in real mode it may diverge.
-        prompt_bytes_hash = hashlib.sha256(
-            (system + "\n\x1e\n" + user).encode("utf-8")
-        ).hexdigest()
+        prompt_bytes_hash = hashlib.sha256((system + "\n\x1e\n" + user).encode("utf-8")).hexdigest()
 
         if status == "ok":
             # For dry-run, do not consult the judge — it would defeat
@@ -757,8 +771,7 @@ def run_task(
             seed=spec_i.seed if spec.provider != "anthropic" else None,
             criterion_rationale=rationale,
             judge_model_sku=(
-                judge_spec.model_sku
-                if crit_type == "judge" and judge_spec is not None else None
+                judge_spec.model_sku if crit_type == "judge" and judge_spec is not None else None
             ),
             judge_calibration_accuracy=(judge_cal_acc if crit_type == "judge" else None),
             error=err_obj,
@@ -771,6 +784,7 @@ def run_task(
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
+
 
 def _parse_model_arg(raw: str) -> tuple[str, str]:
     """Parse 'provider/model_sku' -> ('provider', 'model_sku').
@@ -785,9 +799,7 @@ def _parse_model_arg(raw: str) -> tuple[str, str]:
         )
     prov, sku = raw.split("/", 1)
     if prov not in {"anthropic", "openai", "ollama"}:
-        raise argparse.ArgumentTypeError(
-            f"unknown provider {prov!r}; must be anthropic, openai, or ollama"
-        )
+        raise argparse.ArgumentTypeError(f"unknown provider {prov!r}; must be anthropic, openai, or ollama")
     return prov, sku
 
 
@@ -802,12 +814,18 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--n", type=int, default=1, help="Samples per cell")
     parser.add_argument("--run-id", default=None, help="Stable identifier for this run (default: uuid7)")
     parser.add_argument("--out", default="-", help="JSONL output path; '-' = stdout")
-    parser.add_argument("--dry-run", action="store_true",
-                        help="Skip real provider calls; synthesise responses for pipeline testing.")
-    parser.add_argument("--judge-model", default=None,
-                        help="Provider/SKU for the tier-3 judge model, e.g. "
-                             "anthropic/claude-opus-4-7-20260301. Required only for "
-                             "tier-3 tasks; ignored otherwise.")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Skip real provider calls; synthesise responses for pipeline testing.",
+    )
+    parser.add_argument(
+        "--judge-model",
+        default=None,
+        help="Provider/SKU for the tier-3 judge model, e.g. "
+        "anthropic/claude-opus-4-7-20260301. Required only for "
+        "tier-3 tasks; ignored otherwise.",
+    )
     args = parser.parse_args(argv)
 
     provider_name, model_sku = _parse_model_arg(args.model)
@@ -837,9 +855,14 @@ def main(argv: list[str] | None = None) -> int:
         )
 
     results = run_task(
-        task, spec, args.n, args.rule_state, run_id,
+        task,
+        spec,
+        args.n,
+        args.rule_state,
+        run_id,
         dry_run=args.dry_run,
-        judge_provider=judge_provider, judge_spec=judge_spec,
+        judge_provider=judge_provider,
+        judge_spec=judge_spec,
     )
 
     if args.out == "-":
