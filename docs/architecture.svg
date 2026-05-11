@@ -40,7 +40,7 @@
     .lane       { fill: var(--bg); stroke: var(--hairline); stroke-dasharray: 2 3; }
     .lane-label { font: 700 10px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; letter-spacing: 0.8px; fill: var(--muted); }
 
-    .h-title    { font: 700 13px -apple-system, system-ui, sans-serif; letter-spacing: 2px; fill: var(--ink); }
+    .h-title    { font: 700 14px -apple-system, system-ui, sans-serif; letter-spacing: 2px; fill: var(--ink); }
     .h-sub      { font: 400 11px -apple-system, system-ui, sans-serif; fill: var(--muted); }
 
     .node       { fill: var(--agent-fill); stroke: var(--agent); stroke-width: 1.5; }
@@ -48,24 +48,25 @@
     .node.human { fill: var(--human-fill); stroke: var(--human); }
     .node.git   { fill: var(--git-fill);   stroke: var(--git); }
 
-    .step-num   { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--muted); letter-spacing: 0.5px; }
-    .node-title { font: 600 12px -apple-system, system-ui, sans-serif; fill: var(--ink); }
+    .step-num   { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--muted); letter-spacing: 0.8px; }
+    .node-title { font: 600 12px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; fill: var(--ink); }
     .node-sub   { font: 400 11px -apple-system, system-ui, sans-serif; fill: var(--muted); }
     .mono       { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; }
     .mono-tag   { font: 500 11px ui-monospace, Consolas, monospace; fill: var(--ink); }
     .mono-dim   { font: 400 10px ui-monospace, Consolas, monospace; fill: var(--muted); }
 
     .arrow      { stroke: var(--rule); stroke-width: 1.5; fill: none; }
-    .arrow.same { stroke: var(--ci); stroke-width: 1.5; stroke-dasharray: 5 4; fill: none; }
+    .arrow.ci   { stroke: var(--ci); stroke-width: 1.5; fill: none; }
+    .arrow.same { stroke: var(--ci); stroke-width: 1.5; stroke-dasharray: 4 3; fill: none; }
 
-    .gate       { fill: none; stroke: var(--ci); stroke-width: 1.2; stroke-dasharray: 4 3; }
-    .gate-label { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.5px; }
-    .gate-fill  { fill: var(--ci-fill); opacity: 0.55; }
+    .gate       { fill: none; stroke: var(--ci); stroke-width: 1.5; stroke-dasharray: 5 2; }
+    .gate-label { font: 700 10px ui-monospace, Consolas, monospace; fill: var(--ci); letter-spacing: 0.8px; }
+    .gate-fill  { fill: var(--ci-fill); }
 
     .chip       { fill: var(--bg); stroke: var(--hairline); }
     .chip-text  { font: 500 10px ui-monospace, Consolas, monospace; fill: var(--ink); }
 
-    .loop-label { font: 600 11px ui-monospace, Consolas, monospace; fill: var(--ci); }
+    .loop-label { font: 600 11px -apple-system, system-ui, sans-serif; fill: var(--ci); }
     .legend-t   { font: 500 10px -apple-system, system-ui, sans-serif; fill: var(--ink); }
     .tagline    { font: 600 11px -apple-system, system-ui, sans-serif; fill: var(--ink); }
     .annot      { font: 400 10px -apple-system, system-ui, sans-serif; fill: var(--muted); font-style: italic; }
@@ -109,42 +110,31 @@
   <line x1="24"   y1="300" x2="1160" y2="300" class="lane"/>
   <line x1="24"   y1="400" x2="1160" y2="400" class="lane"/>
 
-  <text class="lane-label" x="30"  y="85">SOURCE  ·  skills/_index.yml</text>
-  <text class="lane-label" x="30"  y="195">TOOLING  /  GENERATOR</text>
-  <!-- LOADER-OUTPUT label trimmed and placed in the gap between the
-       OPENCODE stem (x=180) and CLAUDE stem (x=430). -->
-  <text class="lane-label" x="200" y="315">LOADER OUTPUT</text>
+  <text class="lane-label" x="30"  y="85">SOURCE</text>
+  <text class="lane-label" x="30"  y="195">GENERATOR</text>
+  <!-- LOADER-OUTPUT label sits inside the lane, top-anchored. Scan-bar
+       sits ABOVE the label at y=308 to give the label clean ownership
+       of the area just under the lane separator.                      -->
+  <text class="lane-label" x="30"  y="319">LOADER OUTPUT</text>
   <!-- SUB-SKILL label trimmed to "SUB-SKILL DIRECTORY" so it ends well
        before the OPENCODE loop-arrow at x=180. -->
   <text class="lane-label" x="30"  y="415">SUB-SKILL DIRECTORY</text>
 
-  <!-- ============== SOURCE: _index.yml hub ============== -->
-  <g transform="translate(490 95)">
-    <rect class="node git" x="0" y="0" width="220" height="80" rx="6"/>
-    <text class="step-num" x="10" y="14">SOURCE</text>
-    <text class="node-title" x="10" y="32">skills/_index.yml</text>
-    <text class="mono-tag"   x="10" y="48">9 skills · 4 loader-keys each</text>
-    <text class="mono-dim"   x="10" y="62">claude · gemini</text>
-    <text class="mono-dim"   x="10" y="76">skill_resource · cursor</text>
+  <!-- ============== SOURCE: _index.yml hub ==============
+       Anchor of the story — sits dead-centre, given more visual weight
+       than the generator below it (taller, wider stroke). One-line
+       loader-key list to avoid duplicating the "4 loader keys" claim. -->
+  <g transform="translate(470 92)">
+    <rect class="node git" x="0" y="0" width="260" height="86" rx="6" stroke-width="2"/>
+    <text class="step-num" x="12" y="16">SINGLE SOURCE OF TRUTH</text>
+    <text class="node-title" x="12" y="36" font-size="14">skills/_index.yml</text>
+    <text class="mono-tag"   x="12" y="54">9 skills  ·  4 loader keys each</text>
+    <text class="mono-dim"   x="12" y="70">claude  ·  gemini  ·  skill_resource  ·  cursor</text>
+    <text class="mono-dim"   x="12" y="82">meta.version: 0.75.0</text>
   </g>
 
-  <!-- annotation chip: skills count -->
-  <g transform="translate(740 110)">
-    <rect class="chip" x="0" y="0" width="180" height="22" rx="3"/>
-    <text class="chip-text" x="8" y="14">9 skills, 4 loader keys each</text>
-    <text class="annot"     x="0" y="38">id · title · path · triggers</text>
-  </g>
-
-  <!-- annotation chip on left: meta -->
-  <g transform="translate(280 110)">
-    <rect class="chip" x="0" y="0" width="180" height="22" rx="3"/>
-    <text class="chip-text" x="8" y="14">meta.version: 0.75.0</text>
-    <text class="annot"     x="0" y="38">single source of truth</text>
-  </g>
-
-  <!-- arrow: source → generator -->
-  <line x1="600" y1="175" x2="600" y2="220" class="arrow" marker-end="url(#a-rule)"/>
-  <text class="annot" x="608" y="200">read</text>
+  <!-- arrow: source → generator (clean, unlabelled — direction is obvious) -->
+  <line x1="600" y1="178" x2="600" y2="220" class="arrow" marker-end="url(#a-rule)"/>
 
   <!-- ============== TOOLING: render_loaders.py ============== -->
   <g transform="translate(490 220)">
@@ -154,17 +144,15 @@
     <text class="mono-tag"   x="10" y="48">Jinja2 · _templates/*.j2</text>
   </g>
 
-  <!-- annotation: idempotent — placed beside the generator at row 1
-       (y=240 baseline) only; row 2 dropped. The CI-arrow corridor at
-       y=270 now has 26 px clearance to the annotation. Annotation
-       text descenders bottom out near y=243 (row 1, font 10), giving
-       a clean gap to the arrow. -->
-  <g transform="translate(740 230)">
-    <text class="annot" x="0" y="14">deterministic · idempotent · zero diff</text>
+  <!-- annotation chip: properties of the generator. Chip-wrapped to
+       sit visually as a node-attribute, not as a floating label. -->
+  <g transform="translate(740 234)">
+    <rect class="chip" x="0" y="0" width="220" height="22" rx="3"/>
+    <text class="chip-text" x="8" y="14">deterministic · idempotent · zero diff</text>
   </g>
 
-  <!-- annotation: command -->
-  <g transform="translate(280 230)">
+  <!-- annotation chip: invocation command -->
+  <g transform="translate(280 234)">
     <rect class="chip" x="0" y="0" width="180" height="22" rx="3"/>
     <text class="chip-text" x="8" y="14">python tools/render_loaders.py</text>
   </g>
@@ -246,7 +234,7 @@
     <!-- 1 · code-quality (1 line) -->
     <g transform="translate(10 4)">
       <path d="M 0,6 L 30,6 L 34,0 L 93,0 a2,2 0 0 1 2,2 L 95,38 a2,2 0 0 1 -2,2 L 2,40 a2,2 0 0 1 -2,-2 Z"
-            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.2"/>
+            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.5"/>
       <text class="mono-tag" x="47.5" y="26" text-anchor="middle">code-quality</text>
     </g>
     <text class="mono-dim" x="57.5" y="56" text-anchor="middle">/SKILL.md</text>
@@ -254,7 +242,7 @@
     <!-- 2 · python (1 line) -->
     <g transform="translate(126 4)">
       <path d="M 0,6 L 30,6 L 34,0 L 93,0 a2,2 0 0 1 2,2 L 95,38 a2,2 0 0 1 -2,2 L 2,40 a2,2 0 0 1 -2,-2 Z"
-            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.2"/>
+            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.5"/>
       <text class="mono-tag" x="47.5" y="26" text-anchor="middle">python</text>
     </g>
     <text class="mono-dim" x="173.5" y="56" text-anchor="middle">/SKILL.md</text>
@@ -262,7 +250,7 @@
     <!-- 3 · typescript (1 line) -->
     <g transform="translate(241 4)">
       <path d="M 0,6 L 30,6 L 34,0 L 93,0 a2,2 0 0 1 2,2 L 95,38 a2,2 0 0 1 -2,2 L 2,40 a2,2 0 0 1 -2,-2 Z"
-            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.2"/>
+            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.5"/>
       <text class="mono-tag" x="47.5" y="26" text-anchor="middle">typescript</text>
     </g>
     <text class="mono-dim" x="288.5" y="56" text-anchor="middle">/SKILL.md</text>
@@ -270,7 +258,7 @@
     <!-- 4 · react (1 line) -->
     <g transform="translate(357 4)">
       <path d="M 0,6 L 30,6 L 34,0 L 93,0 a2,2 0 0 1 2,2 L 95,38 a2,2 0 0 1 -2,2 L 2,40 a2,2 0 0 1 -2,-2 Z"
-            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.2"/>
+            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.5"/>
       <text class="mono-tag" x="47.5" y="26" text-anchor="middle">react</text>
     </g>
     <text class="mono-dim" x="404.5" y="56" text-anchor="middle">/SKILL.md</text>
@@ -278,34 +266,34 @@
     <!-- 5 · git-conventions (2 lines) -->
     <g transform="translate(472 4)">
       <path d="M 0,6 L 30,6 L 34,0 L 93,0 a2,2 0 0 1 2,2 L 95,38 a2,2 0 0 1 -2,2 L 2,40 a2,2 0 0 1 -2,-2 Z"
-            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.2"/>
-      <text class="mono-tag" x="47.5" y="22" text-anchor="middle">git-</text>
-      <text class="mono-tag" x="47.5" y="33" text-anchor="middle">conventions</text>
+            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.5"/>
+      <text class="mono-tag" x="47.5" y="21" text-anchor="middle">git-</text>
+      <text class="mono-tag" x="47.5" y="34" text-anchor="middle">conventions</text>
     </g>
     <text class="mono-dim" x="519.5" y="56" text-anchor="middle">/SKILL.md</text>
 
     <!-- 6 · review-deployment (2 lines) -->
     <g transform="translate(588 4)">
       <path d="M 0,6 L 30,6 L 34,0 L 93,0 a2,2 0 0 1 2,2 L 95,38 a2,2 0 0 1 -2,2 L 2,40 a2,2 0 0 1 -2,-2 Z"
-            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.2"/>
-      <text class="mono-tag" x="47.5" y="22" text-anchor="middle">review-</text>
-      <text class="mono-tag" x="47.5" y="33" text-anchor="middle">deployment</text>
+            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.5"/>
+      <text class="mono-tag" x="47.5" y="21" text-anchor="middle">review-</text>
+      <text class="mono-tag" x="47.5" y="34" text-anchor="middle">deployment</text>
     </g>
     <text class="mono-dim" x="635.5" y="56" text-anchor="middle">/SKILL.md</text>
 
     <!-- 7 · domain-template (2 lines) -->
     <g transform="translate(703 4)">
       <path d="M 0,6 L 30,6 L 34,0 L 93,0 a2,2 0 0 1 2,2 L 95,38 a2,2 0 0 1 -2,2 L 2,40 a2,2 0 0 1 -2,-2 Z"
-            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.2"/>
-      <text class="mono-tag" x="47.5" y="22" text-anchor="middle">domain-</text>
-      <text class="mono-tag" x="47.5" y="33" text-anchor="middle">template</text>
+            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.5"/>
+      <text class="mono-tag" x="47.5" y="21" text-anchor="middle">domain-</text>
+      <text class="mono-tag" x="47.5" y="34" text-anchor="middle">template</text>
     </g>
     <text class="mono-dim" x="750.5" y="56" text-anchor="middle">/SKILL.md</text>
 
     <!-- 8 · error-log (1 line) -->
     <g transform="translate(819 4)">
       <path d="M 0,6 L 30,6 L 34,0 L 93,0 a2,2 0 0 1 2,2 L 95,38 a2,2 0 0 1 -2,2 L 2,40 a2,2 0 0 1 -2,-2 Z"
-            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.2"/>
+            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.5"/>
       <text class="mono-tag" x="47.5" y="26" text-anchor="middle">error-log</text>
     </g>
     <text class="mono-dim" x="866.5" y="56" text-anchor="middle">/SKILL.md</text>
@@ -313,56 +301,55 @@
     <!-- 9 · self-extension-workflow (2 lines) -->
     <g transform="translate(934 4)">
       <path d="M 0,6 L 30,6 L 34,0 L 93,0 a2,2 0 0 1 2,2 L 95,38 a2,2 0 0 1 -2,2 L 2,40 a2,2 0 0 1 -2,-2 Z"
-            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.2"/>
-      <text class="mono-tag" x="47.5" y="22" text-anchor="middle">self-extension-</text>
-      <text class="mono-tag" x="47.5" y="33" text-anchor="middle">workflow</text>
+            fill="var(--agent-fill)" stroke="var(--agent)" stroke-width="1.5"/>
+      <text class="mono-tag" x="47.5" y="21" text-anchor="middle">self-extension-</text>
+      <text class="mono-tag" x="47.5" y="34" text-anchor="middle">workflow</text>
     </g>
     <text class="mono-dim" x="981.5" y="56" text-anchor="middle">/SKILL.md</text>
   </g>
 
-  <!-- "same sub-skill" loop arrows from each loader to the directory -->
-  <line x1="180" y1="390" x2="180" y2="424" class="arrow same" marker-end="url(#a-same)"/>
-  <line x1="430" y1="390" x2="430" y2="424" class="arrow same" marker-end="url(#a-same)"/>
-  <line x1="770" y1="390" x2="770" y2="424" class="arrow same" marker-end="url(#a-same)"/>
-  <line x1="1020" y1="390" x2="1020" y2="424" class="arrow same" marker-end="url(#a-same)"/>
+  <!-- "same sub-skill" loop arrows from each loader to the directory.
+       Shortened slightly (start y=395) so a row-spanning caption can
+       sit cleanly above them at y=405 without overlapping the arrows. -->
+  <line x1="180" y1="395" x2="180" y2="424" class="arrow same" marker-end="url(#a-same)"/>
+  <line x1="430" y1="395" x2="430" y2="424" class="arrow same" marker-end="url(#a-same)"/>
+  <line x1="770" y1="395" x2="770" y2="424" class="arrow same" marker-end="url(#a-same)"/>
+  <line x1="1020" y1="395" x2="1020" y2="424" class="arrow same" marker-end="url(#a-same)"/>
 
-  <!-- "same" label centered between CLAUDE-stem (x=430) and GEMINI-stem
-       (x=770). Center at x=600, text width ≈ 224 px → spans ≈488..712.
-       58 px clearance to the nearest stem on each side. Reads as
-       belonging to ALL four loop-arrows since it sits at the centre of
-       the loader row (rather than tucked next to one specific stem). -->
-  <text class="loop-label" x="600" y="412" text-anchor="middle">all four point at the same files</text>
-
-  <!-- ============== CI GATE: drift detection (vertical sentinel) ====
-       Right gutter x=1160..1265, y=220..400 (width 105, height 180).
-       Increased height by 10 px so the file-list rows have comfortable
-       clearance to the bottom border. Arrow from generator now enters
-       the gate from the LEFT side at y=240, NOT from the top centre,
-       so it does not crowd the "CI GATE" header text.                -->
-  <g transform="translate(1160 220)">
-    <rect class="gate-fill" x="0" y="0" width="105" height="180" rx="6"/>
-    <rect class="gate"      x="0" y="0" width="105" height="180" rx="6"/>
-    <text class="gate-label" x="52" y="18" text-anchor="middle">CI GATE</text>
-    <line x1="10" y1="26" x2="95" y2="26" stroke="var(--ci)" stroke-width="0.8" stroke-dasharray="2 2"/>
-    <text class="mono-dim"   x="52" y="42" text-anchor="middle">loaders-and-</text>
-    <text class="mono-dim"   x="52" y="56" text-anchor="middle">table-no-drift</text>
-    <line x1="10" y1="68" x2="95" y2="68" stroke="var(--ci)" stroke-width="0.8" stroke-dasharray="2 2"/>
-    <text class="mono-tag"   x="52" y="86" text-anchor="middle">git diff</text>
-    <text class="mono-tag"   x="52" y="102" text-anchor="middle">--exit-code</text>
-    <line x1="10" y1="114" x2="95" y2="114" stroke="var(--ci)" stroke-width="0.8" stroke-dasharray="2 2"/>
-    <text class="mono-dim"   x="52" y="132" text-anchor="middle">SKILL.md</text>
-    <text class="mono-dim"   x="52" y="146" text-anchor="middle">CLAUDE.md</text>
-    <text class="mono-dim"   x="52" y="160" text-anchor="middle">GEMINI.md</text>
-    <text class="mono-dim"   x="52" y="174" text-anchor="middle">.cursorrules</text>
+  <!-- "all four → same nine folders" caption-chip.
+       Positioned in the empty space between the CLAUDE arrow (x=430)
+       and the GEMINI arrow (x=770), centred at x=600. Chip-wrapped so
+       it reads as a single object that visually OWNS the four green
+       arrows fanning down to the folder strip.                       -->
+  <g transform="translate(460 402)">
+    <rect class="chip" x="0" y="0" width="280" height="20" rx="3" fill="var(--ci-fill)" stroke="var(--ci)" stroke-width="1"/>
+    <text class="loop-label" x="140" y="13" text-anchor="middle">all four loaders → same 9 sub-skill folders</text>
   </g>
 
-  <!-- arrow: generator → CI gate (corridor at y=270; ends at gate's
-       LEFT edge at (1160, 240). This avoids crowding the "CI GATE"
-       header at the top and reads more naturally as "input from the
-       generator". Path stays clear of "deterministic / idempotent /
-       zero diff" annotation (single line at y=244, x=740..957) and
-       the lane separator (y=300).                                    -->
-  <path d="M 710 270 L 1140 270 L 1140 240 L 1160 240" class="arrow" stroke="var(--ci)" fill="none" marker-end="url(#a-ci)"/>
+  <!-- ============== CI GATE: drift detection (vertical sentinel) ====
+       Right gutter x=1160..1265, y=322..390 (loader-row aligned).
+       Repositioned to align vertically with the LOADER OUTPUT row so it
+       reads as "inspects the four loader files" — the sentinel sits on
+       the same horizontal band as the things it guards. Internal rule-
+       dividers removed; cleaner read. CI-fill bg + ci stroke makes it
+       unmistakably a guard panel.                                     -->
+  <g transform="translate(1160 322)">
+    <rect class="gate-fill" x="0" y="0" width="105" height="68" rx="6"/>
+    <rect class="gate"      x="0" y="0" width="105" height="68" rx="6"/>
+    <text class="gate-label" x="52" y="16" text-anchor="middle">CI GATE</text>
+    <text class="mono-dim"   x="52" y="30" text-anchor="middle">no-drift check</text>
+    <text class="mono-tag"   x="52" y="48" text-anchor="middle">git diff</text>
+    <text class="mono-tag"   x="52" y="62" text-anchor="middle">--exit-code</text>
+  </g>
+
+  <!-- "Scan-bar": a horizontal dashed CI-green line runs ABOVE the four
+       loader cards (y=310), starting just past the LOADER OUTPUT lane
+       label (x=160) and extending all the way to the CI gate's column
+       (x=1212). A small down-arrow drops into the gate's TOP at
+       (x=1212, y=322). Eye reads: "the four loader files are
+       inspected as a group; the gate flags any drift".                -->
+  <line x1="160"  y1="310" x2="1212" y2="310" class="arrow ci" stroke-dasharray="4 3"/>
+  <line x1="1212" y1="310" x2="1212" y2="322" class="arrow ci" marker-end="url(#a-ci)"/>
 
   <!-- ============== TAGLINE ============== -->
   <text class="tagline" x="1256" y="494" text-anchor="end">edit the index, regenerate, commit  ·  drift fails CI</text>
