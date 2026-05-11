@@ -186,8 +186,8 @@
     <rect class="node" x="0" y="0" width="200" height="68" rx="6"/>
     <text class="step-num" x="10" y="14">GEMINI CLI</text>
     <text class="node-title" x="10" y="32">GEMINI.md</text>
-    <text class="mono-tag"   x="10" y="48">@skills/&lt;name&gt;/SKILL.md  ·  /memory show</text>
-    <text class="mono-dim"   x="10" y="62">imports + reload command</text>
+    <text class="mono-tag"   x="10" y="48">@skills/&lt;name&gt;/SKILL.md</text>
+    <text class="mono-dim"   x="10" y="62">imports  ·  /memory show</text>
   </g>
 
   <g transform="translate(920 322)">
