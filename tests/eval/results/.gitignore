@@ -1,0 +1,7 @@
+# Eval run outputs are ephemeral. Per-run JSONL stays as GitHub Actions
+# artefacts (90-day retention) — never committed. The single curated file
+# `baseline.jsonl` (the v1.0 promotion baseline) is the only result file
+# that lives in git.
+
+run-*.jsonl
+*.tmp.jsonl

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 500" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
   <title id="title">skill-everything architecture — single source of truth, four loaders</title>
-  <desc id="desc">references/_index.yml is rendered by tools/render_loaders.py into four tool-specific loader files: SKILL.md (OpenCode), CLAUDE.md (Claude Code), GEMINI.md (Gemini CLI) and a Cursor stub. All four loaders point at the same sub-skill directory. A loaders-and-table-no-drift CI gate fails the build if any loader file diverges from the index.</desc>
+  <desc id="desc">skills/_index.yml is rendered by tools/render_loaders.py into four tool-specific loader files: SKILL.md (OpenCode), CLAUDE.md (Claude Code), GEMINI.md (Gemini CLI) and a Cursor stub. All four loaders point at the same sub-skill directory. A loaders-and-table-no-drift CI gate fails the build if any loader file diverges from the index.</desc>
 
   <style>
     :root {
@@ -88,7 +88,7 @@
 
   <!-- ============== HEADER ============== -->
   <text class="h-title" x="24" y="30">ARCHITECTURE  /  ONE INDEX, FOUR LOADERS</text>
-  <text class="h-sub"   x="24" y="46">references/_index.yml is the source. tools/render_loaders.py writes the four loader files. CI fails on drift.</text>
+  <text class="h-sub"   x="24" y="46">skills/_index.yml is the source. tools/render_loaders.py writes the four loader files. CI fails on drift.</text>
 
   <!-- legend -->
   <g transform="translate(820 22)">
@@ -109,7 +109,7 @@
   <line x1="24"   y1="300" x2="1160" y2="300" class="lane"/>
   <line x1="24"   y1="400" x2="1160" y2="400" class="lane"/>
 
-  <text class="lane-label" x="30"  y="85">SOURCE  ·  references/_index.yml</text>
+  <text class="lane-label" x="30"  y="85">SOURCE  ·  skills/_index.yml</text>
   <text class="lane-label" x="30"  y="195">TOOLING  /  GENERATOR</text>
   <!-- LOADER-OUTPUT label trimmed and placed in the gap between the
        OPENCODE stem (x=180) and CLAUDE stem (x=430). -->
@@ -122,7 +122,7 @@
   <g transform="translate(490 95)">
     <rect class="node git" x="0" y="0" width="220" height="80" rx="6"/>
     <text class="step-num" x="10" y="14">SOURCE</text>
-    <text class="node-title" x="10" y="32">references/_index.yml</text>
+    <text class="node-title" x="10" y="32">skills/_index.yml</text>
     <text class="mono-tag"   x="10" y="48">9 skills · 4 loader-keys each</text>
     <text class="mono-dim"   x="10" y="62">claude · gemini</text>
     <text class="mono-dim"   x="10" y="76">skill_resource · cursor</text>
@@ -190,7 +190,7 @@
     <rect class="node" x="0" y="0" width="200" height="68" rx="6"/>
     <text class="step-num" x="10" y="14">CLAUDE CODE</text>
     <text class="node-title" x="10" y="32">CLAUDE.md</text>
-    <text class="mono-tag"   x="10" y="48">@references/development/…</text>
+    <text class="mono-tag"   x="10" y="48">@skills/<name>/SKILL.md</text>
     <text class="mono-dim"   x="10" y="62">imports + sub-skill table</text>
   </g>
 
@@ -198,7 +198,7 @@
     <rect class="node" x="0" y="0" width="200" height="68" rx="6"/>
     <text class="step-num" x="10" y="14">GEMINI CLI</text>
     <text class="node-title" x="10" y="32">GEMINI.md</text>
-    <text class="mono-tag"   x="10" y="48">@references/…  ·  /memory show</text>
+    <text class="mono-tag"   x="10" y="48">@skills/<name>/SKILL.md  ·  /memory show</text>
     <text class="mono-dim"   x="10" y="62">imports + reload command</text>
   </g>
 
@@ -213,8 +213,8 @@
   <!-- ============== SUB-SKILL DIRECTORY (shared) ============== -->
   <g transform="translate(80 425)">
     <rect class="chip" x="0" y="0" width="1040" height="40" rx="3"/>
-    <text class="mono-tag" x="12" y="16">references/development/{code-quality,python,typescript,react}.md</text>
-    <text class="mono-tag" x="12" y="32">references/{git/conventions,process/review-deployment,domain/template,errors/error-log,errors/self-extension-workflow}.md</text>
+    <text class="mono-tag" x="12" y="16">skills/{code-quality,python,typescript,react}/SKILL.md</text>
+    <text class="mono-tag" x="12" y="32">skills/{git-conventions,review-deployment,domain-template,error-log,self-extension-workflow}/SKILL.md</text>
   </g>
 
   <!-- "same sub-skill" loop arrows from each loader to the directory -->

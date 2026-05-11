@@ -1,6 +1,7 @@
 id: 01-ts-async-without-await
 title: TypeScript — async without await
 mistake_class: returning_promise_as_value
+tier: 1
 rule_under_test: |
   Always await async calls before returning the result. If a function returns
   the awaited value, never return the un-awaited Promise directly.

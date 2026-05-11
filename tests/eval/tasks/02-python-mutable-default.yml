@@ -1,6 +1,7 @@
 id: 02-python-mutable-default
 title: Python — mutable default argument
 mistake_class: mutable_default_argument
+tier: 1
 rule_under_test: |
   Never use mutable default arguments. If a function takes an optional
   list/dict, default it to None and create the empty container inside.

@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/sordi-ai/skill-everything/schemas/eval-result.json",
+  "title": "Eval result record (one per task x model x temperature x rule_state x sample)",
+  "description": "JSON Lines output schema for tools/eval_runner.py. One record per provider call. Validated by tools/validate_eval_results.py. Schema field set is the methodology contract — every field must be present for a result to count toward a published number.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "harness_version",
+    "task_id",
+    "task_yml_sha256",
+    "rule_state",
+    "model_sku",
+    "temperature",
+    "max_tokens",
+    "top_p",
+    "sample_index",
+    "prompt_canon_hash",
+    "prompt_bytes_sha256",
+    "response_text",
+    "tokens_in",
+    "tokens_out",
+    "cost_usd",
+    "cost_pricebook_version",
+    "latency_ms",
+    "criterion_type",
+    "criterion_pass",
+    "status",
+    "timestamp_utc"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0",
+      "description": "Hard-pinned schema version. Bump only when fields are added or semantics change; never when fixing typos."
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{6,64}$",
+      "description": "Identifier for the eval invocation (one workflow_dispatch = one run_id). All records in one JSONL file share the same run_id."
+    },
+    "harness_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semver of tools/eval_runner.py. Hashed into prompt_canon_hash so harness changes invalidate past hashes."
+    },
+    "task_id": {
+      "type": "string",
+      "pattern": "^[0-9]{2}-[a-z0-9-]+$"
+    },
+    "task_yml_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the raw bytes of tests/eval/tasks/<task_id>.yml. Binds the mistake-detector and pass-criterion to the result; editing the task YML invalidates past hashes."
+    },
+    "rule_state": {
+      "enum": ["with_rule", "without_rule"]
+    },
+    "model_sku": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Dated SKU string (e.g. 'claude-sonnet-4-5-20251022', 'gpt-4o-2024-08-06'). For open-weights: model_name@hf-revision-<sha>. A bare 'gpt-4o' is forbidden."
+    },
+    "model_provider_revision": {
+      "type": ["string", "null"],
+      "description": "Provider-reported revision identifier echoed in the response, if available."
+    },
+    "model_call_received_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Provider-side timestamp echoed in the response, if available."
+    },
+    "temperature": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 2
+    },
+    "max_tokens": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "top_p": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "seed": {
+      "type": ["integer", "null"],
+      "description": "Passed to providers that support seed (OpenAI, Ollama). Ignored by Anthropic. Null when not applicable."
+    },
+    "sample_index": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "prompt_canon_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Canonical SHA-256 over the 10-field hash recipe in tests/eval/README.md (task_id + task_yml_sha256 + rule_state + system_prompt + user_prompt + model_sku + temperature + max_tokens + top_p + harness_version)."
+    },
+    "prompt_bytes_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Defensive: SHA-256 of the literal bytes sent on the wire to the provider (after SDK serialisation). May diverge from prompt_canon_hash if a provider SDK silently mutates the message."
+    },
+    "response_text": {
+      "type": "string",
+      "description": "Full untruncated response body."
+    },
+    "tokens_in": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "tokens_out": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "cost_usd": {
+      "type": "number",
+      "minimum": 0
+    },
+    "cost_pricebook_version": {
+      "type": "string",
+      "description": "Version field from tests/eval/pricebook.yml at time of call. When prices change, new pricebook version; historical cost_usd values stay immutable."
+    },
+    "latency_ms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "criterion_type": {
+      "enum": ["regex", "regex_negative", "ast", "judge"]
+    },
+    "criterion_pass": {
+      "type": "boolean",
+      "description": "True = response satisfies pass_signature; mistake_detected = !criterion_pass for primary aggregation."
+    },
+    "criterion_rationale": {
+      "type": ["string", "null"],
+      "description": "Set when criterion_type=judge. Free-text rationale returned by the judge model."
+    },
+    "judge_model_sku": {
+      "type": ["string", "null"],
+      "description": "Dated SKU of the judge model. Required when criterion_type=judge."
+    },
+    "judge_calibration_accuracy": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Accuracy of judge_model_sku against the calibration JSONL for this task. Run is invalid if <0.90."
+    },
+    "status": {
+      "enum": ["ok", "provider_error", "judge_error", "timeout", "budget_capped", "dry_run"]
+    },
+    "error": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "code": { "type": "string" },
+        "message": { "type": "string" },
+        "retry_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "system_fingerprint": {
+      "type": ["string", "null"],
+      "description": "Provider-side reproducibility breadcrumb (OpenAI system_fingerprint, Anthropic org-id echo, Ollama model digest)."
+    },
+    "notes": {
+      "type": ["string", "null"]
+    },
+    "timestamp_utc": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "skill-everything-tools"
-version = "1.0.0"
-description = "Tooling for skill-everything: rule validator, loader sync, token-table renderer"
+version = "0.75.0"
+description = "Tooling for skill-everything: rule validator, loader sync, token-table renderer, eval framework"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
@@ -24,6 +24,15 @@ dev = [
     "pyright>=1.1",
     "pre-commit>=3.6",
 ]
+# Real-provider integrations for the eval framework. Optional because the
+# harness runs end-to-end in dry-run mode without these deps; install them
+# only when running tools/run_eval.py --no-dry-run against real providers
+# (gated by API keys + budget cap).
+eval = [
+    "anthropic>=0.40",
+    "openai>=1.50",
+    "requests>=2.31",
+]
 
 [project.urls]
 Homepage = "https://github.com/sordi-ai/skill-everything"
@@ -33,7 +42,7 @@ Issues = "https://github.com/sordi-ai/skill-everything/issues"
 packages = ["tools"]
 
 [tool.ruff]
-line-length = 100
+line-length = 110
 target-version = "py310"
 
 [tool.ruff.lint]

@@ -190,7 +190,7 @@
     <rect class="gate-fill" x="0" y="0" width="220" height="70" rx="6"/>
     <rect class="gate"      x="0" y="0" width="220" height="70" rx="6"/>
     <text class="gate-label" x="10" y="16">CI GATE  ·  auto-approve-rule-pr</text>
-    <text class="mono-tag"   x="10" y="34">scope: references/errors/**</text>
+    <text class="mono-tag"   x="10" y="34">scope: skills/**</text>
     <text class="mono-dim"   x="10" y="50">requires Co-Authored-By trailer</text>
     <text class="mono-dim"   x="10" y="62">non-errors diff → no approve</text>
   </g>

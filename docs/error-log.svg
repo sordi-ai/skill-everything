@@ -142,7 +142,7 @@
   <text class="rule-tag"  x="692" y="180">DERIVED RULE</text>
   <text class="rule-text" x="692" y="208">Never disable strict checks</text>
   <text class="rule-text" x="692" y="226">for convenience.</text>
-  <text class="rule-meta" x="692" y="252">references/development/typescript.md</text>
+  <text class="rule-meta" x="692" y="252">skills/typescript/SKILL.md</text>
   <text class="rule-meta-dim" x="692" y="268">schema-validated · pinned in code-quality skill</text>
 
   <!-- ============== ROW 2 — ERR-2026-007 (HIGHLIGHTED) ============== -->
@@ -181,7 +181,7 @@
   <text class="rule-text" x="700" y="376">After any rename, run a</text>
   <text class="rule-text" x="700" y="394">project-wide grep before</text>
   <text class="rule-text" x="700" y="412">claiming done.</text>
-  <text class="rule-meta" x="700" y="426">references/development/code-quality.md</text>
+  <text class="rule-meta" x="700" y="426">skills/code-quality/SKILL.md</text>
 
   <!-- Right side: COUNT 1→2 hero -->
   <g transform="translate(1098 332)">
@@ -217,7 +217,7 @@
   <text class="rule-text" x="692" y="508">Always order migrations</text>
   <text class="rule-text" x="692" y="526">before backend deploy in</text>
   <text class="rule-text" x="692" y="544">domain runbooks.</text>
-  <text class="rule-meta" x="692" y="568">references/process/review-deployment.md</text>
+  <text class="rule-meta" x="692" y="568">skills/review-deployment/SKILL.md</text>
 
   <!-- ============== BOTTOM STRAP ============== -->
   <rect class="strap-bg" x="24" y="600" width="1152" height="80" rx="6"/>
@@ -226,11 +226,11 @@
     <tspan class="strap-headline">The system catches repeats. </tspan><tspan class="strap-accent">Quality compounds, automatically.</tspan>
   </text>
   <text x="64" y="664">
-    <tspan class="strap-meta">Every ERR-ID links to its commit and derived rule in </tspan><tspan class="strap-mono">references/errors/error-log.md</tspan><tspan class="strap-meta">. Schema-validated on every PR. Count auto-increments on repeat.</tspan>
+    <tspan class="strap-meta">Every ERR-ID links to its commit and derived rule in </tspan><tspan class="strap-mono">skills/error-log/SKILL.md</tspan><tspan class="strap-meta">. Schema-validated on every PR. Count auto-increments on repeat.</tspan>
   </text>
 
   <!-- ============== FOOTER ============== -->
-  <text class="footer" x="24"   y="708">3 entries committed during dogfooding  ·  ERR-2026-007 caught its own repeat (1 → 2)  ·  see references/errors/error-log.md</text>
+  <text class="footer" x="24"   y="708">3 entries committed during dogfooding  ·  ERR-2026-007 caught its own repeat (1 → 2)  ·  see skills/error-log/SKILL.md</text>
   <text class="footer" x="1176" y="708" text-anchor="end">skill-everything  /  docs/error-log.svg</text>
 
 </svg>

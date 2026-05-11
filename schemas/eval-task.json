@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/sordi-ai/skill-everything/schemas/eval-task.json",
+  "title": "Eval task fixture",
+  "description": "Schema for tests/eval/tasks/*.yml. Each task defines a stimulus prompt, a mistake detector, a pass criterion, and the rule under test. Validated by tests/test_eval_schemas.py.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "mistake_class",
+    "rule_under_test",
+    "prompt",
+    "tier",
+    "mistake_signature",
+    "pass_signature",
+    "references"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]{2}-[a-z0-9-]+$",
+      "description": "Two-digit prefix + kebab-case slug (e.g. '01-ts-async-without-await')."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 120
+    },
+    "mistake_class": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 80,
+      "description": "Short snake_case classifier for the mistake (e.g. 'returning_promise_as_value')."
+    },
+    "rule_under_test": {
+      "type": "string",
+      "minLength": 15,
+      "description": "The action directive being measured. Verbatim text spliced into the system prompt when rule_state=with_rule."
+    },
+    "prompt": {
+      "type": "string",
+      "minLength": 20,
+      "description": "The user-message body presented to the model. Identical for with_rule and without_rule cells."
+    },
+    "tier": {
+      "type": "integer",
+      "enum": [1, 2, 3],
+      "description": "Pass/fail criterion tier per the methodology contract: 1 = deterministic regex / regex_negative, 2 = AST + structural check, 3 = model-judge fallback (requires judge_rubric)."
+    },
+    "judge_rubric": {
+      "type": "string",
+      "description": "Required only for tier 3. The rubric text the judge model receives alongside the response. Pinned by task_yml_sha256."
+    },
+    "judge_calibration": {
+      "type": "string",
+      "description": "Optional path (relative to repo root) to a calibration JSONL for tier 3 tasks. Each row is {response_text, expected_verdict}."
+    },
+    "mistake_signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["regex", "regex_negative", "ast", "judge"] },
+        "pattern": {
+          "type": "string",
+          "description": "Regex pattern (Python re syntax) when type=regex or regex_negative."
+        },
+        "forbidden_in_response": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "For type=regex_negative: substrings whose ABSENCE in the response indicates the mistake."
+        }
+      }
+    },
+    "pass_signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["regex", "regex_negative", "ast", "judge"] },
+        "pattern": { "type": "string" }
+      }
+    },
+    "references": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^skills/[a-z][a-z0-9-]{1,30}/SKILL\\.md(\\s+#.*)?$"
+      },
+      "description": "Sub-skill paths the rule_under_test should land in. Format: skills/<name>/SKILL.md (with optional trailing '# ERR-YYYY-NNN' comment)."
+    },
+    "notes": {
+      "type": "string",
+      "description": "Free-text design notes for human reviewers."
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "tier": { "const": 3 } }, "required": ["tier"] },
+      "then": { "required": ["judge_rubric"] }
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 id: 04-sql-select-star
 title: SQL — SELECT * without LIMIT in a paginated endpoint
 mistake_class: unbounded_select_star
+tier: 1
 rule_under_test: |
   Never SELECT * for paginated lists. Always specify columns and add LIMIT.
 prompt: |

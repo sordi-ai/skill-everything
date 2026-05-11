@@ -151,7 +151,7 @@
     <rect class="gate-fill" x="0" y="0" width="440" height="56" rx="6"/>
     <rect class="gate"      x="0" y="0" width="440" height="56" rx="6"/>
     <text class="gate-label" x="12" y="18">CI GATE  ·  auto-approve-rule-pr</text>
-    <text class="mono-tag"   x="12" y="36">scope: references/errors/**</text>
+    <text class="mono-tag"   x="12" y="36">scope: skills/**</text>
     <text class="mono-dim"   x="12" y="50">requires Co-Authored-By trailer</text>
   </g>
   <line x1="400" y1="644" x2="400" y2="662" class="arrow" marker-end="url(#a-ci)" stroke="var(--ci)"/>

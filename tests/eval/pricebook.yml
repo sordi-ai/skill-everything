@@ -1,0 +1,42 @@
+# Pricebook for tools/eval_runner.py cost tracking.
+#
+# Each cell records the per-million-token USD price as of the version stamp.
+# When prices change, bump the `version` field and add new entries — never
+# edit historical rates in place. Each eval result record carries the
+# pricebook version it was costed against, so historical cost_usd values
+# stay immutable.
+#
+# Open-weights providers (Ollama) are pinned at 0 — local inference has no
+# per-token USD cost. CI time and electricity are tracked separately.
+#
+# Pricing sources are documented inline. When a vendor changes prices, do
+# NOT silently update the existing entry — add a new dated revision and
+# bump the top-level `version`.
+
+version: 2026-05-11
+models:
+  anthropic/claude-opus-4-7-20260301:
+    input_per_mtok: 15.00
+    output_per_mtok: 75.00
+    notes: "Anthropic Console pricing as of 2026-05. Verify before each release."
+
+  anthropic/claude-sonnet-4-5-20251022:
+    input_per_mtok: 3.00
+    output_per_mtok: 15.00
+
+  openai/gpt-4o-2024-08-06:
+    input_per_mtok: 2.50
+    output_per_mtok: 10.00
+
+  openai/gpt-4o-mini-2024-07-18:
+    input_per_mtok: 0.15
+    output_per_mtok: 0.60
+
+  ollama/qwen2.5-coder:32b:
+    input_per_mtok: 0.0
+    output_per_mtok: 0.0
+    notes: "Local inference; per-token USD cost is zero. Compute cost is tracked separately in the runbook."
+
+  ollama/llama-3.1-8b-instruct:
+    input_per_mtok: 0.0
+    output_per_mtok: 0.0

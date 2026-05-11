@@ -1,0 +1,103 @@
+name: eval
+
+# The Re-Mistake-Rate eval workflow. Manual trigger only; the smoke profile
+# is also wired on a weekly cron so pipeline rot is caught early without
+# burning budget on push/PR cycles.
+#
+# Default behaviour:
+#   - `smoke` profile: dry-run, 5 tasks x 1 model x 1 temp x 2 rule-states,
+#     n=2 = 20 records. No API calls, no cost. CI sanity check.
+#   - `regression` profile: real providers, n=30 per cell. ~$250 estimated.
+#   - `full` profile: real providers, n=100 per cell. ~$500 estimated.
+#     The v1.0 headline pass; manual trigger by the maintainer only.
+#
+# Real-provider runs require API-key secrets and an explicit --max-usd cap.
+# The harness aborts the moment total_cost_usd > max-usd. Pre-flight upper-
+# bound estimate also gates the start.
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "Eval profile"
+        type: choice
+        options: [smoke, regression, full]
+        default: smoke
+      max_usd:
+        description: "Hard budget cap (USD). Pre-flight refuses if estimate exceeds."
+        type: string
+        default: "5"
+      use_real_providers:
+        description: "Set true to call real APIs (requires keys). Default: dry-run."
+        type: boolean
+        default: false
+  schedule:
+    - cron: "0 6 * * 1"   # Monday 06:00 UTC — smoke profile only
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eval-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      EVAL_PROFILE: ${{ inputs.profile || 'smoke' }}
+      EVAL_MAX_USD: ${{ inputs.max_usd || '5' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install (dev + eval optional)
+        run: pip install -e ".[dev,eval]"
+
+      - name: Validate task fixtures + result schema (no API needed)
+        run: |
+          python -m pytest tests/test_eval_schemas.py -q
+
+      - name: Validate dry-run harness (no API needed)
+        run: |
+          python -m pytest tests/test_eval_runner_dryrun.py -q
+
+      - name: Run eval (dry-run by default; scheduled run is always smoke)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OLLAMA_HOST: ${{ secrets.OLLAMA_HOST }}
+        run: |
+          set -e
+          OUT="tests/eval/results/run-${{ github.run_id }}.jsonl"
+          DRY_FLAG=""
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            # Cron runs are always smoke + dry-run (no budget).
+            PROFILE=smoke
+          else
+            PROFILE="$EVAL_PROFILE"
+          fi
+          if [ "${{ inputs.use_real_providers }}" != "true" ]; then
+            DRY_FLAG="--dry-run"
+          fi
+          # Note: the smoke profile internally forces dry-run regardless of
+          # the flag, so DRY_FLAG is effectively decorative for smoke.
+          python tools/run_eval.py \
+            --profile "$PROFILE" \
+            --max-usd "$EVAL_MAX_USD" \
+            $( [ -z "$DRY_FLAG" ] && echo "--no-dry-run" ) \
+            --out "$OUT"
+          echo "EVAL_OUT=$OUT" >> "$GITHUB_ENV"
+
+      - name: Validate JSONL output
+        run: python tools/validate_eval_results.py "$EVAL_OUT"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-results-${{ github.run_id }}
+          path: tests/eval/results/*.jsonl
+          retention-days: 90

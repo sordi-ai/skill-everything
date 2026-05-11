@@ -6,8 +6,8 @@
 
 | Version | Status | What |
 |---|:---:|---|
-| **`v0.75` — Foundation** | 🟡 **PREVIEW** | `lint-rules` CI · JSON-Schema validator · XSS hardening · single-source-of-truth loader sync · `learn(errors):` PR convention · CODEOWNERS + branch protection · 9 sub-skills shipped · 5 production diagrams · adversarial test suite (15/20 caught) · per-skill token budget hard-checked · MUST/SHOULD/AVOID rule classification. |
-| **`v1.0` — Eval that earns the claim** | 🟡 In development | Eval-framework MVP for re-mistake rate · methodology contract (n ≥ 30, multi-model, prompt hash pinned) · 30 days of real errors logged from production usage · published benchmark numbers. The first stable release ships only after the claim is measured, not before. |
+| **`v0.75` — Foundation** | 🟡 **PREVIEW** | `lint-rules` CI · JSON-Schema validator · XSS hardening · single-source-of-truth loader sync · `learn(errors):` PR convention · CODEOWNERS + branch protection · 9 sub-skills shipped · 7 production diagrams (skills/ paths synced) · adversarial test suite (15/20 caught) · per-skill token budget hard-checked · MUST/SHOULD/AVOID rule classification · **eval framework MVP wired (dry-run end-to-end, schema-validated, CI-gated, n=50/100 methodology contract published)**. |
+| **`v1.0` — Eval that earns the claim** | 🟡 In development | Real-provider integration (Anthropic + OpenAI + Ollama) for the eval harness · `tests/eval/results/baseline.jsonl` populated under the methodology contract (n ≥ 100, 5 dated-SKU models, T ∈ {0.0, 0.7}) · macro-Re-Mistake-Rate ≤ 0.40 with bootstrap 95 % CI upper ≤ 0.55 · published per-cell numbers in the README. The first stable release ships only after the claim is measured, not before. |
 | **`v1.1` — Community ecosystem** | 🔵 Planned | First external sub-skills merged (Go, Rust, Java, Swift) · sub-skill PR template institutionalised · public skill catalogue with usage stats · `learn(errors):` going wild on a public commit graph. |
 | **`v2.0` — Marketplace + trust layer** | ⚪ Vision | Signed skills with reputation graph · sandboxed execution · semantic versioning · license management · cross-repo skill imports. |
 
@@ -24,7 +24,7 @@
 
 ## Known follow-ups
 
-- **Diagram sync to `skills/` paths.** The seven production SVGs in [`docs/`](./docs/) (`architecture`, `memory-to-go`, `comparison`, `error-log`, `pr-flow`, `how-it-works`, `how-it-works-mobile`) still display the legacy `references/...` path layout that `v0.75` shipped with. The code, schemas, loaders, validator, CI, and CODEOWNERS were migrated to the Anthropic Skills folder standard (`skills/<name>/SKILL.md`); the SVGs lag behind because they require pixel-perfect Bo-design-system iteration with Playwright. Tracked as a `v0.85` design sprint.
+- **Architecture diagram holistic upgrade (`v0.85+`).** Bo (senior diagrammatic designer) proposed a folder-strip visualisation at the bottom of `docs/architecture.svg` to make "composable sub-skills" visible rather than asserted (a row of nine mini-folder glyphs corresponding to the nine skills under `skills/<name>/SKILL.md`). Anya's minimal-diff string-only update has shipped; Bo's holistic upgrade needs its own Playwright iteration loop with maintainer pixel review before merging.
 
 ## What's not on the 2026 roadmap
 

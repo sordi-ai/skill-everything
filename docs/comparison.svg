@@ -282,6 +282,6 @@
   </g>
 
   <!-- ============== FOOTER ============== -->
-  <text class="footer" x="24"   y="708">edit references/_index.yml  ·  CI-validated on every push  ·  one source, four loaders</text>
+  <text class="footer" x="24"   y="708">edit skills/_index.yml  ·  CI-validated on every push  ·  one source, four loaders</text>
   <text class="footer" x="1176" y="708" text-anchor="end">skill-everything  /  docs/comparison.svg</text>
 </svg>

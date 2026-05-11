@@ -1,6 +1,7 @@
 id: 03-react-key-missing
 title: React — missing key in list render
 mistake_class: missing_list_key
+tier: 1
 rule_under_test: |
   Always add a stable `key` prop when rendering a list with .map().
 prompt: |

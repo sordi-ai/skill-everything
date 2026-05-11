@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc" font-family="-apple-system, system-ui, 'Segoe UI', Roboto, sans-serif">
   <title id="title">Self-extension PR flow — branch, two CI gates, CODEOWNERS, squash-merge</title>
-  <desc id="desc">Detail of how a self-extension reaches main: agent opens a learn/ERR-YYYY-NNN branch with a Co-Authored-By trailer, opens a PR labelled needs-rule-review, two CI gates run in parallel (lint-rules and auto-approve-rule-pr), CODEOWNERS approval is required on references/errors/, then the PR is squash-merged onto main under branch protection.</desc>
+  <desc id="desc">Detail of how a self-extension reaches main: agent opens a learn/ERR-YYYY-NNN branch with a Co-Authored-By trailer, opens a PR labelled needs-rule-review, two CI gates run in parallel (lint-rules and auto-approve-rule-pr), CODEOWNERS approval is required on skills/error-log/, then the PR is squash-merged onto main under branch protection.</desc>
 
   <style>
     :root {
@@ -222,7 +222,7 @@
     <rect class="gate-fill" x="0" y="0" width="240" height="100" rx="6"/>
     <rect class="gate"      x="0" y="0" width="240" height="100" rx="6"/>
     <text class="gate-label" x="10" y="15">CI GATE  ·  auto-approve-rule-pr</text>
-    <text class="mono-tag"   x="10" y="34">diff scope: references/errors/**</text>
+    <text class="mono-tag"   x="10" y="34">diff scope: skills/**</text>
     <text class="mono-dim"   x="10" y="50">requires Co-Authored-By trailer</text>
     <text class="mono-dim"   x="10" y="64">checks PR commit messages</text>
     <text class="mono-dim"   x="10" y="80">non-errors diff → no auto-approve</text>
@@ -251,7 +251,7 @@
     <text class="step-num" x="10" y="15">HUMAN  ·  CODEOWNERS</text>
     <text class="mono-tag"   x="180" y="15">@sordi-ai/maintainers</text>
     <text class="node-sub"   x="10" y="30">approval required</text>
-    <text class="mono-dim"   x="180" y="30">required reviewer on references/errors/</text>
+    <text class="mono-dim"   x="180" y="30">required reviewer on skills/error-log/</text>
     <text class="mono-dim"   x="180" y="44">enforced by branch protection on main</text>
   </g>
 
@@ -289,5 +289,5 @@
 
   <!-- ============== TAGLINE ============== -->
   <text class="tagline" x="1176" y="668" text-anchor="end">no path to main without lint-rules + CODEOWNERS</text>
-  <text class="mono-dim" x="24"   y="668">skill-everything  /  references/errors/self-extension-workflow.md</text>
+  <text class="mono-dim" x="24"   y="668">skill-everything  /  skills/self-extension-workflow/SKILL.md</text>
 </svg>
