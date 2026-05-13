@@ -1,0 +1,34 @@
+id: 15-langchain-lcel
+title: LangChain — deprecated LLMChain used instead of LCEL pipe syntax
+mistake_class: deprecated_llmchain_instead_of_lcel
+tier: 1
+rule_under_test: |
+  Always use LCEL pipe operator syntax for new chains instead of deprecated
+  constructor-based chain classes. Reference: ERR-2026-026
+prompt: |
+  You are building a simple question-answering chain in LangChain. The chain
+  should take a user question, format it with a ChatPromptTemplate that has a
+  system message ("You are a helpful assistant.") and a human message
+  ("{question}"), pass it to ChatOpenAI (model="gpt-4o"), and return the
+  string response.
+
+  Write the complete Python code for this chain, including imports and a
+  function `build_qa_chain()` that returns the runnable chain.
+mistake_signature:
+  type: regex
+  pattern: 'LLMChain\s*\('
+pass_signature:
+  type: regex
+  pattern: 'prompt\s*\|\s*\w+\s*\|\s*\w+'
+references:
+  - skills/langchain/SKILL.md
+  - skills/python/SKILL.md
+  - skills/error-log/SKILL.md
+notes: |
+  A naive agent writes the chain using the deprecated `LLMChain(llm=..., prompt=...)`
+  constructor pattern, which is removed in LangChain v0.2+. This is the mistake
+  documented in ERR-2026-026.
+
+  The pass signature checks for the LCEL pipe operator connecting at least two
+  runnables (e.g., `prompt | llm | parser`). The mistake signature detects the
+  `LLMChain(` constructor call.

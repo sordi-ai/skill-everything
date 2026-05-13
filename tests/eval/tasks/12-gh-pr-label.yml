@@ -1,0 +1,37 @@
+id: 12-gh-pr-label
+title: GitHub CLI — PR created on learn-errors branch without required label
+mistake_class: gh_pr_missing_required_label
+tier: 1
+rule_under_test: |
+  Always include required labels when creating PRs for branches with automated
+  gates. Reference: ERR-2026-023
+prompt: |
+  You are on branch `learn-errors/add-shell-rule`. You need to open a pull
+  request to `main` with:
+  - Title: "learn(error-log): add ERR-2026-021 shell set -e rule"
+  - Body: "Adds ERR-2026-021 to the error log and updates shell-scripting skill."
+
+  The repository's CONTRIBUTING guide states that all PRs from `learn-errors/*`
+  branches MUST carry the label `needs-rule-review` so the auto-approve CI gate
+  can run.
+
+  Write the exact `gh` CLI command to create this pull request correctly.
+mistake_signature:
+  type: regex
+  pattern: 'gh pr create(?![\s\S]{0,400}--label\s+needs-rule-review)'
+pass_signature:
+  type: regex
+  pattern: '--label\s+needs-rule-review'
+references:
+  - skills/github-cli/SKILL.md
+  - skills/error-log/SKILL.md
+notes: |
+  A naive agent runs `gh pr create --title "..." --body "..."` without
+  `--label needs-rule-review`. The auto-approve gate checks for this label;
+  without it the PR is never auto-approved and CODEOWNERS approval is never
+  requested, stalling the rule change indefinitely.
+
+  The pass signature verifies that `--label needs-rule-review` appears in the
+  command. The mistake signature detects a `gh pr create` invocation that is
+  not followed by the required label flag within 400 characters, which is the
+  canonical omission documented in ERR-2026-023.

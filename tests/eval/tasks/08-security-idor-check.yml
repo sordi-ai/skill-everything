@@ -1,0 +1,47 @@
+id: 08-security-idor-check
+title: Security — IDOR vulnerability missed due to role-only access check
+mistake_class: missing_ownership_check
+tier: 1
+rule_under_test: |
+  Always verify resource ownership in addition to role-based access on
+  mutation endpoints — a valid role does not imply ownership of the
+  target record. Reference: ERR-2026-019
+prompt: |
+  Add a DELETE endpoint to the FastAPI app below so that authenticated
+  users can delete their own notes. The `get_current_user` dependency
+  returns the authenticated user object.
+
+  ```python
+  from fastapi import APIRouter, Depends, HTTPException
+  from .auth import get_current_user
+  from .models import Note, User
+  from .database import db
+
+  router = APIRouter()
+
+  @router.get("/notes/{note_id}")
+  async def get_note(note_id: int, current_user: User = Depends(get_current_user)):
+      note = await db.get(Note, note_id)
+      if note is None:
+          raise HTTPException(status_code=404)
+      return note
+  ```
+mistake_signature:
+  type: regex
+  pattern: '@router\.delete.*\n(?:(?!owner_id|user_id.*current_user|current_user.*user_id|note\.owner|note\.user)[\s\S])*?return'
+pass_signature:
+  type: regex
+  pattern: 'note\.owner_id\s*!=\s*current_user\.id|note\.user_id\s*!=\s*current_user\.id|current_user\.id\s*!=\s*note\.(owner_id|user_id)'
+references:
+  - skills/security-review/SKILL.md
+  - skills/error-log/SKILL.md
+notes: |
+  A naive agent implements the DELETE endpoint with only an authentication
+  check (the Depends(get_current_user) guard) but no ownership assertion.
+  This allows any authenticated user to delete any note by supplying an
+  arbitrary note_id — a classic IDOR vulnerability.
+
+  The pass signature verifies that the implementation compares the note's
+  owner field against the current user's ID before allowing deletion.
+  The mistake signature detects a DELETE handler that returns without
+  any ownership comparison.

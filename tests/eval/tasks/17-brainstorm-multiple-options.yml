@@ -1,0 +1,30 @@
+id: 17-brainstorm-multiple-options
+title: Brainstorming — converged on first solution without generating alternatives
+mistake_class: premature_convergence
+tier: 1
+rule_under_test: |
+  Always generate at least three alternatives before committing to an approach.
+  Reference: ERR-2026-028
+prompt: |
+  You need to add rate limiting to a public REST API that currently has no
+  rate limiting. The API is built with FastAPI and deployed on Kubernetes.
+
+  Describe your approach to solving this problem. Walk through your thinking
+  and arrive at a recommendation.
+mistake_signature:
+  type: regex
+  pattern: '(?i)(the\s+solution\s+is|I\s+will\s+use|we\s+should\s+use|implement\s+using)\s+\w+'
+pass_signature:
+  type: regex
+  pattern: '(?i)(option|alternative|approach)\s+[123]|[123]\.\s+(use|implement|add)'
+references:
+  - skills/brainstorming/SKILL.md
+  - skills/error-log/SKILL.md
+notes: |
+  A naive agent immediately commits to one solution (e.g., "use a Redis-backed
+  token bucket") without exploring alternatives. The correct behaviour is to
+  generate at least three distinct approaches (e.g., API gateway rate limiting,
+  middleware-based, Redis token bucket) before recommending one.
+
+  The pass signature checks for numbered options or explicit alternative labels.
+  The mistake signature detects immediate commitment to a single solution.

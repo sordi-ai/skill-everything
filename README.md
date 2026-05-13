@@ -141,20 +141,31 @@ A CI no-drift job runs `git diff --exit-code` against the regenerated loaders on
 
 | Sub-skill | Path | Tokens (real, tiktoken cl100k) |
 |---|---|---:|
-| `code-quality` | `skills/code-quality/SKILL.md` | ~1,750 |
-| `python` | `skills/python/SKILL.md` | ~2,450 |
-| `typescript` | `skills/typescript/SKILL.md` | ~2,850 |
-| `react` | `skills/react/SKILL.md` | ~2,950 |
-| `git-conventions` | `skills/git-conventions/SKILL.md` | ~750 |
-| `review-deployment` | `skills/review-deployment/SKILL.md` | ~950 |
-| `svg-check` | `skills/svg-check/SKILL.md` | ~1,700 |
-| `domain-template` | `skills/domain-template/SKILL.md` | ~1,250 |
-| `error-log` | `skills/error-log/SKILL.md` | ~2,950 |
-| `self-extension-workflow` | `skills/self-extension-workflow/SKILL.md` | ~2,500 |
-| **Total if all loaded** | — | **~20,350** |
+| `code-quality` | `skills/code-quality/SKILL.md` | ~1,450 |
+| `python` | `skills/python/SKILL.md` | ~2,200 |
+| `fastapi` | `skills/fastapi/SKILL.md` | ~850 |
+| `langchain` | `skills/langchain/SKILL.md` | ~1,150 |
+| `typescript` | `skills/typescript/SKILL.md` | ~2,150 |
+| `react` | `skills/react/SKILL.md` | ~2,250 |
+| `tdd` | `skills/tdd/SKILL.md` | ~850 |
+| `debugging` | `skills/debugging/SKILL.md` | ~800 |
+| `security-review` | `skills/security-review/SKILL.md` | ~1,000 |
+| `git-conventions` | `skills/git-conventions/SKILL.md` | ~550 |
+| `github-cli` | `skills/github-cli/SKILL.md` | ~800 |
+| `branch-finishing` | `skills/branch-finishing/SKILL.md` | ~750 |
+| `review-deployment` | `skills/review-deployment/SKILL.md` | ~650 |
+| `docker` | `skills/docker/SKILL.md` | ~1,000 |
+| `shell-scripting` | `skills/shell-scripting/SKILL.md` | ~850 |
+| `db-schema` | `skills/db-schema/SKILL.md` | ~1,050 |
+| `svg-check` | `skills/svg-check/SKILL.md` | ~1,300 |
+| `drawio` | `skills/drawio/SKILL.md` | ~550 |
+| `domain-template` | `skills/domain-template/SKILL.md` | ~900 |
+| `error-log` | `skills/error-log/SKILL.md` | ~2,900 |
+| `brainstorming` | `skills/brainstorming/SKILL.md` | ~450 |
+| `implementation-plan` | `skills/implementation-plan/SKILL.md` | ~500 |
+| `self-extension-workflow` | `skills/self-extension-workflow/SKILL.md` | ~1,850 |
+| **Total if all loaded** | — | **~27,300** |
 | **Typical (router + 1–2 skills)** | depends on task | **~1,800–3,500** |
-
-> _Counts above use a chars/3 fallback because tiktoken is not installed. Install `tiktoken>=0.7` for accurate numbers._
 
 <!-- token-table:end -->
 

@@ -166,13 +166,29 @@ alwaysApply: false
             process(None)
     ```
 
+19. **SHOULD: Use `@pytest.mark.parametrize` to test the same logic with multiple inputs.** Write one parameterized test instead of duplicating test functions for each case.
+
+20. **SHOULD: Place shared fixtures in `conftest.py` at the nearest common ancestor directory.** Do not scatter fixtures across individual test files. Pytest auto-discovers `conftest.py` at every level.
+
+21. **MUST: Never return mutable objects directly from a pytest fixture.** Each test must receive a fresh instance. Use factory fixtures that return a callable creating fresh objects. Reference: ERR-2026-014.
+
+22. **AVOID: Fixtures with side effects (network, DB) without explicit scope.** Use `scope="session"` or `scope="module"` for expensive shared resources with proper teardown via `yield`.
+
+23. **SHOULD: Use the `tmp_path` fixture for filesystem tests instead of manual temporary directories.** It auto-cleans and is process-safe.
+
 ---
 
 ### Packaging
 
-19. **SHOULD: Include `__init__.py` in every package directory.** Without it, Python 3 treats the directory as a namespace package, which breaks relative imports and tool discovery in many environments. *Exception: explicit namespace packages (PEP 420) where the omission is documented intent.*
+24. **SHOULD: Include `__init__.py` in every package directory.** Without it, Python 3 treats the directory as a namespace package, which breaks relative imports and tool discovery in many environments. *Exception: explicit namespace packages (PEP 420) where the omission is documented intent.*
 
-20. **AVOID: Imports from `__init__.py` inside the same package's submodules.** This creates circular imports. Keep `__init__.py` as a re-export surface only, not a logic file.
+25. **AVOID: Imports from `__init__.py` inside the same package's submodules.** This creates circular imports. Keep `__init__.py` as a re-export surface only, not a logic file.
+
+26. **SHOULD: Use `pyproject.toml` as the single source of project metadata.** Avoid `setup.py` and `setup.cfg` for new projects. Modern tooling (pip, build, hatch, uv) all read `pyproject.toml` natively.
+
+27. **MUST: Pin exact versions in lock files but use ranges in `pyproject.toml` dependencies.** Lock files (`uv.lock`, `poetry.lock`) ensure reproducibility; flexible ranges in project metadata allow resolver to find compatible versions.
+
+28. **SHOULD: Define CLI entry points in `[project.scripts]` instead of relying on `python -m` patterns.** Entry points generate proper executables and integrate with system PATH.
 
 ---
 

@@ -224,6 +224,20 @@ alwaysApply: false
 
 ---
 
+## Responsive Design
+
+18. **SHOULD: Use a mobile-first approach for responsive styles.** Write base styles for small screens, enhance with `min-width` media queries for larger viewports.
+
+19. **AVOID: Fixed pixel widths on container components.** Use relative units or CSS logical properties. Hard-coded widths break on untested viewports. Reference: ERR-2026-015.
+
+20. **SHOULD: Prefer CSS container queries over viewport media queries for component-level responsiveness.** Components adapt to allocated space, not full viewport.
+
+21. **MUST: Never assume a single breakpoint set covers all use cases.** Define breakpoints based on content needs, not device names.
+
+22. **SHOULD: Use CSS `clamp()` for fluid typography and spacing instead of multiple breakpoint overrides.** Scales smoothly without jumps.
+
+---
+
 ## Why This Sub-Skill Earns Stars
 
 These rules target the exact failure modes that appear in LLM-generated React code: state lifted too high, effects without cleanup, index keys, inline object props, and derived state stored redundantly. Each rule is actionable in a single code review comment and includes a before/after example that makes the correct pattern unambiguous. The MUST/SHOULD/AVOID classification means hook-correctness rules are strict and stylistic rules respect context.

@@ -1,0 +1,39 @@
+id: 11-db-fk-constraint
+title: Database — orders table references users without a FOREIGN KEY constraint
+mistake_class: db_missing_fk_constraint
+tier: 1
+rule_under_test: |
+  Always declare FOREIGN KEY constraints in the schema; never rely on
+  application-layer join logic to enforce referential integrity.
+  Reference: ERR-2026-022
+prompt: |
+  Write a PostgreSQL migration that creates an `orders` table. Each order
+  belongs to a user. The table must have:
+  - `id` bigserial primary key
+  - `user_id` bigint referencing the `users` table
+  - `total_cents` integer not null
+  - `created_at` timestamptz not null defaulting to now()
+
+  Ensure referential integrity is enforced at the database level.
+mistake_signature:
+  type: regex
+  pattern: 'user_id\s+bigint(?![\s\S]{0,200}REFERENCES\s+users)'
+pass_signature:
+  type: regex
+  pattern: '(?i)(REFERENCES\s+users|FOREIGN\s+KEY\s*\(\s*user_id\s*\)\s*REFERENCES\s+users)'
+references:
+  - skills/db-schema/SKILL.md
+  - skills/error-log/SKILL.md
+notes: |
+  A naive agent creates the user_id column but omits the FOREIGN KEY
+  constraint, trusting the application to only insert valid user IDs.
+  This allows orphaned orders to accumulate when users are deleted or
+  when direct DB writes bypass the application layer.
+
+  The pass signature verifies that a REFERENCES users clause (inline or
+  via a separate FOREIGN KEY declaration) is present, ensuring the DB
+  enforces referential integrity.
+
+  The mistake signature detects a user_id bigint column that is not
+  followed by a REFERENCES clause within 200 characters, which is the
+  canonical omission documented in ERR-2026-022.

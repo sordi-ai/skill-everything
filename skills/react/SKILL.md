@@ -2,8 +2,8 @@
 name: react
 description: Apply when writing React components. Hook discipline, state placement, performance, async cleanup, and list keys.
 license: MIT
-version: 1.0.0
-tokens_target: 2600
+version: 1.1.0
+tokens_target: 3000
 triggers:
   - react component
   - react hooks
@@ -232,6 +232,20 @@ supersedes: []
     ```
 
 17. **SHOULD: Mock at the network boundary, not at the module boundary.** Mocking `fetch` or using MSW keeps tests closer to real behavior than mocking `useUser` directly.
+
+---
+
+## Responsive Design
+
+18. **SHOULD: Use a mobile-first approach for responsive styles.** Write base styles for small screens, enhance with `min-width` media queries for larger viewports.
+
+19. **AVOID: Fixed pixel widths on container components.** Use relative units or CSS logical properties. Hard-coded widths break on untested viewports. Reference: ERR-2026-015.
+
+20. **SHOULD: Prefer CSS container queries over viewport media queries for component-level responsiveness.** Components adapt to allocated space, not full viewport.
+
+21. **MUST: Never assume a single breakpoint set covers all use cases.** Define breakpoints based on content needs, not device names.
+
+22. **SHOULD: Use CSS `clamp()` for fluid typography and spacing instead of multiple breakpoint overrides.** Scales smoothly without jumps.
 
 ---
 

@@ -34,6 +34,32 @@ skills:
       cursor:  '@file:./skills/python/SKILL.md'
       skill_resource: 'skill_resource(skill_name="python")'
 
+  - id: fastapi
+    title: FastAPI
+    path: skills/fastapi/SKILL.md
+    triggers:
+      - fastapi endpoint
+      - pydantic model
+      - async api
+    loaders:
+      claude:  '@skills/fastapi/SKILL.md'
+      gemini:  '@skills/fastapi/SKILL.md'
+      cursor:  '@file:./skills/fastapi/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="fastapi")'
+
+  - id: langchain
+    title: LangChain / Agent Framework Conventions
+    path: skills/langchain/SKILL.md
+    triggers:
+      - langchain
+      - lcel chain
+      - agent framework
+    loaders:
+      claude:  '@skills/langchain/SKILL.md'
+      gemini:  '@skills/langchain/SKILL.md'
+      cursor:  '@file:./skills/langchain/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="langchain")'
+
   - id: typescript
     title: TypeScript
     path: skills/typescript/SKILL.md
@@ -60,6 +86,46 @@ skills:
       cursor:  '@file:./skills/react/SKILL.md'
       skill_resource: 'skill_resource(skill_name="react")'
 
+  - id: tdd
+    title: Test-Driven Development
+    path: skills/tdd/SKILL.md
+    triggers:
+      - test-driven development
+      - red green refactor
+      - test first
+    loaders:
+      claude:  '@skills/tdd/SKILL.md'
+      gemini:  '@skills/tdd/SKILL.md'
+      cursor:  '@file:./skills/tdd/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="tdd")'
+
+  - id: debugging
+    title: Debugging
+    path: skills/debugging/SKILL.md
+    triggers:
+      - debugging
+      - troubleshooting
+      - root cause analysis
+      - isolating bugs
+    loaders:
+      claude:  '@skills/debugging/SKILL.md'
+      gemini:  '@skills/debugging/SKILL.md'
+      cursor:  '@file:./skills/debugging/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="debugging")'
+
+  - id: security-review
+    title: Security Review Depth
+    path: skills/security-review/SKILL.md
+    triggers:
+      - security review
+      - vulnerability check
+      - auth implementation
+    loaders:
+      claude:  '@skills/security-review/SKILL.md'
+      gemini:  '@skills/security-review/SKILL.md'
+      cursor:  '@file:./skills/security-review/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="security-review")'
+
   - id: git-conventions
     title: Git Conventions
     path: skills/git-conventions/SKILL.md
@@ -72,6 +138,32 @@ skills:
       gemini:  '@skills/git-conventions/SKILL.md'
       cursor:  '@file:./skills/git-conventions/SKILL.md'
       skill_resource: 'skill_resource(skill_name="git-conventions")'
+
+  - id: github-cli
+    title: GitHub CLI (`gh`) Conventions
+    path: skills/github-cli/SKILL.md
+    triggers:
+      - gh cli
+      - github pr create
+      - github issues
+    loaders:
+      claude:  '@skills/github-cli/SKILL.md'
+      gemini:  '@skills/github-cli/SKILL.md'
+      cursor:  '@file:./skills/github-cli/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="github-cli")'
+
+  - id: branch-finishing
+    title: Closing Out a Feature Branch
+    path: skills/branch-finishing/SKILL.md
+    triggers:
+      - finish branch
+      - pre-merge checklist
+      - branch cleanup
+    loaders:
+      claude:  '@skills/branch-finishing/SKILL.md'
+      gemini:  '@skills/branch-finishing/SKILL.md'
+      cursor:  '@file:./skills/branch-finishing/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="branch-finishing")'
 
   - id: review-deployment
     title: Review & Deployment
@@ -86,6 +178,45 @@ skills:
       cursor:  '@file:./skills/review-deployment/SKILL.md'
       skill_resource: 'skill_resource(skill_name="review-deployment")'
 
+  - id: docker
+    title: Docker / Container Conventions
+    path: skills/docker/SKILL.md
+    triggers:
+      - dockerfile
+      - docker compose
+      - container build
+    loaders:
+      claude:  '@skills/docker/SKILL.md'
+      gemini:  '@skills/docker/SKILL.md'
+      cursor:  '@file:./skills/docker/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="docker")'
+
+  - id: shell-scripting
+    title: Bash / POSIX Scripting
+    path: skills/shell-scripting/SKILL.md
+    triggers:
+      - bash script
+      - shell script
+      - posix scripting
+    loaders:
+      claude:  '@skills/shell-scripting/SKILL.md'
+      gemini:  '@skills/shell-scripting/SKILL.md'
+      cursor:  '@file:./skills/shell-scripting/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="shell-scripting")'
+
+  - id: db-schema
+    title: Database Schema Design
+    path: skills/db-schema/SKILL.md
+    triggers:
+      - database schema
+      - migration
+      - table design
+    loaders:
+      claude:  '@skills/db-schema/SKILL.md'
+      gemini:  '@skills/db-schema/SKILL.md'
+      cursor:  '@file:./skills/db-schema/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="db-schema")'
+
   - id: svg-check
     title: SVG Check
     path: skills/svg-check/SKILL.md
@@ -99,6 +230,19 @@ skills:
       gemini:  '@skills/svg-check/SKILL.md'
       cursor:  '@file:./skills/svg-check/SKILL.md'
       skill_resource: 'skill_resource(skill_name="svg-check")'
+
+  - id: drawio
+    title: Diagrams (draw.io / Mermaid)
+    path: skills/drawio/SKILL.md
+    triggers:
+      - architecture diagram
+      - mermaid diagram
+      - drawio file
+    loaders:
+      claude:  '@skills/drawio/SKILL.md'
+      gemini:  '@skills/drawio/SKILL.md'
+      cursor:  '@file:./skills/drawio/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="drawio")'
 
   - id: domain-template
     title: Domain Knowledge (template)
@@ -123,6 +267,32 @@ skills:
       gemini:  '@skills/error-log/SKILL.md'
       cursor:  '@file:./skills/error-log/SKILL.md'
       skill_resource: 'skill_resource(skill_name="error-log")'
+
+  - id: brainstorming
+    title: Brainstorming
+    path: skills/brainstorming/SKILL.md
+    triggers:
+      - brainstorming
+      - idea generation
+      - divergent thinking
+    loaders:
+      claude:  '@skills/brainstorming/SKILL.md'
+      gemini:  '@skills/brainstorming/SKILL.md'
+      cursor:  '@file:./skills/brainstorming/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="brainstorming")'
+
+  - id: implementation-plan
+    title: Implementation Plan
+    path: skills/implementation-plan/SKILL.md
+    triggers:
+      - implementation plan
+      - planning before code
+      - scope definition
+    loaders:
+      claude:  '@skills/implementation-plan/SKILL.md'
+      gemini:  '@skills/implementation-plan/SKILL.md'
+      cursor:  '@file:./skills/implementation-plan/SKILL.md'
+      skill_resource: 'skill_resource(skill_name="implementation-plan")'
 
   - id: self-extension-workflow
     title: Self-Extension Workflow

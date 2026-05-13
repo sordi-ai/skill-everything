@@ -1,0 +1,41 @@
+id: 18-plan-file-list
+title: Implementation plan — started coding without listing affected files
+mistake_class: missing_file_touch_list
+tier: 1
+rule_under_test: |
+  Always list all files that will be modified before beginning implementation.
+  Reference: ERR-2026-029
+prompt: |
+  You are adding a new `POST /users/{id}/deactivate` endpoint to a FastAPI
+  application. The project structure is:
+
+  ```
+  app/
+    main.py
+    routers/users.py
+    models/user.py
+    schemas/user.py
+    services/user_service.py
+  tests/
+    test_users.py
+  ```
+
+  Describe how you would implement this feature. Start your response with your
+  implementation plan.
+mistake_signature:
+  type: regex
+  pattern: '(?i)^(first|let.s|i.ll|to implement|here.s the code|```python)'
+pass_signature:
+  type: regex
+  pattern: '(?i)(files?\s+(to\s+)?(modify|change|touch|update)|affected\s+files?|touch\s+list)'
+references:
+  - skills/implementation-plan/SKILL.md
+  - skills/error-log/SKILL.md
+notes: |
+  A naive agent immediately starts writing code or describing code changes
+  without first listing which files will be modified. The correct behaviour is
+  to produce a file touch list (e.g., "Files to modify: routers/users.py,
+  services/user_service.py, tests/test_users.py") before any implementation.
+
+  The pass signature checks for explicit mention of files to modify. The
+  mistake signature detects jumping straight into code or implementation steps.

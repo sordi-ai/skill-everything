@@ -1,0 +1,44 @@
+id: 09-docker-layer-cache
+title: Docker — layer cache busted by copying source before installing dependencies
+mistake_class: dockerfile_layer_order
+tier: 1
+rule_under_test: |
+  Always install dependencies in a separate layer before copying application
+  source, so a source change does not invalidate the package cache.
+  Reference: ERR-2026-020
+prompt: |
+  Write a Dockerfile for the Python web service below. The service uses
+  Flask and its dependencies are listed in requirements.txt. The source
+  files are in the current directory. Optimise the Dockerfile so that
+  unchanged dependencies are not reinstalled on every code change.
+
+  Directory layout:
+  ```
+  .
+  ├── requirements.txt   # Flask==3.0.3, gunicorn==22.0.0
+  ├── app.py
+  └── templates/
+      └── index.html
+  ```
+mistake_signature:
+  type: regex
+  pattern: 'COPY\s+\.\s+\.\s*\n(?:(?!RUN\s+pip)[\s\S])*?RUN\s+pip'
+pass_signature:
+  type: regex
+  pattern: 'COPY\s+requirements\.txt\s+.*\n(?:[\s\S]*?)RUN\s+pip\s+install(?:[\s\S]*?)COPY\s+\.\s+\.'
+references:
+  - skills/docker/SKILL.md
+  - skills/error-log/SKILL.md
+notes: |
+  A naive agent copies the entire source tree first (COPY . .) and then
+  runs pip install. Because Docker invalidates all subsequent layers when
+  any file in the copied context changes, every code edit triggers a full
+  dependency reinstall — adding minutes to each CI build.
+
+  The pass signature verifies that requirements.txt is copied and pip
+  install is run before the full source copy, preserving the dependency
+  layer in the build cache across source-only changes.
+
+  The mistake signature detects a COPY . . instruction that appears before
+  any RUN pip command, which is the canonical cache-busting anti-pattern
+  documented in ERR-2026-020.

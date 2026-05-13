@@ -31,13 +31,26 @@ as committed rules.
 |---|---|---|
 | writing code, refactoring, review | Code Quality | `skill_resource(skill_name="code-quality")` |
 | python code, type hints, python packaging | Python | `skill_resource(skill_name="python")` |
+| fastapi endpoint, pydantic model, async api | FastAPI | `skill_resource(skill_name="fastapi")` |
+| langchain, lcel chain, agent framework | LangChain / Agent Framework Conventions | `skill_resource(skill_name="langchain")` |
 | typescript code, strict types, async typescript | TypeScript | `skill_resource(skill_name="typescript")` |
 | react component, react hooks, react performance | React | `skill_resource(skill_name="react")` |
+| test-driven development, red green refactor, test first | Test-Driven Development | `skill_resource(skill_name="tdd")` |
+| debugging, troubleshooting, root cause analysis, isolating bugs | Debugging | `skill_resource(skill_name="debugging")` |
+| security review, vulnerability check, auth implementation | Security Review Depth | `skill_resource(skill_name="security-review")` |
 | git commit, branch, pull request | Git Conventions | `skill_resource(skill_name="git-conventions")` |
+| gh cli, github pr create, github issues | GitHub CLI (`gh`) Conventions | `skill_resource(skill_name="github-cli")` |
+| finish branch, pre-merge checklist, branch cleanup | Closing Out a Feature Branch | `skill_resource(skill_name="branch-finishing")` |
 | creating PR, deployment, review checklist | Review & Deployment | `skill_resource(skill_name="review-deployment")` |
+| dockerfile, docker compose, container build | Docker / Container Conventions | `skill_resource(skill_name="docker")` |
+| bash script, shell script, posix scripting | Bash / POSIX Scripting | `skill_resource(skill_name="shell-scripting")` |
+| database schema, migration, table design | Database Schema Design | `skill_resource(skill_name="db-schema")` |
 | svg edit, svg review, diagram, pixel review | SVG Check | `skill_resource(skill_name="svg-check")` |
+| architecture diagram, mermaid diagram, drawio file | Diagrams (draw.io / Mermaid) | `skill_resource(skill_name="drawio")` |
 | project-specific knowledge, business rules | Domain Knowledge (template) | `skill_resource(skill_name="domain-template")` |
 | made or corrected a mistake, learn from this | Error Log | `skill_resource(skill_name="error-log")` |
+| brainstorming, idea generation, divergent thinking | Brainstorming | `skill_resource(skill_name="brainstorming")` |
+| implementation plan, planning before code, scope definition | Implementation Plan | `skill_resource(skill_name="implementation-plan")` |
 | executing self-extension | Self-Extension Workflow | `skill_resource(skill_name="self-extension-workflow")` |
 
 ## Error capture triggers

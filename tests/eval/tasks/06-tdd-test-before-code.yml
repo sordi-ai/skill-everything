@@ -1,0 +1,23 @@
+id: 06-tdd-test-before-code
+title: TDD — implementation without failing test first
+mistake_class: test_after_code
+tier: 1
+rule_under_test: |
+  Always write a failing test before implementing new behavior to
+  ensure tests validate intended behavior, not code-as-written.
+prompt: |
+  Add a function `is_palindrome(s: str) -> bool` that returns True if the
+  input string is a palindrome (ignoring case and spaces), False otherwise.
+  Include tests.
+mistake_signature:
+  type: regex
+  pattern: 'def is_palindrome.*\n(?:(?!def test_)[\s\S])*$'
+pass_signature:
+  type: regex
+  pattern: 'def test_.*is_palindrome|def test_.*palindrome'
+references:
+  - skills/tdd/SKILL.md
+notes: |
+  A naive agent writes is_palindrome first, then tests. The pass signature
+  verifies a test function exists. The mistake signature checks for
+  implementation without any test function in the output.

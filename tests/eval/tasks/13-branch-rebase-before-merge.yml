@@ -1,0 +1,39 @@
+id: 13-branch-rebase-before-merge
+title: Branch Finishing — stale branch merged without rebasing onto main
+mistake_class: branch_merged_without_rebase
+tier: 1
+rule_under_test: |
+  Always rebase onto the target branch before requesting merge to catch
+  regressions introduced since the branch was cut. Reference: ERR-2026-024
+prompt: |
+  You are on branch `feature/add-payment-retry`. The branch was created from
+  `main` three days ago. Since then, a colleague merged a fix to `main` that
+  corrected a critical off-by-one error in the payment calculation module —
+  the same module your branch touches.
+
+  Your branch's CI is green (it was last run two days ago against the old
+  `main`). You want to open a pull request to merge your feature into `main`.
+
+  Write the exact sequence of git commands you would run before opening the
+  pull request.
+mistake_signature:
+  type: regex
+  pattern: 'gh pr create|git push(?![\s\S]{0,600}git rebase)'
+pass_signature:
+  type: regex
+  pattern: 'git rebase (origin/main|main)'
+references:
+  - skills/branch-finishing/SKILL.md
+  - skills/git-conventions/SKILL.md
+  - skills/error-log/SKILL.md
+notes: |
+  A naive agent runs `git push && gh pr create` without first rebasing onto
+  the current `main`. This risks merging a branch that is missing a regression
+  fix that landed on `main` after the branch was cut — exactly the scenario
+  documented in ERR-2026-024.
+
+  The pass signature verifies that `git rebase origin/main` (or `git rebase
+  main`) appears in the command sequence before the push/PR creation. The
+  mistake signature detects a `gh pr create` or `git push` that is not
+  preceded by a rebase within 600 characters, which is the canonical omission
+  documented in ERR-2026-024.

@@ -1,0 +1,33 @@
+id: 14-fastapi-pydantic-body
+title: FastAPI — wrong Pydantic version syntax used in request body model
+mistake_class: pydantic_v1_syntax_on_v2_project
+tier: 1
+rule_under_test: |
+  Always use Pydantic v2 syntax (model_config, model_dump) unless the project
+  explicitly pins Pydantic v1. Reference: ERR-2026-025
+prompt: |
+  You are adding a new POST endpoint to a FastAPI service. The project's
+  `pyproject.toml` lists `pydantic>=2.0` as a dependency. You need to define
+  a request body model for creating a user, with fields: `name` (str),
+  `email` (str), and `is_active` (bool, default True).
+
+  Write the Pydantic model class and the FastAPI route handler for
+  `POST /users` that accepts this body and returns the created user.
+mistake_signature:
+  type: regex
+  pattern: 'class\s+\w+\(BaseModel\)[\s\S]{0,400}class Config'
+pass_signature:
+  type: regex
+  pattern: 'model_config\s*=\s*ConfigDict|model_dump\(\)'
+references:
+  - skills/fastapi/SKILL.md
+  - skills/python/SKILL.md
+  - skills/error-log/SKILL.md
+notes: |
+  A naive agent writes the Pydantic model using v1 syntax (inner `class Config`
+  with `orm_mode = True`, `.dict()` method calls) even though the project pins
+  Pydantic v2. This is the mistake documented in ERR-2026-025.
+
+  The pass signature checks for `model_config = ConfigDict(...)` or
+  `model_dump()` — the canonical v2 patterns. The mistake signature detects
+  the v1 inner `class Config` pattern inside a BaseModel subclass.

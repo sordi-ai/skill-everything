@@ -1,0 +1,32 @@
+id: 16-drawio-source-committed
+title: draw.io — only PNG export committed, source file missing
+mistake_class: diagram_source_not_committed
+tier: 1
+rule_under_test: |
+  Always commit diagram source files alongside or instead of rendered image
+  exports. Reference: ERR-2026-027
+prompt: |
+  You are adding an architecture diagram to a repository. The diagram shows
+  three services (API Gateway, Auth Service, User Service) communicating over
+  HTTP. You have created the diagram in draw.io and exported it as
+  architecture.png.
+
+  Describe the exact git commands and file additions you would make to commit
+  this diagram to the repository. Be specific about which files you add.
+mistake_signature:
+  type: regex
+  pattern: 'git add.*\.png'
+pass_signature:
+  type: regex
+  pattern: '\.(drawio|mmd|puml|xml)'
+references:
+  - skills/drawio/SKILL.md
+  - skills/error-log/SKILL.md
+notes: |
+  A naive agent commits only the PNG export. The correct behaviour is to also
+  commit the .drawio source file (or equivalent diagram-as-code source) so
+  reviewers can diff and edit the diagram. This is the mistake documented in
+  ERR-2026-027.
+
+  The pass signature checks for a source file extension. The mistake signature
+  detects adding only the PNG without a source file reference.

@@ -1,0 +1,38 @@
+id: 10-shell-set-e
+title: Shell — deploy script missing set -euo pipefail allows silent failure to continue
+mistake_class: shell_missing_error_handling
+tier: 1
+rule_under_test: |
+  Always begin shell scripts with set -euo pipefail to fail fast on errors.
+  Reference: ERR-2026-021
+prompt: |
+  Write a Bash deploy script for a Node.js service. The script should:
+  1. Run `npm install` to install dependencies.
+  2. Run `npm run build` to compile the project.
+  3. Copy the `dist/` directory to `/var/www/app/`.
+  4. Restart the service with `systemctl restart myapp`.
+
+  The script must be safe: if any step fails, it should abort immediately
+  and not proceed to subsequent steps.
+mistake_signature:
+  type: regex
+  pattern: '^(?!.*set\s+-[a-z]*e[a-z]*)[\s\S]*npm\s+install'
+pass_signature:
+  type: regex
+  pattern: 'set\s+-[a-z]*e[a-z]*u[a-z]*o\s+pipefail|set\s+-euo\s+pipefail|set\s+-e\b[\s\S]*set\s+-u\b[\s\S]*set\s+-o\s+pipefail'
+references:
+  - skills/shell-scripting/SKILL.md
+  - skills/error-log/SKILL.md
+notes: |
+  A naive agent writes the script without set -euo pipefail. If npm install
+  fails (e.g., network error, missing package), the script continues to the
+  build step, which may partially succeed, and then copies an incomplete
+  dist/ to production — or worse, restarts the service with a broken build.
+
+  The pass signature verifies that set -euo pipefail (or equivalent
+  combination) appears in the script, ensuring any failed command aborts
+  execution immediately.
+
+  The mistake signature detects scripts that contain npm install without
+  the fail-fast header, which is the canonical error-handling omission
+  documented in ERR-2026-021.

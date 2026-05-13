@@ -4,7 +4,7 @@ alwaysApply: false
 ---
 
 # Sub-Skill: Code Quality & Common Mistakes
-<!-- target: ~1500 tokens (real tiktoken count, see tools/render_readme_table.py) | 24 rules with severity classification -->
+<!-- target: ~1800 tokens (real tiktoken count, see tools/render_readme_table.py) | 28 rules with severity classification -->
 
 **Purpose:** Prevents the 20 % of mistakes that cause 80 % of review comments. Concrete rules from real projects — no boilerplate.
 
@@ -39,34 +39,38 @@ alwaysApply: false
 9. **MUST: Every `async` call needs `try/catch` or `.catch()`.** Unhandled promise rejections crash Node processes.
 10. **MUST: Never silently swallow error objects.** `catch (e) {}` is forbidden. At minimum: `logger.warn(e)`.
 11. **MUST: Error messages must include context.** `throw new Error('User not found: ' + userId)` not `throw new Error('Not found')`.
+12. **SHOULD: Catch specific exception types, not broad categories.** Catch `ConnectionError` not `Exception`. Broad catches mask unrelated bugs and make debugging harder.
+13. **SHOULD: Use exponential backoff with jitter for retry logic.** Never retry in a tight loop. Each retry should wait longer than the last with randomization to prevent thundering herds.
+14. **MUST: Never retry non-idempotent operations without explicit safeguards.** A retried POST that creates a resource can produce duplicates. Use idempotency keys or check-before-retry patterns.
+15. **SHOULD: Propagate errors with context rather than swallowing and re-raising generic exceptions.** Use `raise NewError("context") from original_error` to preserve the chain. Reference: ERR-2026-016.
 
 ### Imports & Dependencies
 
-12. **SHOULD: No circular imports.** When in doubt: run `madge --circular src/`.
-13. **SHOULD: External dependencies only in dedicated adapter files.** No direct `axios.get()` in business logic — always wrap through an interface.
-14. **MUST: Remove `console.log` before commit.** Use a pre-commit hook or linter rule `no-console`. *Exception: debug helpers behind a build-time `__DEV__` flag.*
+16. **SHOULD: No circular imports.** When in doubt: run `madge --circular src/`.
+17. **SHOULD: External dependencies only in dedicated adapter files.** No direct `axios.get()` in business logic — always wrap through an interface.
+18. **MUST: Remove `console.log` before commit.** Use a pre-commit hook or linter rule `no-console`. *Exception: debug helpers behind a build-time `__DEV__` flag.*
 
 ### Tests
 
-15. **MUST: Every new function needs at least one happy-path test.** No merge without test coverage for new logic. *Exception: pure projection wrappers, single-line getters, and deprecated shims may rely on integration tests.*
+19. **MUST: Every new function needs at least one happy-path test.** No merge without test coverage for new logic. *Exception: pure projection wrappers, single-line getters, and deprecated shims may rely on integration tests.*
 
 ### Performance
 
-16. **MUST: No DB queries in loops (N+1 problem).** Instead of `for (item of items) { await db.find(item.id) }` → use a JOIN or `WHERE id IN (...)` query.
-17. **MUST: Paginate large datasets.** Never `SELECT * FROM table` without `LIMIT`. API endpoints with lists need `?page=` and `?limit=`.
-18. **SHOULD: New `WHERE` clauses need indexes.** Before every new query: is there a matching DB index? Without index → full table scan on growing data.
-19. **SHOULD: Lazy loading for heavy operations.** Load data only when needed, not "just in case".
+20. **MUST: No DB queries in loops (N+1 problem).** Instead of `for (item of items) { await db.find(item.id) }` → use a JOIN or `WHERE id IN (...)` query.
+21. **MUST: Paginate large datasets.** Never `SELECT * FROM table` without `LIMIT`. API endpoints with lists need `?page=` and `?limit=`.
+22. **SHOULD: New `WHERE` clauses need indexes.** Before every new query: is there a matching DB index? Without index → full table scan on growing data.
+23. **SHOULD: Lazy loading for heavy operations.** Load data only when needed, not "just in case".
 
 ### Security
 
-20. **MUST: Never use user input directly in queries.** Always use prepared statements or ORM query builders. Applies to SQL, NoSQL, shell commands, and template engines.
-21. **MUST: New API endpoints need auth.** No endpoint without authentication and authorization — not even "internal" endpoints. *Exception: documented public-asset / health-check routes that explicitly opt out in code comments.*
-22. **MUST: Never put secrets in code.** No API keys, passwords, or tokens in source code or comments. Always use environment variables.
-23. **MUST: Validate and sanitize user input.** At the system boundary (API entry): check type, length, format. Never trust blindly.
+24. **MUST: Never use user input directly in queries.** Always use prepared statements or ORM query builders. Applies to SQL, NoSQL, shell commands, and template engines.
+25. **MUST: New API endpoints need auth.** No endpoint without authentication and authorization — not even "internal" endpoints. *Exception: documented public-asset / health-check routes that explicitly opt out in code comments.*
+26. **MUST: Never put secrets in code.** No API keys, passwords, or tokens in source code or comments. Always use environment variables.
+27. **MUST: Validate and sanitize user input.** At the system boundary (API entry): check type, length, format. Never trust blindly.
 
 ### Tooling & Cross-Platform
 
-24. **MUST: Always prefix `docker run -v` from Git Bash / MSYS on Windows with `MSYS_NO_PATHCONV=1`.** MSYS auto-converts unquoted Linux paths to Windows paths before passing them to `docker.exe`, mangling bind-mount arguments. Use `MSYS_NO_PATHCONV=1 docker run -v "C:/path:/repo" ...` with explicit Windows-style host paths. Reference: `ERR-2026-013`.
+28. **MUST: Always prefix `docker run -v` from Git Bash / MSYS on Windows with `MSYS_NO_PATHCONV=1`.** MSYS auto-converts unquoted Linux paths to Windows paths before passing them to `docker.exe`, mangling bind-mount arguments. Use `MSYS_NO_PATHCONV=1 docker run -v "C:/path:/repo" ...` with explicit Windows-style host paths. Reference: `ERR-2026-013`.
 
 ---
 

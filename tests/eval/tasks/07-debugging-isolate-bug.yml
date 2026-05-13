@@ -1,0 +1,34 @@
+id: 07-debugging-isolate-bug
+title: Debugging — fix applied without reproducing the failure first
+mistake_class: fix_without_reproduction
+tier: 1
+rule_under_test: |
+  Before changing any code to fix a bug, confirm you can reproduce the
+  failure on demand; encode the reproduction as an automated test first.
+prompt: |
+  A user reports that calling `parse_date("2026-13-01")` raises an
+  unhandled exception instead of returning None. Fix the bug in the
+  `parse_date` function below and include any tests you think are needed.
+
+  ```python
+  import datetime
+
+  def parse_date(date_str: str):
+      parts = date_str.split("-")
+      return datetime.date(int(parts[0]), int(parts[1]), int(parts[2]))
+  ```
+mistake_signature:
+  type: regex
+  pattern: 'def parse_date.*\n(?:(?!def test_|import pytest)[\s\S])*$'
+pass_signature:
+  type: regex
+  pattern: 'def test_.*parse_date|def test_.*invalid|def test_.*none'
+references:
+  - skills/debugging/SKILL.md
+  - skills/tdd/SKILL.md
+notes: |
+  A naive agent patches the function (adds try/except) without first
+  writing a test that demonstrates the failure. The pass signature
+  verifies a test function exists that covers the invalid-input path.
+  The mistake signature detects an implementation change with no
+  accompanying test.
