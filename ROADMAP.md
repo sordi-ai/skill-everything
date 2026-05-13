@@ -1,12 +1,13 @@
 # Roadmap
 
-> **`v0.75` is the current preview release.** Foundation work is done; `v1.0` ships only when the eval framework earns the claim. New features land in `main` via PR — every change is a commit, every commit is reviewed, every release is auditable.
+> **`v0.85` is the current release.** 23 sub-skills shipped, eval framework wired. `v1.0` ships when the eval measurement run earns the claim. New features land in `main` via PR — every change is a commit, every commit is reviewed, every release is auditable.
 
 ## Versions
 
 | Version | Status | What |
 |---|:---:|---|
-| **`v0.75` — Foundation** | 🟡 **PREVIEW** | `lint-rules` CI · JSON-Schema validator · XSS hardening · single-source-of-truth loader sync · `learn(errors):` PR convention · CODEOWNERS + branch protection · 9 sub-skills shipped · 13 production diagrams (skills/ paths synced) · adversarial test suite (15/20 caught) · per-skill token budget hard-checked · MUST/SHOULD/AVOID rule classification · **eval framework wired with real providers (Anthropic + OpenAI + Ollama SDK shim, retry-on-transient, tier-3 judge + 20-row calibration corpus, `compare_eval.py` ±10pp baseline gate)**. |
+| **`v0.85` — Skill expansion** | 🟢 **CURRENT** | 13 new sub-skills (tdd, debugging, security-review, docker, shell-scripting, db-schema, github-cli, branch-finishing, fastapi, langchain, drawio, brainstorming, implementation-plan) · 3 fold-ins to existing skills (python, react, code-quality) · 16 new ERR entries (ERR-2026-014 through ERR-2026-029) · 13 new eval tasks · skill count 10 → 23 · tests 38 → 55 · SVG-check sub-skill with Playwright bbox validation · eval framework MVP + v1.0 eval build-out with real providers. |
+| **`v0.75` — Foundation** | ✅ **SHIPPED** | `lint-rules` CI · JSON-Schema validator · XSS hardening · single-source-of-truth loader sync · `learn(errors):` PR convention · CODEOWNERS + branch protection · 9 sub-skills shipped · 13 production diagrams (skills/ paths synced) · adversarial test suite (15/20 caught) · per-skill token budget hard-checked · MUST/SHOULD/AVOID rule classification · **eval framework wired with real providers (Anthropic + OpenAI + Ollama SDK shim, retry-on-transient, tier-3 judge + 20-row calibration corpus, `compare_eval.py` ±10pp baseline gate)**. |
 | **`v1.0` — Eval that earns the claim** | 🟡 In development | Curated `tests/eval/results/baseline.jsonl` populated under the methodology contract (n ≥ 100 per cell, 5 dated-SKU models, T ∈ {0.0, 0.7}) · macro-Re-Mistake-Rate ≤ 0.40 with bootstrap 95 % CI upper ≤ 0.55 · per-model floor satisfied · tier-3 judge calibration ≥ 0.90 · published per-cell numbers. Provider integration is shipped; the ~$500 measurement run earns the stable tag, not the framework. |
 | **`v1.1` — Community ecosystem** | 🔵 Planned | First external sub-skills merged (Go, Rust, Java, Swift) · sub-skill PR template institutionalised · public skill catalogue with usage stats · `learn(errors):` going wild on a public commit graph. |
 | **`v2.0` — Marketplace + trust layer** | ⚪ Vision | Signed skills with reputation graph · sandboxed execution · semantic versioning · license management · cross-repo skill imports. |

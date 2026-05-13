@@ -14,7 +14,7 @@
 
 **Self-extending skills in plain Markdown. Save tokens. Enhance quality. Ship smarter agents — across Claude Code, Cursor, Gemini CLI, and OpenCode.**
 
-[![Release v0.75.0 PREVIEW](https://img.shields.io/badge/Release-v0.75.0_PREVIEW-yellow?style=for-the-badge&logo=git&logoColor=white)](./ROADMAP.md)
+[![Release v0.85.0](https://img.shields.io/badge/Release-v0.85.0-green?style=for-the-badge&logo=git&logoColor=white)](./ROADMAP.md)
 [![GitHub stars](https://img.shields.io/github/stars/sordi-ai/skill-everything?style=for-the-badge&logo=github&color=gold)](https://github.com/sordi-ai/skill-everything/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](./LICENSE)
 
@@ -390,11 +390,12 @@ Each sub-skill has a [skill-manifest frontmatter block](./schemas/skill-manifest
 
 ## VERSIONS
 
-> **`v0.75` is the current preview release.** Foundation work is done; `v1.0` ships only when the eval framework earns the claim. New features land in `main` via PR — watch the repo to see them ship.
+> **`v0.85` is the current release.** 23 sub-skills shipped. `v1.0` ships when the eval framework earns the claim. New features land in `main` via PR — watch the repo to see them ship.
 
 | Version | Status | What |
 |---|:---:|---|
-| **`v0.75` — Foundation** | 🟡 **PREVIEW** | `lint-rules` CI · JSON-Schema validator · XSS hardening · single-source-of-truth loader sync · `learn(errors):` PR convention · CODEOWNERS + branch protection · 9 sub-skills shipped · 13 production diagrams · adversarial test suite (15/20 caught) · per-skill token budget hard-checked · MUST/SHOULD/AVOID rule classification · **eval framework wired with real providers** (Anthropic + OpenAI + Ollama via SDK shim, retry-on-transient, tier-3 judge + 20-row calibration corpus, [`tools/compare_eval.py`](./tools/compare_eval.py) baseline-vs-rerun ±10pp; [methodology contract](./tests/eval/README.md) at n=50/100, [reproduction runbook](./docs/eval-reproduction.md)). |
+| **`v0.85` — Skill expansion** | 🟢 **CURRENT** | 13 new sub-skills (tdd, debugging, security-review, docker, shell-scripting, db-schema, github-cli, branch-finishing, fastapi, langchain, drawio, brainstorming, implementation-plan) · 3 fold-ins (python +testing/packaging, react +responsive-design, code-quality +error-handling) · 16 new ERR entries · 13 new eval tasks · skill count 10 → 23 · tests 38 → 55 · SVG-check sub-skill · eval framework MVP with real providers. |
+| **`v0.75` — Foundation** | ✅ **SHIPPED** | `lint-rules` CI · JSON-Schema validator · XSS hardening · single-source-of-truth loader sync · `learn(errors):` PR convention · CODEOWNERS + branch protection · 9 sub-skills shipped · 13 production diagrams · adversarial test suite (15/20 caught) · per-skill token budget hard-checked · MUST/SHOULD/AVOID rule classification · **eval framework wired with real providers** (Anthropic + OpenAI + Ollama via SDK shim, retry-on-transient, tier-3 judge + 20-row calibration corpus, [`tools/compare_eval.py`](./tools/compare_eval.py) baseline-vs-rerun ±10pp; [methodology contract](./tests/eval/README.md) at n=50/100, [reproduction runbook](./docs/eval-reproduction.md)). |
 | **`v1.0` — Eval that earns the claim** | 🟡 In development | Curated [`tests/eval/results/baseline.jsonl`](./tests/eval/results/) populated under the methodology contract (n ≥ 100 per cell, 5 dated-SKU models, T ∈ {0.0, 0.7}) · macro-Re-Mistake-Rate ≤ 0.40 with bootstrap 95 % CI upper ≤ 0.55 · per-model floor and tier-3 judge calibration ≥ 0.90 satisfied · published per-cell numbers in the README. Provider integration is shipped; the ~$500 measurement run earns the stable tag, not the framework. |
 | **`v1.1` — Community ecosystem** | 🔵 Planned | First external sub-skills merged (Go, Rust, Java, Swift) · sub-skill PR template institutionalised · public skill catalogue with usage stats · `learn(errors):` going wild on a public commit graph. |
 | **`v2.0` — Marketplace + trust layer** | ⚪ Vision | Signed skills with reputation graph · sandboxed execution · semantic versioning · license management · cross-repo skill imports. The skill library becomes a public dataset others ship on top of. |
